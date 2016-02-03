@@ -13,8 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+    fuel.cpp \
+    calccombustion.cpp \
+    clacflow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += \
+    fuel.h \
+    calccombustion.h \
+    clacflow.h
 
 FORMS    += mainwindow.ui
