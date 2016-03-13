@@ -1,0 +1,113 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ThermoCalc - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x419 /fo"Release/ThermoCalc.res" /d "NDEBUG" /d "_AFXDLL" "C:\MyPrS\ThermoCalc\ThermoCalc.rc"" 
+Creating temporary file "C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP27.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /FR"Release/" /Fp"Release/ThermoCalc.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\MyPrS\ThermoCalc\all_CCalc.cpp"
+"C:\MyPrS\ThermoCalc\all_excel.cpp"
+"C:\MyPrS\ThermoCalc\ButtonChem.cpp"
+"C:\MyPrS\ThermoCalc\ChildFrm.cpp"
+"C:\MyPrS\ThermoCalc\FieldInput.cpp"
+"C:\MyPrS\ThermoCalc\FrameOutput.cpp"
+"C:\MyPrS\ThermoCalc\MainFrm.cpp"
+"C:\MyPrS\ThermoCalc\PropertyPageChem.cpp"
+"C:\MyPrS\ThermoCalc\PropertySheetChem.cpp"
+"C:\MyPrS\ThermoCalc\StaticChem.cpp"
+"C:\MyPrS\ThermoCalc\ThermoCalc.cpp"
+"C:\MyPrS\ThermoCalc\ThermoCalcDoc.cpp"
+"C:\MyPrS\ThermoCalc\ThermoCalcView.cpp"
+"C:\MyPrS\ThermoCalc\ViewOutput.cpp"
+"C:\MyPrS\ThermoCalc\Calc.cpp"
+"C:\MyPrS\ThermoCalc\DlgEmptyDoc.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP27.tmp" 
+Creating temporary file "C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP28.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /FR"Release/" /Fp"Release/ThermoCalc.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\MyPrS\ThermoCalc\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP28.tmp" 
+Creating temporary file "C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP29.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:no /pdb:"Release/ThermoCalc.pdb" /machine:I386 /out:"Release/ThermoCalc.exe" 
+.\Release\all_CCalc.obj
+.\Release\all_excel.obj
+.\Release\ButtonChem.obj
+.\Release\ChildFrm.obj
+.\Release\FieldInput.obj
+.\Release\FrameOutput.obj
+.\Release\MainFrm.obj
+.\Release\PropertyPageChem.obj
+.\Release\PropertySheetChem.obj
+.\Release\StaticChem.obj
+.\Release\ThermoCalc.obj
+.\Release\ThermoCalcDoc.obj
+.\Release\ThermoCalcView.obj
+.\Release\ViewOutput.obj
+.\Release\Calc.obj
+.\Release\DlgEmptyDoc.obj
+.\Release\StdAfx.obj
+.\Release\ThermoCalc.res
+]
+Creating command line "link.exe @C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP29.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+all_CCalc.cpp
+all_excel.cpp
+ButtonChem.cpp
+ChildFrm.cpp
+FieldInput.cpp
+FrameOutput.cpp
+MainFrm.cpp
+PropertyPageChem.cpp
+PropertySheetChem.cpp
+StaticChem.cpp
+ThermoCalc.cpp
+ThermoCalcDoc.cpp
+ThermoCalcView.cpp
+ViewOutput.cpp
+Calc.cpp
+DlgEmptyDoc.cpp
+Generating Code...
+Linking...
+Creating temporary file "C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP2B.tmp" with contents
+[
+/nologo /o"Release/ThermoCalc.bsc" 
+.\Release\StdAfx.sbr
+.\Release\all_CCalc.sbr
+.\Release\all_excel.sbr
+.\Release\ButtonChem.sbr
+.\Release\ChildFrm.sbr
+.\Release\FieldInput.sbr
+.\Release\FrameOutput.sbr
+.\Release\MainFrm.sbr
+.\Release\PropertyPageChem.sbr
+.\Release\PropertySheetChem.sbr
+.\Release\StaticChem.sbr
+.\Release\ThermoCalc.sbr
+.\Release\ThermoCalcDoc.sbr
+.\Release\ThermoCalcView.sbr
+.\Release\ViewOutput.sbr
+.\Release\Calc.sbr
+.\Release\DlgEmptyDoc.sbr]
+Creating command line "bscmake.exe @C:\DOCUME~1\5D4C~1.USE\LOCALS~1\Temp\RSP2B.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+ThermoCalc.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

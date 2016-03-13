@@ -1,0 +1,613 @@
+// ThermoCalcView.cpp : implementation of the CThermoCalcView class
+//
+
+#include "stdafx.h"
+#include "ThermoCalc.h"
+
+#include "ThermoCalcDoc.h"
+#include "ThermoCalcView.h"
+#include "ViewOutput.h"
+#include "MainFrm.h"
+#include "Calc.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+#include <io.h> 			//open, close
+#include <fcntl.h>			//O_RDWR
+#include <math.h>		// fabs();
+
+#pragma warning (disable : 4244)
+
+char Mstr[256];//сообщение об ошибках
+char cf[3]={13,10,0};// "\n" for CString
+char szChemdataGas[]="dataGas_accuracy10.txt";
+char szChemdataCond[]="dataCond_accuracy10.txt";
+//char szChemdataGas[]="data_accuracy_short O H C).txt";
+//char szChemdataGas[]="data_accuracy_short2 O H C).txt";
+
+extern double	P[MaxElemGasFromDB];
+
+/////////////////////////////////////////////////////////////////////////////
+// CThermoCalcView
+
+IMPLEMENT_DYNCREATE(CThermoCalcView, CFormView)
+
+BEGIN_MESSAGE_MAP(CThermoCalcView, CFormView)
+	//{{AFX_MSG_MAP(CThermoCalcView)
+	ON_BN_CLICKED(IDC_BUTTON2, OnButton2)
+	ON_BN_CLICKED(IDC_BUTTON1, OnButton1)
+	ON_UPDATE_COMMAND_UI(ID_OUTPUT_FULL, OnUpdateOutputFull)
+	ON_COMMAND(ID_OUTPUT_FULL, OnOutputFull)
+	ON_COMMAND(ID_OUTPUT_SHORT, OnOutputShort)
+	ON_UPDATE_COMMAND_UI(ID_OUTPUT_SHORT, OnUpdateOutputShort)
+	ON_COMMAND(ID_VIEW_PARTIALPRESSURES, OnViewPartialpressures)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_PARTIALPRESSURES, OnUpdateViewPartialpressures)
+	ON_COMMAND(ID_VIEW_MOLESFRACTION, OnViewMolesfraction)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_MOLESFRACTION, OnUpdateViewMolesfraction)
+	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
+	ON_COMMAND(ID_FILE_SAVE, OnFileSave)
+	ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
+	ON_BN_CLICKED(IDC_BUTTON_CALC_UXF, OnButtonCalcUxf)
+	//}}AFX_MSG_MAP
+	// Standard printing commands
+	ON_COMMAND(ID_FILE_PRINT, CFormView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, CFormView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CFormView::OnFilePrintPreview)
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CThermoCalcView construction/destruction
+
+CThermoCalcView::CThermoCalcView()
+	: CFormView(CThermoCalcView::IDD)
+{
+	//{{AFX_DATA_INIT(CThermoCalcView)
+		// NOTE: the ClassWizard will add member initialization here
+	m_inputO1 = _T("");
+	m_inputO2 = _T("");
+	m_inputO3 = _T("");
+	m_inputO4 = _T("");
+	m_inputOP1 = _T("");
+	m_inputOP2 = _T("");
+	m_inputOP3 = _T("");
+	m_inputOP4 = _T("");
+	m_inputC1 = _T("");
+	m_inputC2 = _T("");
+	m_inputC3 = _T("");
+	m_inputC4 = _T("");
+	m_inputCP1 = _T("");
+	m_inputCP2 = _T("");
+	m_inputCP3 = _T("");
+	m_inputCP4 = _T("");
+	m_Alfa = _T("");
+	//}}AFX_DATA_INIT
+	// TODO: add construction code here
+
+	// Нужна поддержка реестра, только сделать в PreCreate...()
+	_nShowOption = nFull;
+	bEnableFull = TRUE;
+	bEnableShort = FALSE;
+	_nPressureOption = nPrM;
+	bMolesFraction = TRUE;
+	bPartialPressures = FALSE;
+}
+
+CThermoCalcView::~CThermoCalcView()
+{
+}
+
+void CThermoCalcView::DoDataExchange(CDataExchange* pDX)
+{
+	CFormView::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CThermoCalcView)
+	DDX_Text(pDX, IDC_IO1, m_inputO1);
+	DDX_Text(pDX, IDC_IO2, m_inputO2);
+	DDX_Text(pDX, IDC_IO3, m_inputO3);
+	DDX_Text(pDX, IDC_IO4, m_inputO4);
+	DDX_Text(pDX, IDC_IOP1, m_inputOP1);
+	DDV_MaxChars(pDX, m_inputOP1, 3);
+	DDX_Text(pDX, IDC_IOP2, m_inputOP2);
+	DDV_MaxChars(pDX, m_inputOP2, 3);
+	DDX_Text(pDX, IDC_IOP3, m_inputOP3);
+	DDV_MaxChars(pDX, m_inputOP3, 3);
+	DDX_Text(pDX, IDC_IOP4, m_inputOP4);
+	DDV_MaxChars(pDX, m_inputOP4, 3);
+	DDX_Text(pDX, IDC_IC1, m_inputC1);
+	DDX_Text(pDX, IDC_IC2, m_inputC2);
+	DDX_Text(pDX, IDC_IC3, m_inputC3);
+	DDX_Text(pDX, IDC_IC4, m_inputC4);
+	DDX_Text(pDX, IDC_ICP1, m_inputCP1);
+	DDV_MaxChars(pDX, m_inputCP1, 3);
+	DDX_Text(pDX, IDC_ICP2, m_inputCP2);
+	DDV_MaxChars(pDX, m_inputCP2, 3);
+	DDX_Text(pDX, IDC_ICP3, m_inputCP3);
+	DDV_MaxChars(pDX, m_inputCP3, 3);
+	DDX_Text(pDX, IDC_ICP4, m_inputCP4);
+	DDV_MaxChars(pDX, m_inputCP4, 3);
+	DDX_Text(pDX, IDC_Alfa, m_Alfa);
+	//}}AFX_DATA_MAP
+}
+
+BOOL CThermoCalcView::PreCreateWindow(CREATESTRUCT& cs)
+{
+	// TODO: Modify the Window class or styles here by modifying
+	//  the CREATESTRUCT cs
+//	m_inputC1 = "CH";		//Edit box IDC_IO1
+//	m_inputCP1 = "50";		//Edit box IDC_IOP1
+//	m_inputC2 = "CH2";		//Edit box IDC_IO1
+//	m_inputCP2 = "50";		//Edit box IDC_IOP1
+
+	m_inputC1 = "H8N2C2";		//Edit box IDC_IO1
+	m_inputCP1 = "50";		//Edit box IDC_IOP1
+	m_inputC2 = "N2H4";		//Edit box IDC_IO1
+	m_inputCP2 = "50";		//Edit box IDC_IOP1
+
+	m_inputO1 = "HNO3";		//Edit box IDC_IO1
+	m_inputOP1 = "73";		//Edit box IDC_IOP1
+	m_inputO2 = "N2O4";		//Edit box IDC_IO1
+	m_inputOP2 = "27";		//Edit box IDC_IOP1
+	m_Alfa = "0.85";
+
+	BOOL bR = CFormView::PreCreateWindow(cs);
+	return  bR;
+}
+
+void CThermoCalcView::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();					// отобразим
+
+	CFrameWnd* pCFWd = GetParentFrame();
+	pCFWd -> RecalcLayout();
+//	RECT rP;
+	ResizeParentToFit(FALSE);	// ScrollView
+/*
+	pCFWd -> GetWindowRect(&rP);
+	int nPHigh = rP.bottom-rP.top;
+	int nPWidth = rP.right-rP.left;
+	rP.top = 0;			// относительно
+	rP.left = 0;
+	rP.bottom = nPHigh;
+	rP.right = nPWidth;
+	pCFWd -> MoveWindow(&rP);
+	pCFWd -> GetWindowRect(&rP);
+	CFrameWnd* pCFW = pCFWd->GetParentFrame();
+	pCFW -> RecalcLayout();
+	RECT	rCl = {50, 50, 50+nPWidth, 50+nPHigh};
+	DWORD dwES = pCFW -> GetExStyle();
+	//dwES &= ~WS_EX_CLIENTEDGE;
+	AdjustWindowRectEx(&rCl, pCFW -> GetStyle(), TRUE, dwES);
+	rCl.right += 4;
+	rCl.bottom += 22;	// если статус бар
+	pCFW -> MoveWindow(&rCl);
+	pCFWd -> GetWindowRect(&rP);
+	RECT	rCl2;
+	pCFW -> GetClientRect(&rCl2);
+	int frame1 = -rCl.left + rCl.right;
+	int frame2 = -rCl.top + rCl.bottom;
+	rWM.right = rWM.left + frame1*2 + nPWidth;
+	rWM.bottom = rWM.top + frame2*2 + nPHigh;
+	pCFW -> MoveWindow(&rWM);
+*/
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CThermoCalcView printing
+
+BOOL CThermoCalcView::OnPreparePrinting(CPrintInfo* pInfo)
+{
+	// default preparation
+	return DoPreparePrinting(pInfo);
+}
+
+void CThermoCalcView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add extra initialization before printing
+}
+
+void CThermoCalcView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add cleanup after printing
+}
+
+void CThermoCalcView::OnPrint(CDC* pDC, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add customized printing code here
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CThermoCalcView diagnostics
+
+#ifdef _DEBUG
+void CThermoCalcView::AssertValid() const
+{
+	CFormView::AssertValid();
+}
+
+void CThermoCalcView::Dump(CDumpContext& dc) const
+{
+	CFormView::Dump(dc);
+}
+
+DlgEmptyDoc* CThermoCalcView::GetDocument() // non-debug version is inline
+{
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(DlgEmptyDoc)));
+	return (DlgEmptyDoc*)m_pDocument;
+}
+#endif //_DEBUG
+
+/////////////////////////////////////////////////////////////////////////////
+// CThermoCalcView message handlers
+
+void CThermoCalcView::OnButton2() 
+{
+	// TODO: Add your control notification handler code here
+	CWnd * pCW = AfxGetMainWnd();
+	pCW -> DestroyWindow ( );
+}
+
+void CThermoCalcView::OnButton1() 
+{
+	char szNameAtomOfOxides [MaxEditBoxesOx][MaxAtoms][MaxAtomNameLen];
+	float factor_oxides [MaxEditBoxesOx][MaxAtoms];
+	int nEditBoxesOx = 0;
+	int nOx[MaxEditBoxesOx];
+	float percent_oxides[MaxEditBoxesOx]; 	//процентное отношение молекулы окислителя ко всей смеси окислителей
+	char szNameAtomOfCombust [MaxEditBoxesComb][MaxAtoms][MaxAtomNameLen];
+	float factor_combust [MaxEditBoxesComb][MaxAtoms];
+	int nEditBoxesComb = 0;
+	int nComb[MaxEditBoxesComb];
+	float percent_combust[MAX_elem];
+	float fAlfa[MaxQuantityAlfa];
+
+	float	Tbuf_factor[MaxAtoms];
+	char		Tbuf_elem[MaxAtoms][MaxAtomNameLen];
+	int num_atoms;
+
+	CString m_oxides[4];
+	CString m_oxidesP[4];
+
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);	// Из окон редактирования в связаные переменные с помощью CDataExchange
+
+//Заполнение массива указателей
+	m_oxides[0]=m_inputO1;//Edit box IDC_IO1
+	m_oxidesP[0]=m_inputOP1;//Edit box IDC_IOP1
+
+	m_oxides[1]=m_inputO2;//Edit box IDC_IO1
+	m_oxidesP[1]=m_inputOP2;//Edit box IDC_IOP1
+
+	m_oxides[2]=m_inputO3;//Edit box IDC_IO1
+	m_oxidesP[2]=m_inputOP3;//Edit box IDC_IOP1
+
+	m_oxides[3]=m_inputO4;//Edit box IDC_IO1
+	m_oxidesP[3]=m_inputOP4;//Edit box IDC_IOP1
+
+	if (m_Alfa.GetLength()) {
+		if (!GetFactorFromStr(&fAlfa[0],(char *)(LPCTSTR)m_Alfa)) {
+			MessageBox ("Bad alfa field!");
+			//UpdateData(0);
+			return;
+		}
+	}
+	else {
+		MessageBox ("Please input alfa!");
+		//UpdateData(0);
+		return;
+	}
+	//m_output="";//очистить окно вывода
+	//m_output+="Окислитель: ";
+	//m_output+=cf;
+	int nO=3;
+	for (int i1=0;i1<nO;i1++) {
+		if (m_oxides[i1].GetLength()) {					//окно не пусто
+			//memset(Tbuf_factor,0,MAX_elem*sizeof(float));
+			//memset(Tbuf_elem,0,MAX_elem*sizeof(char *));
+			num_atoms=TransNameMolecToAandF(Tbuf_elem,Tbuf_factor,(char *)(LPCTSTR)m_oxides[i1]);
+			nOx[i1] = num_atoms;
+			if (!num_atoms) {
+				wsprintf(Mstr,"Встретился нераспознаваемый хим. элемент в элементе ОКИСЛИТЕЛЯ номер %u.",nEditBoxesOx+1);
+				MessageBox (Mstr);
+				//UpdateData(0);
+				return;
+			}
+// Процентное соотношение
+			if (!(m_oxidesP[i1].GetLength())) {	
+				wsprintf(Mstr,"Введите процентное отношение для элемента OКИСЛИТЕЛЬ-%u",nEditBoxesOx+1);		
+				MessageBox (Mstr);
+				//UpdateData(0);
+				return;	
+			}
+
+			unsigned int gf=GetFactorFromStr(&percent_oxides[i1],(char *)(LPCTSTR)m_oxidesP[i1]);
+			if (!gf) {
+				wsprintf(Mstr,"Неверно введено процентное отношение у элемента OКИСЛИТЕЛЬ-%u",nEditBoxesOx+1);
+				MessageBox(Mstr);return;
+			}
+
+			if ( gf<strlen((char *)(LPCTSTR)m_oxidesP[i1]) ) {
+				wsprintf(Mstr,"В введеном процентном отношении у элемента OКИСЛИТЕЛЬ-%u лишние символы.",nEditBoxesOx+1);
+				MessageBox(Mstr); return;
+			}	
+			percent_oxides[i1]=percent_oxides[i1]/100;
+
+// Названия атомов
+			for (int i2=0;i2<num_atoms;i2++) {
+				strcpy(szNameAtomOfOxides[i1][i2],Tbuf_elem[i2]);
+				factor_oxides[i1][i2]=Tbuf_factor[i2];
+				/*//m_output+=Tbuf_elem[i2];//запись атома
+				gcvt(Tbuf_factor[i2], 6, Tstr);
+				//для красоты - удаление точки если она последняя
+				if((Tstr[strlen(Tstr)-1])=='.')
+					Tstr[strlen(Tstr)-1]=0;
+				//для красоты {}
+				//m_output+='{';
+				//m_output+=Tstr;		//запись коэффициента	
+				//m_output+='}';				*/
+			}
+			/*//m_output+=" (";
+			gcvt(percent_oxides[i1]*100, 6, fstr);
+			//для красоты
+			if((fstr[strlen(fstr)-1])=='.')
+				fstr[strlen(fstr)-1]=0;
+			//m_output+=fstr;	//запись процентного отношения
+			//m_output+='%';
+			//m_output+="); ";
+			//m_output+=cf;			*/
+			nEditBoxesOx++;
+		}
+		else {
+			if (nEditBoxesOx == 0) {
+				MessageBox ("Please, input data1!");
+				//UpdateData(0);
+				return;
+			}
+		}
+	}
+	//m_output+="+";
+	//m_output+=cf;
+	//m_output+="Горючее: ";
+	CString m_combust[4];
+	CString m_combustP[4];
+
+//Заполнение массива указателей
+	m_combust[0]=m_inputC1;			//Edit box IDC_IС1
+	m_combustP[0]=m_inputCP1;	//Edit box IDC_IСP1			
+				
+	m_combust[1]=m_inputC2;
+	m_combustP[1]=m_inputCP2;
+
+	m_combust[2]=m_inputC3;
+	m_combustP[2]=m_inputCP3;
+
+	m_combust[3]=m_inputC4;
+	m_combustP[3]=m_inputCP4;
+
+	int nC=3;
+
+	for (i1=0;i1<nC;i1++) {
+		if (m_combust[i1].GetLength()) {					//окно не пусто
+			//memset(Tbuf_factor,0,MAX_elem*sizeof(float));
+			//memset(Tbuf_elem,0,MAX_elem*sizeof(char *));
+			num_atoms=TransNameMolecToAandF(Tbuf_elem,Tbuf_factor,(char *)(LPCTSTR)m_combust[i1]);
+			nComb[i1] = num_atoms;
+			if (!num_atoms) {
+				wsprintf(Mstr,"Встретился нераспознаваемый хим. элемент в элементе ГОРЮЧЕГО номер %u.",nEditBoxesComb+1);
+				MessageBox (Mstr);
+				//UpdateData(0);
+				return;
+			}
+			if (!(m_combustP[i1].GetLength())) {
+				wsprintf(Mstr,"Введите процентное отношение для элемента ГОРЮЧЕЕ-%u",nEditBoxesComb+1);		
+				MessageBox (Mstr);
+				//UpdateData(0);
+				return;	
+			}
+			unsigned int gf=GetFactorFromStr(&percent_combust[i1],(char *)(LPCTSTR)m_combustP[i1]);
+			if (!gf) {
+				wsprintf(Mstr,"Неверное процентное отношение у элемента ГОРЮЧЕЕ-%u",nEditBoxesComb+1);
+				MessageBox(Mstr);return;
+			}
+
+			if ( gf<strlen((char *)(LPCTSTR)m_combustP[i1]) ) {
+				wsprintf(Mstr,"В введеном процентном отношении у элемента ГОРЮЧЕЕ-%u лишние символы.",nEditBoxesComb+1);
+				MessageBox(Mstr);return;
+			}
+			percent_combust[i1]=percent_combust[i1]/100;
+
+			for (int i2=0;i2<num_atoms;i2++) {
+				strcpy(szNameAtomOfCombust[i1][i2],Tbuf_elem[i2]);
+				factor_combust[i1][i2]=Tbuf_factor[i2];
+				/*//m_output+=Tbuf_elem[i2];//запись атома
+				gcvt(Tbuf_factor[i2], 6, Tstr);
+				//для красоты - удаление точки если она последняя
+				if((Tstr[strlen(Tstr)-1])=='.')
+					Tstr[strlen(Tstr)-1]=0;
+				//для красоты {}
+				//m_output+='{';
+				//m_output+=Tstr;		//запись коэффициента	
+				//m_output+='}';				*/
+			}
+/*			//m_output+=" (";
+			gcvt(percent_combust[i1]*100, 6, fstr);						
+			//для красоты
+			if((fstr[strlen(fstr)-1])=='.')
+				fstr[strlen(fstr)-1]=0;
+			//m_output+=fstr;	//запись процентного отношения
+			//m_output+='%';
+			//m_output+="); ";*/
+			nEditBoxesComb++;
+		}
+		else {
+			if (nEditBoxesComb==0) {
+				MessageBox ("Введите данные о горючем!");
+				//UpdateData(0);
+				return;
+			}
+		}
+	}
+
+	CALCSTRUCT cs;
+	int scs = sizeof(cs);
+
+	for (i1=0;i1<nEditBoxesOx;i1++) {
+		for (int i2=0;i2<nOx[i1];i2++) {
+			strcpy(cs.szNameAtomOfOxides[i1][i2],szNameAtomOfOxides[i1][i2]);
+			cs.factor_oxides[i1][i2] = factor_oxides[i1][i2];
+		}
+		cs.percent_oxides[i1] = percent_oxides[i1];
+		cs.nAtomsInStringOx[i1] = nOx[i1];
+	}
+	cs.nEditBoxesOx = nEditBoxesOx;
+
+	for (i1=0;i1<nEditBoxesComb;i1++) {
+		for (int i2=0;i2<nComb[i1];i2++) {
+			strcpy(cs.szNameAtomOfCombust[i1][i2],szNameAtomOfCombust[i1][i2]);
+			cs.factor_combust[i1][i2] = factor_combust[i1][i2];
+		}
+		cs.percent_combust[i1] = percent_combust[i1];
+		cs.nAtomsInStringComb[i1] = nComb[i1];
+	}
+	cs.nEditBoxesComb = nEditBoxesComb;
+	memset(cs.fAlfa,0,sizeof(cs.fAlfa));
+	cs.fAlfa[0] = fAlfa[0];
+
+	CThermoCalcDoc *pCTCD = GetCurrentCalcDoc();
+	if (!pCTCD) {
+		((CMainFrame*)AfxGetMainWnd()) -> GetOutputDocTemplate() -> OpenDocumentFile(NULL);
+		pCTCD = GetCurrentCalcDoc();
+	}
+	pCTCD -> CalcAndShow(cs);
+
+}
+
+void CThermoCalcView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) {
+	// TODO: Add your specialized code here and/or call the base class
+}
+
+void CThermoCalcView::GetOptionsFromDlg(OPTIONSTRUCT &os)
+{
+	os.nPressureOption = _nPressureOption;
+	os.nShowOption = _nShowOption;
+}
+
+void CThermoCalcView::OnOutputFull() {
+	// TODO: Add your command handler code here
+	if (!bEnableFull) {
+		_nShowOption = nFull;
+		bEnableFull = bEnableFull^1;
+		bEnableShort = bEnableShort^1;
+	}
+}
+
+void CThermoCalcView::OnUpdateOutputFull(CCmdUI* pCmdUI) {
+	// TODO: Add your command update UI handler code here
+	if (bEnableFull)
+		pCmdUI ->SetCheck(1);
+	else
+		pCmdUI ->SetCheck(0);
+}
+
+void CThermoCalcView::OnOutputShort() {
+	// TODO: Add your command handler code here
+	if (!bEnableShort) {
+		_nShowOption = nShort;
+		bEnableShort = bEnableShort^1;
+		bEnableFull = bEnableFull^1;
+	}
+}
+
+void CThermoCalcView::OnUpdateOutputShort(CCmdUI* pCmdUI) {
+	// TODO: Add your command update UI handler code here
+	if (bEnableShort)
+		pCmdUI ->SetCheck(1);
+	else
+		pCmdUI ->SetCheck(0);
+}
+
+void CThermoCalcView::OnViewPartialpressures() 
+{
+	// TODO: Add your command handler code here
+	if (!bPartialPressures) {
+		_nPressureOption = nPrP;
+		bPartialPressures = bPartialPressures^1;
+		bMolesFraction = bMolesFraction^1;
+	}
+}
+
+void CThermoCalcView::OnUpdateViewPartialpressures(CCmdUI* pCmdUI) 
+{
+	// TODO: Add your command update UI handler code here
+	if (bPartialPressures)
+		pCmdUI ->SetCheck(1);
+	else
+		pCmdUI ->SetCheck(0);	
+}
+
+void CThermoCalcView::OnViewMolesfraction() 
+{
+	// TODO: Add your command handler code here
+	if (!bMolesFraction) {
+		_nPressureOption = nPrM;
+		bMolesFraction = bMolesFraction^1;
+		bPartialPressures = bPartialPressures^1;
+	}
+}
+
+void CThermoCalcView::OnUpdateViewMolesfraction(CCmdUI* pCmdUI) 
+{
+	// TODO: Add your command update UI handler code here
+	if (bMolesFraction)
+		pCmdUI ->SetCheck(1);
+	else
+		pCmdUI ->SetCheck(0);
+}
+
+void CThermoCalcView::OnFileSaveAs() 
+{
+	// TODO: Add your command handler code here
+	CThermoCalcDoc * pTCD = GetCurrentCalcDoc();
+	if (!pTCD) {
+		MessageBox("There are no open documents.\n");
+		return;
+	}
+	if (!( pTCD ->CDocument::DoSave(NULL)))
+//	if (!( pTCD ->CThermoCalcDoc::DoSave(NULL)))
+//	if (!( pTCD ->DoSave(NULL)))
+		MessageBox("Warning: File save-as failed.\n");
+}
+
+void CThermoCalcView::OnFileSave() 
+{
+	// TODO: Add your command handler code here	
+	CThermoCalcDoc * pTCD = GetCurrentCalcDoc();
+	if (!pTCD) {
+		MessageBox("There are no open documents.\n");
+		return;
+	}
+	 pTCD ->CDocument::DoFileSave();
+}
+
+void CThermoCalcView::OnFileClose() 
+{
+	// TODO: Add your command handler code here
+	CThermoCalcDoc * pTCD = GetCurrentCalcDoc();
+	if (!pTCD) {
+		MessageBox("There are no open documents.\n");
+		return;
+	}
+	if (!(pTCD ->CDocument::SaveModified()))
+		return;
+
+	// shut it down
+	pTCD ->OnCloseDocument();
+		// this should destroy the document
+}
+
+void CThermoCalcView::OnButtonCalcUxf() 
+{
+	// TODO: Add your control notification handler code here
+}
