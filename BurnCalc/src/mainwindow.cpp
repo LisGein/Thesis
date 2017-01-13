@@ -3,16 +3,20 @@
 #include "mixture.h"
 #include "chemicalSubstance.h"
 #include "reaction.h"
-#include "guisubstance.h"
+#include "gui/guisubstance.h"
+#include "gui/guiempericalformula.h"
 #include <QHBoxLayout>
+#include <QTextEdit>
 
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent), ui(new Ui::MainWindow)
+   , substances(new GuiEmpericalFormula())
 {
    ui->setupUi(this);
 
-   setLayout(new QHBoxLayout(this));
-   layout()->addWidget(new GuiSubstance(this));
+   setLayout(new QVBoxLayout(this));
+   layout()->addWidget(substances);
+
 }
 
 MainWindow::~MainWindow()

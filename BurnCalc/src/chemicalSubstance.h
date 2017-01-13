@@ -32,6 +32,8 @@ public:
       return substance_;
    }
 
+   bool compare_part_emperical(const ChemicalSubstance &first) const;
+
 protected:
    std::map<Element, LowerIndex> substance_;
 

@@ -1,7 +1,7 @@
 #include "chemicalSubstance.h"
 #include <numeric>
 #include <locale>
-
+#include "runtimeerror.h"
 
 
 ChemicalSubstance::ChemicalSubstance()
@@ -32,13 +32,7 @@ double ChemicalSubstance::get_molecular_mass() const
       mass += v.first.get_mass() * v.second;
 
    return mass;
-}/*
-
-double ChemicalSubstance::calc_amount(double molecular_mass)
-{
-   return
-         mass_substance_/molecular_mass;
-}*/
+}
 
 std::map<Element, double> ChemicalSubstance::get_amount_elements(double amount_substance) const
 {
@@ -53,7 +47,7 @@ std::string ChemicalSubstance::to_string() const
 {
    std::string str;
    for(auto &iter: substance_)
-      str += iter.first.to_string();
+      str += iter.first.to_string() + std::to_string(iter.second);
 
    return str;
 }
@@ -63,6 +57,7 @@ void ChemicalSubstance::insert_element(const std::string& str, const std::string
    double digit = (index.empty()) ? 1.0 : std::stod(index);
    Element element = find_from_str(str);
    add_element(element, digit);
+
 }
 
 ChemicalSubstance ChemicalSubstance::from_string(const std::__cxx11::string& str)
@@ -131,12 +126,58 @@ bool ChemicalSubstance::operator<(const ChemicalSubstance& other) const
 
 }
 
+bool ChemicalSubstance::compare_part_emperical(const ChemicalSubstance& second) const
+{
+   std::map<Element, LowerIndex> other_substance = second.get_substance();
+
+   bool result = true;
+
+   double min = 1;
+   double max = 1;
+   if (substance_.size() != other_substance.size())
+      result = false;
+   else
+   {
+      auto it_s = other_substance.begin();
+      for(auto &it_f: substance_)
+      {
+         if (it_f.first != it_s->first)
+            result = false;
+         else
+         {
+            double k = it_f.second/it_s->second;
+
+            if (it_s == other_substance.begin())
+            {
+               min = k;
+               max = k;
+            }
+
+
+            min = std::min(min, k);
+            max = std::min(max, k);
+
+
+         }
+
+         ++it_s;
+      }
+   }
+
+   if (max - min > 0.1)
+      result = false;
+
+   return result;
+}
+
 Element ChemicalSubstance::find_from_str(const std::__cxx11::string& str)
 {
    Element elem;
    auto it = Element::periodic_table_from_name_->find(str);
    if (it != Element::periodic_table_from_name_->end())
       elem = Element(it->second);
+   else
+      throw RunTimeError(str, str + " does not exist!");
 
    return elem;
 

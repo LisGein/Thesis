@@ -16,12 +16,14 @@ set(SOURCE_FILES
     src/chemicalSubstance.cpp
     src/mixture.cpp
     src/reaction.cpp
+    src/runtimeerror.cpp
 )
 
 set(GUI_SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
-    src/guisubstance.cpp
+    src/gui/guisubstance.cpp
+    src/gui/guiempericalformula.cpp
 )
 
 find_package(Qt5Widgets REQUIRED)

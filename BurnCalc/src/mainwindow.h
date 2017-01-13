@@ -3,6 +3,8 @@
 #include <QMainWindow>
 #include <QScopedPointer>
 
+class GuiEmpericalFormula;
+
 namespace Ui
 {
     class MainWindow;
@@ -17,4 +19,6 @@ public:
 
 private:
     QScopedPointer<Ui::MainWindow> ui;
+
+    GuiEmpericalFormula *substances;
 };
