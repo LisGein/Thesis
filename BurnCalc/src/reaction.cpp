@@ -1,20 +1,22 @@
 #include "reaction.h"
+#include <cassert>
 
-
-Reaction::Reaction(const ChemicalSubstance& fuel, const ChemicalSubstance& oxidant)
+Reaction::Reaction(const ChemicalSubstance& fuel, const ChemicalSubstance& oxidant, double factor_excess_oxidant)
    : fuel_(fuel)
    , oxidant_(oxidant)
+   , factor_excess_oxidant_(factor_excess_oxidant)
 {
 
 }
 
 std::map<ChemicalSubstance, double> Reaction::get_regrents_mass() const
 {
-   std::map<ChemicalSubstance, double> regents;
+   auto molar = get_molar_fractions();
+   assert(molar.size() == 2);
 
-   std::vector<double> mass = get_mass_fractions();
-   regents.emplace(fuel_, mass[0]);
-   regents.emplace(oxidant_, mass[1]);
+   std::map<ChemicalSubstance, double> regents;
+   regents.emplace(fuel_, molar[0] * fuel_.get_molecular_mass());
+   regents.emplace(oxidant_, molar[1] * oxidant_.get_molecular_mass() *factor_excess_oxidant_);
 
    return regents;
 }
@@ -22,14 +24,4 @@ std::map<ChemicalSubstance, double> Reaction::get_regrents_mass() const
 std::vector<double> Reaction::get_molar_fractions() const
 {
    return {1.0f, -1.0f * fuel_.valence() / oxidant_.valence()};
-}
-
-std::vector<double> Reaction::get_mass_fractions() const
-{
-   auto molar = get_molar_fractions();
-
-   molar[0] *= fuel_.get_molecular_mass();
-   molar[1] *= oxidant_.get_molecular_mass();
-
-   return molar;
 }

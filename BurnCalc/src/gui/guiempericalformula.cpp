@@ -1,6 +1,7 @@
 #include "guiempericalformula.h"
 #include <QLineEdit>
 #include <QHBoxLayout>
+#include <QDoubleSpinBox>
 #include <QDebug>
 #include <QPushButton>
 #include <cassert>
@@ -15,9 +16,15 @@ GuiEmpericalFormula::GuiEmpericalFormula(QWidget* parent)
    , substances_(new GuiSubstances(this))
    , calculate_(new QPushButton(tr("Calculate"), this))
    , line_out_(new QLineEdit(this))
+   , factor_excess_oxidant_(new QDoubleSpinBox(this) )
 {
+   factor_excess_oxidant_->setMinimum(0);
+   factor_excess_oxidant_->setValue(1.0);
+   factor_excess_oxidant_->setSingleStep(0.1);
    setLayout(new QVBoxLayout(this));
    layout()->addWidget(substances_);
+   layout()->addWidget(factor_excess_oxidant_);
+
    layout()->addWidget(calculate_);
    layout()->addWidget(line_out_);
 
@@ -44,7 +51,7 @@ void GuiEmpericalFormula::calculate()
       Mixture ox_mix = create_mix(v[1]);
       auto ox = ox_mix.calc_emperical_formula();
 
-      Reaction r(fuel, ox) ;
+      Reaction r(fuel, ox, factor_excess_oxidant_->value()) ;
 
       Mixture mix(r.get_regrents_mass());
       auto formula = mix.calc_emperical_formula();
