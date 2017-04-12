@@ -10,12 +10,12 @@ namespace Ui
     class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class CMainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    virtual ~MainWindow();
+    CMainWindow(QWidget *parent = 0);
+    virtual ~CMainWindow();
 
 private:
     QScopedPointer<Ui::MainWindow> ui;

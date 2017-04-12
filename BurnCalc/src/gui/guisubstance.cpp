@@ -5,14 +5,14 @@
 
 GuiSubstances::GuiSubstances(QWidget* parent)
    : QWidget(parent)
-   , fuel_(new QTableWidget(5, 2, this))
-   , oxidant_(new QTableWidget(5, 2, this))
+   , fuel_(new QTableWidget(5, 3, this))
+   , oxidant_(new QTableWidget(5, 3, this))
 {
    setLayout(new QHBoxLayout(this));
    layout()->addWidget(fuel_);
    layout()->addWidget(oxidant_);
-   fuel_->setHorizontalHeaderLabels(QString("Substance;Percent").split(";"));
-   oxidant_->setHorizontalHeaderLabels(QString("Substance;Percent").split(";"));
+   fuel_->setHorizontalHeaderLabels(QString("Substance;Percent;Enthalpy").split(";"));
+   oxidant_->setHorizontalHeaderLabels(QString("Substance;Percent;Enthalpy").split(";"));
 }
 
 GuiSubstances::~GuiSubstances()

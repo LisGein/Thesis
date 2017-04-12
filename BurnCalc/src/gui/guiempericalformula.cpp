@@ -16,6 +16,7 @@ GuiEmpericalFormula::GuiEmpericalFormula(QWidget* parent)
    , substances_(new GuiSubstances(this))
    , calculate_(new QPushButton(tr("Calculate"), this))
    , line_out_(new QLineEdit(this))
+   , line_enthalpy_(new QLineEdit(this))
    , factor_excess_oxidant_(new QDoubleSpinBox(this) )
 {
    factor_excess_oxidant_->setMinimum(0);
@@ -27,6 +28,7 @@ GuiEmpericalFormula::GuiEmpericalFormula(QWidget* parent)
 
    layout()->addWidget(calculate_);
    layout()->addWidget(line_out_);
+   layout()->addWidget(line_enthalpy_);
 
    QObject::connect(calculate_, SIGNAL(released()), this, SLOT(calculate()));
 }
@@ -57,6 +59,11 @@ void GuiEmpericalFormula::calculate()
       auto formula = mix.calc_emperical_formula();
 
       line_out_->setText(QString::fromStdString(formula.to_string()));
+
+
+
+
+      line_enthalpy_->setText(QString::fromStdString(formula.to_string()));
    }
    catch(const RunTimeError &error)
    {

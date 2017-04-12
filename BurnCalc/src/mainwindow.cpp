@@ -8,7 +8,7 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 
-MainWindow::MainWindow(QWidget *parent)
+CMainWindow::CMainWindow(QWidget *parent)
    : QMainWindow(parent), ui(new Ui::MainWindow)
    , substances(new GuiEmpericalFormula())
 {
@@ -19,6 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-MainWindow::~MainWindow()
+CMainWindow::~CMainWindow()
 {
 }
