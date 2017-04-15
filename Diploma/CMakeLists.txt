@@ -11,9 +11,7 @@ set(GUI_APP_NAME ${PROJECT_NAME})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(Qt5_DIR "/home/fedor/Qt/5.9/gcc_64/lib/cmake/Qt5")
-
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED PATHS ${QT_DIR} NO_DEFAULT_PATH)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED PATHS ${QT_DIR})
 find_package( Armadillo REQUIRED )
 find_package( Mlpack REQUIRED )
 
