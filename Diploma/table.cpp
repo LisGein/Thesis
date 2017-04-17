@@ -1,4 +1,7 @@
 #include "table.h"
+
+#include "regression.h"
+
 #include <QDebug>
 #include <QKeyEvent>
 #include <QAction>
@@ -31,6 +34,7 @@ void TableWidget::paste_table()
 {
 	QString clipboard = QApplication::clipboard()->text();
 	qDebug() << clipboard;
+	calcParams(clipboard.trimmed().replace('\t', ',').toStdString());
 	parse_table(clipboard.trimmed());
 }
 
