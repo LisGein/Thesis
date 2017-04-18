@@ -1,3 +1,6 @@
 #pragma once
 #include <string>
-void calcParams(const std::string& i_data);
+#include <vector>
+
+
+void calcParams(const std::vector<double>& i_data, const std::vector<double>& i_res, int column, int row);

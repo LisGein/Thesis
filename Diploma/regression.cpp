@@ -3,23 +3,22 @@
 
 
 
-void calcParams(const std::string& i_data)
+void calcParams(const std::vector<double>& i_data, const std::vector<double>& i_res, int column, int row)
 {
 	using namespace mlpack::regression;
 
-	arma::mat regressors;
-	auto sstr = std::istringstream(i_data);
-	std::string header;
-	std::getline(sstr, header);
-	regressors.load(sstr, arma::csv_ascii); // The dataset itself.
-	arma::vec responses = regressors.col(regressors.n_cols - 1);
-	regressors.shed_col(regressors.n_cols - 1);
+	arma::mat regressors = (i_data); // The dataset itself.
+	regressors.reshape(column, row);
+	regressors = regressors.t();
+	arma::vec responses = i_res;/*
+	regressors.col(4);
+	regressors.shed_col(4);*/
 
 	regressors.print("Input data:");
 	responses.print("Responses:");
 
 	// Regress.
-	LinearRegression lr(regressors.t(), responses);
+	LinearRegression lr(regressors.t(), responses, 0, false);
 
 	// Get the parameters, or coefficients.
 	arma::vec parameters = lr.Parameters();

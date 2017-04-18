@@ -18,7 +18,8 @@ find_package( Mlpack REQUIRED )
 set(MAIN_FILES
 	main.cpp
 	mainwindow.cpp
-	mainworkplace.cpp
+	regressionModel.cpp
+	graphicsItem.cpp
 	regression.cpp
 	table.cpp
 	mainwindow.ui

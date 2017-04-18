@@ -1,19 +1,31 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mainworkplace.h"
+#include "regressionModel.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QAction>
 #include <QVBoxLayout>
+#include "table.h"
+#include <QGraphicsView>
+#include <QVector>
 
 
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
-	, mainworkplace_(new MainWorkPlace(this))
+	, mainworkplace_(new QTabWidget(this))
 {
 	setLayout(new QVBoxLayout(this));
 	initMenu();
 	QMainWindow::setCentralWidget(mainworkplace_);
+
+	TableWidget *table = new TableWidget(this);
+	mainworkplace_->addTab(table, QObject::tr("Matrix"));
+	QGraphicsView *gview = new QGraphicsView(this);
+	GraphicsScene* scene = new GraphicsScene(this);
+	gview->setScene(scene);
+	mainworkplace_->addTab(gview, QObject::tr("Model"));
+	scene->updateTable({"q", "w", "e"});
+
 }
 
 MainWindow::~MainWindow()

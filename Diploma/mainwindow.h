@@ -19,6 +19,6 @@ private:
 
 	 void initMenu();
 
-	 QWidget *mainworkplace_;
+	 QTabWidget *mainworkplace_;
 
 };

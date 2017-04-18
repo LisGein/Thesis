@@ -32,9 +32,8 @@ void TableWidget::contextMenuEvent(QContextMenuEvent* event)
 
 void TableWidget::paste_table()
 {
-	QString clipboard = QApplication::clipboard()->text();
+	QString clipboard = QApplication::clipboard()->text().trimmed();
 	qDebug() << clipboard;
-	calcParams(clipboard.trimmed().replace('\t', ',').toStdString());
 	parse_table(clipboard.trimmed());
 }
 
@@ -45,7 +44,8 @@ void TableWidget::parse_table(const QString &str)
 	int row = 0;
 	int column = 0;
 
-
+	std::vector<double> i_data;
+	std::vector<double> i_res;
 	for(auto it_r = rows.begin(); it_r != rows.end(); ++ it_r)
 	{
 		QStringList columns = it_r->split("\t");
@@ -54,14 +54,21 @@ void TableWidget::parse_table(const QString &str)
 			setHorizontalHeaderLabels(columns);
 		else
 		{
-			for(auto &it_c: columns)
+			for(auto it_c = columns.begin(); it_c != columns.end(); ++ it_c)
 			{
+				if (it_c == columns.end() - 1)
+				{
+					i_res.push_back(it_c->toDouble());
+				}
+				else
+					i_data.push_back(it_c->toDouble());
+
 				QTableWidgetItem *table_item = item(row, column);
 				if(table_item)
-					table_item->setText(it_c);
+					table_item->setText(*it_c);
 				else
 				{
-					table_item = new QTableWidgetItem(it_c);
+					table_item = new QTableWidgetItem(*it_c);
 					setItem(row, column, table_item);
 				}
 
@@ -69,9 +76,13 @@ void TableWidget::parse_table(const QString &str)
 			}
 			++row;
 			setColumnCount(column);
-			column = 0;
+			if (it_r != rows.end() - 1)
+				column = 0;
+			else
+				--column;
 		}
 	}
+	calcParams(i_data,i_res, column, row);
 	setRowCount(row);
 }
 
