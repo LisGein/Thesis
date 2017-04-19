@@ -10,8 +10,14 @@ public:
 	GraphicsScene(QObject *parent = 0);
 	virtual ~GraphicsScene();
 
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 public slots:
 	void updateTable(const QStringList& params);
+
+signals:
+	void deletedFromFormula(QPair<QString, QString> parents);
+	void addedToFormula(QPair<QString, QString> parents);
 
 private:
 	QVector< QGraphicsItem* > buttons_;

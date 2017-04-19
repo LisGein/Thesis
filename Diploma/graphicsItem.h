@@ -16,11 +16,15 @@ public:
 	void setCheck(bool is);
 	bool isCheck() const;
 
+	bool isCheckable() const;
+
 	void setData(const QString& data);
 	void setDisable();
 
+	const QPair<QString, QString> parents() const;
+
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 
 private:
 	QPair<QString, QString> parents_;

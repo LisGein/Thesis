@@ -31,6 +31,11 @@ bool GraphicsItem::isCheck() const
 	return isCheck_;
 }
 
+bool GraphicsItem::isCheckable() const
+{
+	return (parents_.first.size());
+}
+
 void GraphicsItem::setData(const QString& data)
 {
 	data_ = data;
@@ -39,6 +44,11 @@ void GraphicsItem::setData(const QString& data)
 void GraphicsItem::setDisable()
 {
 	disable_ = true;
+}
+
+const QPair<QString, QString> GraphicsItem::parents() const
+{
+	return parents_;
 }
 
 void GraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -62,14 +72,5 @@ void GraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
 		else
 			painter->drawText(rect, parents_.first + " - " + parents_.second);
 
-	}
-}
-
-void GraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
-{
-	if (parents_.first.size())
-	{
-		isCheck_ = !isCheck_;
-		update();
 	}
 }

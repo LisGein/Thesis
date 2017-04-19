@@ -1,6 +1,8 @@
 #include "regressionModel.h"
 #include "graphicsItem.h"
+#include <QGraphicsSceneMouseEvent>
 #include <QDebug>
+
 
 GraphicsScene::GraphicsScene(QObject* parent)
 	: QGraphicsScene(parent)
@@ -14,12 +16,35 @@ GraphicsScene::~GraphicsScene()
 
 }
 
+void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+	QList<QGraphicsItem *> sceneItems = items(event->scenePos());
+	for (auto &it: sceneItems)
+	{
+		GraphicsItem *item = static_cast<GraphicsItem *>(it);
+		if (item && item->isCheckable())
+		{
+			if (item->isCheck())
+			{
+				emit deletedFromFormula(item->parents());
+				item->setCheck(false);
+			}
+			else
+			{
+				emit addedToFormula(item->parents());
+				item->setCheck(true);
+			}
+		}
+	}
+}
+
 void GraphicsScene::createNameItem(int x, int y, const QString& data)
 {
 	GraphicsItem *item = new GraphicsItem(QRect(x, y, sizeButton_ - 1, sizeButton_ - 1));
 	item->setData(data);
 	buttons_.push_back(item);
 	addItem(item);
+
 }
 
 void GraphicsScene::updateTable(const QStringList& params)
