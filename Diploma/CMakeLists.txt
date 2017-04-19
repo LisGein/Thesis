@@ -17,17 +17,21 @@ find_package( Mlpack REQUIRED )
 
 set(MAIN_FILES
 	main.cpp
-	mainwindow.cpp
+	mainWindow.cpp
+	mainWidget.cpp
 	regressionModel.cpp
 	graphicsItem.cpp
 	regression.cpp
-	table.cpp
-	mainwindow.ui
+	tableWidget.cpp
 	 )
 
+ qt5_wrap_cpp(Cmake_hdr_moc tableWidget.h regressionModel.h mainWindow.h mainWidget.h)
+
+ add_library(mainWindow ${Cmake_hdr_moc})
+ qt5_use_modules(mainWindow Widgets)
 
 # Add executables files:
-add_executable(${GUI_APP_NAME} ${MAIN_FILES})
+add_executable(${GUI_APP_NAME} ${MAIN_FILES} mainWindow)
 
 
 
