@@ -10,7 +10,7 @@
 
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
-	, scene_(new featureGraphicsScene(this))
+	, scene_(new FeatureGraphicsScene(this))
 	, line_(new QLineEdit(this))
 	, table_(new TableView(this))
 {

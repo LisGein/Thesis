@@ -4,24 +4,24 @@
 #include <QDebug>
 
 
-GraphicsScene::GraphicsScene(QObject* parent)
+FeatureGraphicsScene::FeatureGraphicsScene(QObject* parent)
 	: QGraphicsScene(parent)
 	, sizeButton_(50)
 {
 	setBackgroundBrush(QBrush(Qt::lightGray));
 }
 
-GraphicsScene::~GraphicsScene()
+FeatureGraphicsScene::~FeatureGraphicsScene()
 {
 
 }
 
-void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
+void FeatureGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	QList<QGraphicsItem *> sceneItems = items(event->scenePos());
 	for (auto &it: sceneItems)
 	{
-		featureGraphicsItem *item = static_cast<featureGraphicsItem *>(it);
+		FeatureGraphicsItem *item = static_cast<FeatureGraphicsItem *>(it);
 		if (item && item->isCheckable())
 		{
 			if (item->isCheck())
@@ -39,16 +39,16 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	}
 }
 
-void GraphicsScene::createNameItem(int x, int y, const QString& data)
+void FeatureGraphicsScene::createNameItem(int x, int y, const QString& data)
 {
-	featureGraphicsItem *item = new featureGraphicsItem(QRect(x, y, sizeButton_ - 1, sizeButton_ - 1));
+	FeatureGraphicsItem *item = new FeatureGraphicsItem(QRect(x, y, sizeButton_ - 1, sizeButton_ - 1));
 	item->setData(data);
 	buttons_.push_back(item);
 	addItem(item);
 
 }
 
-void GraphicsScene::updateTable(const QStringList& params)
+void FeatureGraphicsScene::updateTable(const QStringList& params)
 {
 	for (auto &it: buttons_)
 		delete it;
@@ -73,7 +73,7 @@ void GraphicsScene::updateTable(const QStringList& params)
 	{
 		for(auto &it_y: params)
 		{
-			featureGraphicsItem *item = new featureGraphicsItem(rect, QPair<QString, QString>(it_x, it_y));
+			FeatureGraphicsItem *item = new FeatureGraphicsItem(rect, QPair<QString, QString>(it_x, it_y));
 			if (iter >= max)
 				item->setDisable();
 			buttons_.push_back(item);

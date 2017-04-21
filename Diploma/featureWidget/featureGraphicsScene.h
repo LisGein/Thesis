@@ -2,13 +2,13 @@
 #include <QGraphicsScene>
 
 
-class GraphicsScene : public QGraphicsScene
+class FeatureGraphicsScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
 
-	GraphicsScene(QObject *parent = 0);
-	virtual ~GraphicsScene();
+	FeatureGraphicsScene(QObject *parent = 0);
+	virtual ~FeatureGraphicsScene();
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 

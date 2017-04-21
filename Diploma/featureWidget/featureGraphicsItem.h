@@ -1,14 +1,14 @@
 #pragma once
 #include <QGraphicsItem>
 
-class GraphicsItem: public QGraphicsItem
+class FeatureGraphicsItem: public QGraphicsItem
 {
 
 public:
-	GraphicsItem(const QRect& rect,
+	FeatureGraphicsItem(const QRect& rect,
 					 const QPair<QString, QString>& parents = QPair<QString, QString>(),
 					 QGraphicsItem *parent = 0);
-	virtual ~GraphicsItem();
+	virtual ~FeatureGraphicsItem();
 
 	virtual QRectF boundingRect() const;
 	void setRect();

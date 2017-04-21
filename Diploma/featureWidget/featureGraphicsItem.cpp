@@ -1,9 +1,9 @@
-#include "graphicsItem.h"
+#include "featureGraphicsItem.h"
 #include <QPainter>
 #include <QDebug>
 
 
-GraphicsItem::GraphicsItem(const QRect& rect, const QPair<QString, QString>& parents, QGraphicsItem* parent)
+FeatureGraphicsItem::FeatureGraphicsItem(const QRect& rect, const QPair<QString, QString>& parents, QGraphicsItem* parent)
 	: QGraphicsItem (parent)
 	, parents_(parents)
 	, isCheck_(false)
@@ -13,46 +13,46 @@ GraphicsItem::GraphicsItem(const QRect& rect, const QPair<QString, QString>& par
 {
 }
 
-GraphicsItem::~GraphicsItem()
+FeatureGraphicsItem::~FeatureGraphicsItem()
 {
 
 }
 
-void GraphicsItem::setCheck(bool is)
+void FeatureGraphicsItem::setCheck(bool is)
 {
 	isCheck_ = is;
 }
-QRectF GraphicsItem::boundingRect() const
+QRectF FeatureGraphicsItem::boundingRect() const
 {
 	return rect_;
 }
 
-bool GraphicsItem::isCheck() const
+bool FeatureGraphicsItem::isCheck() const
 {
 	return isCheck_;
 }
 
-bool GraphicsItem::isCheckable() const
+bool FeatureGraphicsItem::isCheckable() const
 {
 	return (parents_.first.size());
 }
 
-void GraphicsItem::setData(const QString& data)
+void FeatureGraphicsItem::setData(const QString& data)
 {
 	data_ = data;
 }
 
-void GraphicsItem::setDisable()
+void FeatureGraphicsItem::setDisable()
 {
 	disable_ = true;
 }
 
-const QPair<QString, QString> GraphicsItem::parents() const
+const QPair<QString, QString> FeatureGraphicsItem::parents() const
 {
 	return parents_;
 }
 
-void GraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void FeatureGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
 	QRectF rect = boundingRect();
 

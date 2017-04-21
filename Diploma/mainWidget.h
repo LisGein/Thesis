@@ -2,7 +2,7 @@
 #include <QWidget>
 #include <QMap>
 
-class featureGraphicsScene;
+class FeatureGraphicsScene;
 class QLineEdit;
 class TableView;
 
@@ -24,7 +24,7 @@ private:
 	void updateRegression();
 
 
-	featureGraphicsScene* scene_;
+	FeatureGraphicsScene* scene_;
 	QLineEdit* line_;
 	QMap<QString, QString> lineText_;
 	QString startFormula_;
