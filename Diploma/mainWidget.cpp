@@ -1,32 +1,33 @@
 #include "mainWidget.h"
-#include <QVBoxLayout>
 #include "datasetWidget/datasetView.h"
 #include "featureWidget/featureGraphicsScene.h"
+
+#include <QVBoxLayout>
 #include <QGraphicsView>
 #include <QLineEdit>
+
 #include <cassert>
 #include <mlpack/methods/linear_regression/linear_regression.hpp>
 
 
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
-	, scene_(new FeatureGraphicsScene(this))
-	, line_(new QLineEdit(this))
-	, table_(new DatasetView(this))
+	, featuresWidget_(new FeatureGraphicsScene(this))
+	, formulaEdit_(new QLineEdit(this))
+	, datasetWidget_(new DatasetView(this))
 {
 	setLayout(new QVBoxLayout(this));
 
-	layout()->addWidget(table_);
-	layout()->addWidget(line_);
+	layout()->addWidget(datasetWidget_);
+	layout()->addWidget(formulaEdit_);
 
 	QGraphicsView *gview = new QGraphicsView(this);
-	gview->setScene(scene_);
+	gview->setScene(featuresWidget_);
 	layout()->addWidget(gview);
 
-	QObject::connect(table_, SIGNAL(insertedTable(QStringList)), this, SLOT(convertInsertedTable(QStringList)));
-	QObject::connect(scene_, SIGNAL(deletedFromFormula(QPair<QString, QString>)), this, SLOT(deleteFromFormula(QPair<QString, QString>)));
-	QObject::connect(scene_, SIGNAL(addedToFormula(QPair<QString, QString>)), this, SLOT(addToFormula(QPair<QString, QString>)));
-
+	QObject::connect(datasetWidget_, SIGNAL(insertedTable(QStringList)), this, SLOT(convertInsertedTable(QStringList)));
+	QObject::connect(featuresWidget_, SIGNAL(deletedFromFormula(QPair<QString, QString>)), this, SLOT(deleteFromFormula(QPair<QString, QString>)));
+	QObject::connect(featuresWidget_, SIGNAL(addedToFormula(QPair<QString, QString>)), this, SLOT(addToFormula(QPair<QString, QString>)));
 }
 
 MainWidget::~MainWidget()
@@ -37,13 +38,13 @@ MainWidget::~MainWidget()
 void MainWidget::convertInsertedTable(QStringList list)
 {
 	lineText_.clear();
-	line_->clear();
+	formulaEdit_->clear();
 
 	list.push_front("1");
 	startFormula_ = (*(list.end() - 1)) + " = ";
-	line_->setText(startFormula_);
+	formulaEdit_->setText(startFormula_);
 	list.pop_back();
-	scene_->updateTable(list);
+	featuresWidget_->updateTable(list);
 }
 
 void MainWidget::deleteFromFormula(QPair<QString, QString> parents)
@@ -63,7 +64,7 @@ void MainWidget::deleteFromFormula(QPair<QString, QString> parents)
 		else
 			text  += it.value() + it.key();
 	}
-	line_->setText(text);
+	formulaEdit_->setText(text);
 
 	auto it = addedParents_.find(parents.first);
 	while(it != addedParents_.end() && it.key() == parents.first)
@@ -85,7 +86,7 @@ void MainWidget::addToFormula(QPair<QString, QString> parents)
 	QString symb = generateSymbForFormula();
 
 
-	line_->setText(line_->text() + symb + text);
+	formulaEdit_->setText(formulaEdit_->text() + symb + text);
 
 	lineText_.insert(text, symb);
 	addedParents_.insert(parents.first, parents.second);
@@ -111,7 +112,7 @@ QString MainWidget::generateTextForFormula(const QPair<QString, QString>& parent
 QString MainWidget::generateSymbForFormula() const
 {
 	QString symb = " + ";
-	if (line_->text() == startFormula_ )
+	if (formulaEdit_->text() == startFormula_ )
 		symb = " ";
 	return symb;
 }
@@ -128,7 +129,7 @@ void MainWidget::updateRegression()
 
 	for (auto it = addedParents_.begin(); it != addedParents_.end(); ++it)
 	{
-		vec += table_->dataFromLines(it.key(), it.value());
+		vec += datasetWidget_->dataFromLines(it.key(), it.value());
 		++ column;
 		if (row == 0)
 			row = vec.size();
@@ -144,7 +145,7 @@ void MainWidget::updateRegression()
 	regressors.print("Input data:");
 
 
-	arma::vec responses = table_->dataFromLines("y", "1").toStdVector();
+	arma::vec responses = datasetWidget_->dataFromLines("y", "1").toStdVector();
 	responses.print("Responses:");
 
 	LinearRegression lr(regressors.t(), responses, 0, false);

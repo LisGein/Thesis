@@ -24,11 +24,11 @@ private:
 	void updateRegression();
 
 
-	FeatureGraphicsScene* scene_;
-	QLineEdit* line_;
+	FeatureGraphicsScene* featuresWidget_;
+	QLineEdit* formulaEdit_;
 	QMap<QString, QString> lineText_;
 	QString startFormula_;
 
-	DatasetView *table_;
+	DatasetView *datasetWidget_;
 	QMultiMap<QString, QString> addedParents_;
 };
