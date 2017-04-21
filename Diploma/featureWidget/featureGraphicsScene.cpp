@@ -1,5 +1,5 @@
-#include "regressionModel.h"
-#include "graphicsItem.h"
+#include "featureGraphicsScene.h"
+#include "featureGraphicsItem.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 
@@ -21,7 +21,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	QList<QGraphicsItem *> sceneItems = items(event->scenePos());
 	for (auto &it: sceneItems)
 	{
-		GraphicsItem *item = static_cast<GraphicsItem *>(it);
+		featureGraphicsItem *item = static_cast<featureGraphicsItem *>(it);
 		if (item && item->isCheckable())
 		{
 			if (item->isCheck())
@@ -41,7 +41,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void GraphicsScene::createNameItem(int x, int y, const QString& data)
 {
-	GraphicsItem *item = new GraphicsItem(QRect(x, y, sizeButton_ - 1, sizeButton_ - 1));
+	featureGraphicsItem *item = new featureGraphicsItem(QRect(x, y, sizeButton_ - 1, sizeButton_ - 1));
 	item->setData(data);
 	buttons_.push_back(item);
 	addItem(item);
@@ -73,7 +73,7 @@ void GraphicsScene::updateTable(const QStringList& params)
 	{
 		for(auto &it_y: params)
 		{
-			GraphicsItem *item = new GraphicsItem(rect, QPair<QString, QString>(it_x, it_y));
+			featureGraphicsItem *item = new featureGraphicsItem(rect, QPair<QString, QString>(it_x, it_y));
 			if (iter >= max)
 				item->setDisable();
 			buttons_.push_back(item);

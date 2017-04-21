@@ -19,8 +19,8 @@ set(MAIN_FILES
 	main.cpp
 	mainWindow.cpp
 	mainWidget.cpp
-	regressionModel.cpp
-	graphicsItem.cpp
+	featureWidget/featureGraphicsScene.cpp
+	featureWidget/featureGraphicsItem.cpp
 	regression.cpp
 	tableView.cpp
 	tableModel.cpp

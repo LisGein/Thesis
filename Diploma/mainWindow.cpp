@@ -1,5 +1,5 @@
 #include "mainWindow.h"
-#include "regressionModel.h"
+#include "featureWidget/featureGraphicsScene.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QSettings>

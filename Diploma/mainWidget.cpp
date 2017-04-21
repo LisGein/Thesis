@@ -1,7 +1,7 @@
 #include "mainWidget.h"
 #include <QVBoxLayout>
 #include "tableView.h"
-#include "regressionModel.h"
+#include "featureWidget/featureGraphicsScene.h"
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <cassert>
@@ -10,7 +10,7 @@
 
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
-	, scene_(new GraphicsScene(this))
+	, scene_(new featureGraphicsScene(this))
 	, line_(new QLineEdit(this))
 	, table_(new TableView(this))
 {
