@@ -2,6 +2,7 @@
 #include "regressionModel.h"
 #include <QMenu>
 #include <QMenuBar>
+#include <QSettings>
 #include <QVBoxLayout>
 #include "mainWidget.h"
 
@@ -9,15 +10,17 @@
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
 	, mainworkplace_(new MainWidget(this))
+	, appSettings_(std::make_unique<QSettings>())
 {
-	setLayout(new QVBoxLayout(this));
 	initMenu();
+	auto size = appSettings_->value("WindowSize", QSize(640, 480));
+	resize(size.value<QSize>());
 	QMainWindow::setCentralWidget(mainworkplace_);
 }
 
 MainWindow::~MainWindow()
 {
-
+	appSettings_->setValue("WindowSize", size());
 }
 
 void MainWindow::initMenu()

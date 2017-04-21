@@ -9,6 +9,7 @@ GraphicsItem::GraphicsItem(const QRect& rect, const QPair<QString, QString>& par
 	, isCheck_(false)
 	, rect_(rect)
 	, disable_(false)
+	, isHeader_(parents.first.isEmpty() && parents.first.isEmpty())
 {
 }
 
@@ -59,7 +60,7 @@ void GraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
 		painter->fillRect(rect, Qt::Dense5Pattern);
 	else
 	{
-		QBrush br = (isCheck_) ? Qt::darkGray : Qt::gray;
+		QBrush br = isHeader_? QColor(123, 104, 238) : (isCheck_ ? Qt::darkGray : Qt::gray);
 		painter->fillRect(rect, br);
 
 		QPen newpen(painter->pen());

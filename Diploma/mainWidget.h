@@ -4,6 +4,7 @@
 
 class GraphicsScene;
 class QLineEdit;
+class TableView;
 
 class MainWidget : public QWidget
 {
@@ -20,9 +21,14 @@ private slots:
 private:
 	QString generateTextForFormula(const QPair<QString, QString> &parents) const;
 	QString generateSymbForFormula() const;
+	void updateRegression();
+
 
 	GraphicsScene* scene_;
 	QLineEdit* line_;
 	QMap<QString, QString> lineText_;
 	QString startFormula_;
+
+	TableView *table_;
+	QMultiMap<QString, QString> addedParents_;
 };

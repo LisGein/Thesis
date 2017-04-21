@@ -1,5 +1,8 @@
 #pragma once
 #include <QMainWindow>
+#include <memory>
+
+class QSettings;
 
 class MainWindow : public QMainWindow {
 	 Q_OBJECT
@@ -9,7 +12,11 @@ public:
 	 virtual ~MainWindow();
 
 private:
+	 void initMenu();
+
+private:
 	 QWidget *mainworkplace_;
 
-	 void initMenu();
+
+	 std::unique_ptr<QSettings> appSettings_;
 };

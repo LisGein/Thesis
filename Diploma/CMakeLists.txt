@@ -3,7 +3,7 @@ project(Diploma)
 
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_extensions/)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(GUI_APP_NAME ${PROJECT_NAME})
@@ -22,10 +22,11 @@ set(MAIN_FILES
 	regressionModel.cpp
 	graphicsItem.cpp
 	regression.cpp
-	tableWidget.cpp
+	tableView.cpp
+	tableModel.cpp
 	 )
 
- qt5_wrap_cpp(Cmake_hdr_moc tableWidget.h regressionModel.h mainWindow.h mainWidget.h)
+ qt5_wrap_cpp(Cmake_hdr_moc regressionModel.h mainWindow.h mainWidget.h)
 
  add_library(mainWindow ${Cmake_hdr_moc})
  qt5_use_modules(mainWindow Widgets)

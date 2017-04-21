@@ -34,6 +34,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 				emit addedToFormula(item->parents());
 				item->setCheck(true);
 			}
+			update();
 		}
 	}
 }

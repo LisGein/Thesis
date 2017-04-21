@@ -1,31 +1,29 @@
 #include "mainWidget.h"
 #include <QVBoxLayout>
-#include "tableWidget.h"
+#include "tableView.h"
 #include "regressionModel.h"
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <cassert>
+#include <mlpack/methods/linear_regression/linear_regression.hpp>
 
 
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
 	, scene_(new GraphicsScene(this))
 	, line_(new QLineEdit(this))
+	, table_(new TableView(this))
 {
 	setLayout(new QVBoxLayout(this));
 
-	TableWidget *table = new TableWidget(this);
-	table->setColumnCount(10);
-	table->setRowCount(10);
-	layout()->addWidget(table);
-
+	layout()->addWidget(table_);
 	layout()->addWidget(line_);
 
 	QGraphicsView *gview = new QGraphicsView(this);
 	gview->setScene(scene_);
 	layout()->addWidget(gview);
 
-	QObject::connect(table, SIGNAL(insertedTable(QStringList)), this, SLOT(convertInsertedTable(QStringList)));
+	QObject::connect(table_, SIGNAL(insertedTable(QStringList)), this, SLOT(convertInsertedTable(QStringList)));
 	QObject::connect(scene_, SIGNAL(deletedFromFormula(QPair<QString, QString>)), this, SLOT(deleteFromFormula(QPair<QString, QString>)));
 	QObject::connect(scene_, SIGNAL(addedToFormula(QPair<QString, QString>)), this, SLOT(addToFormula(QPair<QString, QString>)));
 
@@ -67,6 +65,18 @@ void MainWidget::deleteFromFormula(QPair<QString, QString> parents)
 	}
 	line_->setText(text);
 
+	auto it = addedParents_.find(parents.first);
+	while(it != addedParents_.end() && it.key() == parents.first)
+	{
+		if (it.value() == parents.second)
+		{
+			it = addedParents_.erase(it);
+		}
+		else
+			++it;
+	}
+
+	updateRegression();
 }
 
 void MainWidget::addToFormula(QPair<QString, QString> parents)
@@ -78,6 +88,9 @@ void MainWidget::addToFormula(QPair<QString, QString> parents)
 	line_->setText(line_->text() + symb + text);
 
 	lineText_.insert(text, symb);
+	addedParents_.insert(parents.first, parents.second);
+
+	updateRegression();
 
 }
 
@@ -101,5 +114,43 @@ QString MainWidget::generateSymbForFormula() const
 	if (line_->text() == startFormula_ )
 		symb = " ";
 	return symb;
+}
+
+void MainWidget::updateRegression()
+{
+
+	using namespace mlpack::regression;
+
+	QVector<double> vec;
+
+	int column = 0;
+	int row = 0;
+
+	for (auto it = addedParents_.begin(); it != addedParents_.end(); ++it)
+	{
+		vec += table_->dataFromLines(it.key(), it.value());
+		++ column;
+		if (row == 0)
+			row = vec.size();
+	}
+
+	arma::mat regressors = vec.toStdVector();
+	regressors.reshape(row, column);
+
+	regressors.print("Input data:");
+
+	//regressors = regressors.t();
+
+	regressors.print("Input data:");
+
+
+	arma::vec responses = table_->dataFromLines("y", "1").toStdVector();
+	responses.print("Responses:");
+
+	LinearRegression lr(regressors.t(), responses, 0, false);
+	arma::vec parameters = lr.Parameters();
+	parameters.print("Params:");
+
+
 }
 

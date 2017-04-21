@@ -1,17 +1,23 @@
 #pragma once
-#include <QTableWidget>
-
+#include <QTableView>
 #include <QShortcut>
 
-class TableWidget : public QTableWidget
+class TableModel;
+
+class TableView : public QTableView
 {
 	Q_OBJECT
 
 public:
-	TableWidget(QWidget *parent = 0);
-	virtual ~TableWidget();
+	TableView(QWidget *parent = 0);
+	virtual ~TableView();
+
+
 
 	virtual void contextMenuEvent(QContextMenuEvent *event) override;
+
+
+	QVector<double> dataFromLines(const QString& first, const QString& second) const;
 
 signals:
 	void insertedTable(QStringList params);
@@ -22,5 +28,7 @@ private slots:
 private:
 	const QStringList parseTable(const QString& str);
 
-	QShortcut *insert_shortcut_;
+	TableModel* model_;
+	QShortcut *insertShortcut_;
+
 };

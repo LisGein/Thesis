@@ -32,5 +32,6 @@ private:
 	QString data_;
 	QRect	rect_;
 	bool disable_;
+	bool isHeader_;
 
 };
