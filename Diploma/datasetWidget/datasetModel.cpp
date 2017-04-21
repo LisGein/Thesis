@@ -1,10 +1,10 @@
-#include "tableModel.h"
+#include "datasetModel.h"
 #include <QFont>
 #include <QBrush>
 #include <cassert>
 
 
-TableModel::TableModel(QObject* parent)
+DatasetModel::DatasetModel(QObject* parent)
 	: QAbstractTableModel(parent)
 	, rowCount_(5)
 	, columnCount_(10)
@@ -12,12 +12,12 @@ TableModel::TableModel(QObject* parent)
 
 }
 
-TableModel::~TableModel()
+DatasetModel::~DatasetModel()
 {
 
 }
 
-void TableModel::beginReset()
+void DatasetModel::beginReset()
 {
 	beginResetModel();
 	rowCount_ = 0;
@@ -26,22 +26,22 @@ void TableModel::beginReset()
 	data_.clear();
 }
 
-void TableModel::endReset()
+void DatasetModel::endReset()
 {
 	endResetModel();
 }
 
-int TableModel::rowCount(const QModelIndex&) const
+int DatasetModel::rowCount(const QModelIndex&) const
 {
 	return rowCount_;
 }
 
-int TableModel::columnCount(const QModelIndex&) const
+int DatasetModel::columnCount(const QModelIndex&) const
 {
 	return columnCount_;
 }
 
-QVariant TableModel::data(const QModelIndex& index, int role) const
+QVariant DatasetModel::data(const QModelIndex& index, int role) const
 {
 	if(role == Qt::DisplayRole)
 	{
@@ -62,7 +62,7 @@ QVariant TableModel::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
-void TableModel::setHorizontalHeaderLabels(const QStringList& names)
+void DatasetModel::setHorizontalHeaderLabels(const QStringList& names)
 {
 	headers_.clear();
 	data_.clear();
@@ -77,7 +77,7 @@ void TableModel::setHorizontalHeaderLabels(const QStringList& names)
 
 }
 
-bool TableModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant& value, int role)
+bool DatasetModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant& value, int role)
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
 	{
@@ -92,7 +92,7 @@ bool TableModel::setHeaderData(int section, Qt::Orientation orientation, const Q
 }
 
 
-QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DatasetModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
 	{
@@ -104,7 +104,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 	return QVariant();
 }
 
-void TableModel::setData(int row, int column, const QVariant& value)
+void DatasetModel::setData(int row, int column, const QVariant& value)
 {
 	if (value.toString().size())
 	{
@@ -116,7 +116,7 @@ void TableModel::setData(int row, int column, const QVariant& value)
 	}
 }
 
-QVector<double> TableModel::dataFromLines(QPair<QString, QString> parentsData) const
+QVector<double> DatasetModel::dataFromLines(QPair<QString, QString> parentsData) const
 {
 	int firstColumn = -1;
 	int secondColumn = -1;

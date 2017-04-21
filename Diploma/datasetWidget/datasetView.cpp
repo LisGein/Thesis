@@ -1,45 +1,45 @@
-#include "tableView.h"
-#include "tableModel.h"
+#include "datasetView.h"
+#include "datasetModel.h"
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QApplication>
 #include <QClipboard>
 
 
-TableView::TableView(QWidget* parent)
+DatasetView::DatasetView(QWidget* parent)
 	: QTableView(parent)
-	, model_(new TableModel(this))
+	, model_(new DatasetModel(this))
 	, insertShortcut_(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_V), this))
 {
 	setModel(model_);
 	QObject::connect(insertShortcut_, SIGNAL(activated()), this, SLOT(pasteTable()));
 }
 
-TableView::~TableView()
+DatasetView::~DatasetView()
 {
 
 }
 
-void TableView::contextMenuEvent(QContextMenuEvent* event)
+void DatasetView::contextMenuEvent(QContextMenuEvent* event)
 {
 	QMenu menu(this);
 	//menu.addAction(insert_action_);
 	menu.exec(event->globalPos());
 }
 
-QVector<double> TableView::dataFromLines(const QString& first, const QString& second) const
+QVector<double> DatasetView::dataFromLines(const QString& first, const QString& second) const
 {
 	return model_->dataFromLines(QPair<QString, QString>(first, second));
 }
 
-void TableView::pasteTable()
+void DatasetView::pasteTable()
 {
 	QString clipboard = QApplication::clipboard()->text().trimmed();
 	QStringList params = parseTable(clipboard.trimmed());
 	emit insertedTable(params);
 }
 
-const QStringList TableView::parseTable(const QString& str)
+const QStringList DatasetView::parseTable(const QString& str)
 {
 	model_->beginReset();
 

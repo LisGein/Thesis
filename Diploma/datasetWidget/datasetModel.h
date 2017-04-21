@@ -12,11 +12,11 @@ struct HeaderData
 	bool isResponse;
 };
 
-class TableModel: public QAbstractTableModel
+class DatasetModel: public QAbstractTableModel
 {
 public:
-	TableModel(QObject * parent = 0);
-	virtual ~TableModel();
+	DatasetModel(QObject * parent = 0);
+	virtual ~DatasetModel();
 
 	void beginReset();
 	void endReset();

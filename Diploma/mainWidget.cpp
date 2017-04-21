@@ -1,6 +1,6 @@
 #include "mainWidget.h"
 #include <QVBoxLayout>
-#include "tableView.h"
+#include "datasetWidget/datasetView.h"
 #include "featureWidget/featureGraphicsScene.h"
 #include <QGraphicsView>
 #include <QLineEdit>
@@ -12,7 +12,7 @@ MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
 	, scene_(new FeatureGraphicsScene(this))
 	, line_(new QLineEdit(this))
-	, table_(new TableView(this))
+	, table_(new DatasetView(this))
 {
 	setLayout(new QVBoxLayout(this));
 

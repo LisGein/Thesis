@@ -4,7 +4,7 @@
 
 class FeatureGraphicsScene;
 class QLineEdit;
-class TableView;
+class DatasetView;
 
 class MainWidget : public QWidget
 {
@@ -29,6 +29,6 @@ private:
 	QMap<QString, QString> lineText_;
 	QString startFormula_;
 
-	TableView *table_;
+	DatasetView *table_;
 	QMultiMap<QString, QString> addedParents_;
 };

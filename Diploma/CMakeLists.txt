@@ -21,8 +21,8 @@ set(CPP_FILES
 	featureWidget/featureGraphicsScene.cpp
 	featureWidget/featureGraphicsItem.cpp
 	regression.cpp
-	tableView.cpp
-	tableModel.cpp
+	datasetWidget/datasetView.cpp
+	datasetWidget/datasetModel.cpp
 	 )
 
  set(FILES_TO_MOC
@@ -30,7 +30,7 @@ set(CPP_FILES
 	 mainWidget.h
 	 featureWidget/featureGraphicsScene.h
 	 featureWidget/featureGraphicsItem.h
-	 tableView.h
+	 datasetWidget/datasetView.h
 	  )
 
 

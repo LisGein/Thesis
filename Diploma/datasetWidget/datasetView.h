@@ -2,15 +2,15 @@
 #include <QTableView>
 #include <QShortcut>
 
-class TableModel;
+class DatasetModel;
 
-class TableView : public QTableView
+class DatasetView : public QTableView
 {
 	Q_OBJECT
 
 public:
-	TableView(QWidget *parent = 0);
-	virtual ~TableView();
+	DatasetView(QWidget *parent = 0);
+	virtual ~DatasetView();
 
 
 
@@ -28,7 +28,7 @@ private slots:
 private:
 	const QStringList parseTable(const QString& str);
 
-	TableModel* model_;
+	DatasetModel* model_;
 	QShortcut *insertShortcut_;
 
 };
