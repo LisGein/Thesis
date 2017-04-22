@@ -1,33 +1,44 @@
+#include "common/common.h"
 #include "mainWidget.h"
 #include "datasetWidget/datasetView.h"
+#include "datasetWidget/datasetModel.h"
+#include "document.h"
+#include "dataset.h"
+#include "featureModel.h"
 #include "featureWidget/featureGraphicsScene.h"
+#include "regression.h"
 
 #include <QVBoxLayout>
 #include <QGraphicsView>
 #include <QLineEdit>
 
-#include <cassert>
-#include <mlpack/methods/linear_regression/linear_regression.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/format.hpp>
+
 
 
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
-	, featuresWidget_(new FeatureGraphicsScene(this))
 	, formulaEdit_(new QLineEdit(this))
-	, datasetWidget_(new DatasetView(this))
+	, datasetView_(new DatasetView(this))
+	, document_(std::make_unique<Document>())
 {
 	setLayout(new QVBoxLayout(this));
 
-	layout()->addWidget(datasetWidget_);
-	layout()->addWidget(formulaEdit_);
+	layout()->addWidget(datasetView_);
 
 	QGraphicsView *gview = new QGraphicsView(this);
-	gview->setScene(featuresWidget_);
+	gview->setScene(document_->getFeaturesModel().getScene());
 	layout()->addWidget(gview);
 
-	QObject::connect(datasetWidget_, SIGNAL(insertedTable(QStringList)), this, SLOT(convertInsertedTable(QStringList)));
-	QObject::connect(featuresWidget_, SIGNAL(deletedFromFormula(QPair<QString, QString>)), this, SLOT(deleteFromFormula(QPair<QString, QString>)));
-	QObject::connect(featuresWidget_, SIGNAL(addedToFormula(QPair<QString, QString>)), this, SLOT(addToFormula(QPair<QString, QString>)));
+	datasetView_->setModel(&document_->getDatasetModel());
+
+	layout()->addWidget(formulaEdit_);
+
+
+	QObject::connect(datasetView_, SIGNAL(insertedTable(QString)), this, SLOT(onInsertTable(QString)));
+	QObject::connect(document_->getFeaturesModel().getScene(), SIGNAL(deletedFromFormula(QPair<int, int>)), this, SLOT(deleteFromFormula(QPair<int, int>)));
+	QObject::connect(document_->getFeaturesModel().getScene(), SIGNAL(addedToFormula(QPair<int, int>)), this, SLOT(addToFormula(QPair<int, int>)));
 }
 
 MainWidget::~MainWidget()
@@ -35,123 +46,58 @@ MainWidget::~MainWidget()
 
 }
 
-void MainWidget::convertInsertedTable(QStringList list)
+void MainWidget::onInsertTable(QString str)
 {
-	lineText_.clear();
-	formulaEdit_->clear();
+	document_->getDatasetModel().beginReset();
+	document_->getDataset().loadFromTsv(str.toStdString());
+	document_->getDatasetModel().endReset();
 
-	list.push_front("1");
-	startFormula_ = (*(list.end() - 1)) + " = ";
-	formulaEdit_->setText(startFormula_);
-	list.pop_back();
-	featuresWidget_->updateTable(list);
+	onDatasetUpdated();
 }
 
-void MainWidget::deleteFromFormula(QPair<QString, QString> parents)
+void MainWidget::deleteFromFormula(QPair<int, int> feature)
 {
-	QString text = generateTextForFormula(parents);
-	auto iter = lineText_.find(text);
-
-	assert(iter != lineText_.end());
-	lineText_.erase(iter);
-
-	text = startFormula_;
-	for (auto it = lineText_.begin(); it != lineText_.end(); ++it)
-	{
-		if (text == startFormula_ && it.value() == " + ")
-				text  += it.key();
-
-		else
-			text  += it.value() + it.key();
-	}
-	formulaEdit_->setText(text);
-
-	auto it = addedParents_.find(parents.first);
-	while(it != addedParents_.end() && it.key() == parents.first)
-	{
-		if (it.value() == parents.second)
-		{
-			it = addedParents_.erase(it);
-		}
-		else
-			++it;
-	}
-
+	document_->getFeaturesModel().removeFeature(from_qt(feature));
 	updateRegression();
 }
 
-void MainWidget::addToFormula(QPair<QString, QString> parents)
+void MainWidget::addToFormula(QPair<int, int> feature)
 {
-	QString text = generateTextForFormula(parents);
-	QString symb = generateSymbForFormula();
-
-
-	formulaEdit_->setText(formulaEdit_->text() + symb + text);
-
-	lineText_.insert(text, symb);
-	addedParents_.insert(parents.first, parents.second);
-
+	document_->getFeaturesModel().addFeature(from_qt(feature));
 	updateRegression();
-
-}
-
-QString MainWidget::generateTextForFormula(const QPair<QString, QString>& parents) const
-{
-	QString text = parents.first;
-	if (parents.second == "1")
-		return text;
-
-	if (parents.first == parents.second)
-		text += " ^ 2";
-	else
-		text += " * " + parents.second;
-
-	return text;
-}
-
-QString MainWidget::generateSymbForFormula() const
-{
-	QString symb = " + ";
-	if (formulaEdit_->text() == startFormula_ )
-		symb = " ";
-	return symb;
 }
 
 void MainWidget::updateRegression()
 {
+	document_->getLinearRegressionModel().update();
+	updateFormulaText();
+}
 
-	using namespace mlpack::regression;
+void MainWidget::updateFormulaText()
+{
+	auto params = document_->getLinearRegressionModel().getParams();
+	auto featureNames = document_->getFeaturesModel().getFeatureNames();
+	auto response = document_->getFeaturesModel().getResponseName();
 
-	QVector<double> vec;
+	std::vector<std::string> summands;
+	std::transform(params.begin(), params.end(),
+						featureNames.begin(),
+						std::back_inserter(summands),
+						[](double param, const std::string& name)
+						{
+							if (!name.empty())
+								return boost::str(boost::format("%.2f*%s") % param % name);
+							return boost::str(boost::format("%.2f") % param);
+						});
 
-	int column = 0;
-	int row = 0;
+	std::string expr = boost::algorithm::join(summands, " + ");
 
-	for (auto it = addedParents_.begin(); it != addedParents_.end(); ++it)
-	{
-		vec += datasetWidget_->dataFromLines(it.key(), it.value());
-		++ column;
-		if (row == 0)
-			row = vec.size();
-	}
+	formulaEdit_->setText(to_qt(response + " = " + expr));
+}
 
-	arma::mat regressors = vec.toStdVector();
-	regressors.reshape(row, column);
-
-	regressors.print("Input data:");
-
-	//regressors = regressors.t();
-
-	regressors.print("Input data:");
-
-
-	arma::vec responses = datasetWidget_->dataFromLines("y", "1").toStdVector();
-	responses.print("Responses:");
-
-	LinearRegression lr(regressors.t(), responses, 0, false);
-	arma::vec parameters = lr.Parameters();
-	parameters.print("Params:");
-
-
+void MainWidget::onDatasetUpdated()
+{
+	document_->getFeaturesModel().update();
+	document_->getLinearRegressionModel().update();
 }
 

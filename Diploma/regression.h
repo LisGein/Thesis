@@ -2,5 +2,18 @@
 #include <string>
 #include <vector>
 
+class FeatureModel;
 
-void calcParams(const std::vector<double>& i_data, const std::vector<double>& i_res, int column, int row);
+class LinearRegressionModel
+{
+public:
+	LinearRegressionModel(const FeatureModel& featureModel);
+	~LinearRegressionModel();
+
+	void update();
+
+	const std::vector<double>& getParams();
+private:
+	const FeatureModel& featureModel_;
+	std::vector<double> parameters_;
+};

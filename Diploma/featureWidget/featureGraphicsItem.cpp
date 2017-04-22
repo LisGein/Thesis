@@ -1,15 +1,18 @@
+#include "common/common.h"
 #include "featureGraphicsItem.h"
+#include "featureModel.h"
+
 #include <QPainter>
 #include <QDebug>
 
 
-FeatureGraphicsItem::FeatureGraphicsItem(const QRect& rect, const QPair<QString, QString>& parents, QGraphicsItem* parent)
+FeatureGraphicsItem::FeatureGraphicsItem(const FeatureModel& featureModel, const QRect& rect, const QPair<int, int>& parents, QGraphicsItem* parent)
 	: QGraphicsItem (parent)
 	, parents_(parents)
-	, isCheck_(false)
+	, isChecked_(false)
 	, rect_(rect)
-	, disable_(false)
-	, isHeader_(parents.first.isEmpty() && parents.first.isEmpty())
+	, isDisabled_(false)
+	, featureModel_(featureModel)
 {
 }
 
@@ -18,36 +21,31 @@ FeatureGraphicsItem::~FeatureGraphicsItem()
 
 }
 
-void FeatureGraphicsItem::setCheck(bool is)
+void FeatureGraphicsItem::setChecked(bool is)
 {
-	isCheck_ = is;
+	isChecked_ = is;
 }
 QRectF FeatureGraphicsItem::boundingRect() const
 {
 	return rect_;
 }
 
-bool FeatureGraphicsItem::isCheck() const
+bool FeatureGraphicsItem::isChecked() const
 {
-	return isCheck_;
+	return isChecked_;
 }
 
-bool FeatureGraphicsItem::isCheckable() const
+bool FeatureGraphicsItem::isDisabled() const
 {
-	return (parents_.first.size());
+	return isDisabled_;
 }
 
-void FeatureGraphicsItem::setData(const QString& data)
+void FeatureGraphicsItem::setDisabled()
 {
-	data_ = data;
+	isDisabled_ = true;
 }
 
-void FeatureGraphicsItem::setDisable()
-{
-	disable_ = true;
-}
-
-const QPair<QString, QString> FeatureGraphicsItem::parents() const
+const QPair<int, int> FeatureGraphicsItem::parents() const
 {
 	return parents_;
 }
@@ -56,22 +54,19 @@ void FeatureGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsIte
 {
 	QRectF rect = boundingRect();
 
-	if (disable_)
+	if (isDisabled_)
 		painter->fillRect(rect, Qt::Dense5Pattern);
 	else
 	{
-		QBrush br = isHeader_? QColor(123, 104, 238) : (isCheck_ ? Qt::darkGray : Qt::gray);
+		QBrush br = isChecked_ ? Qt::green : Qt::gray;
 		painter->fillRect(rect, br);
 
-		QPen newpen(painter->pen());
-		newpen.setColor(Qt::black);
-		newpen.setWidthF(1.0);
-		painter->setPen(newpen);
+		QPen newPen(painter->pen());
+		newPen.setColor(Qt::black);
+		newPen.setWidthF(1.0);
+		painter->setPen(newPen);
 
-		if (data_.size())
-			painter->drawText(rect, data_);
-		else
-			painter->drawText(rect, parents_.first + " - " + parents_.second);
+		painter->drawText(rect, to_qt(featureModel_.getFeatureName(from_qt(parents_), true)));
 
 	}
 }

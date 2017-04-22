@@ -1,18 +1,26 @@
+#include "common/common.h"
 #include "regression.h"
+#include "featureModel.h"
+
 #include <mlpack/methods/linear_regression/linear_regression.hpp>
 
 
+LinearRegressionModel::LinearRegressionModel(const FeatureModel& featureModel)
+	: featureModel_(featureModel)
+{
+}
 
-void calcParams(const std::vector<double>& i_data, const std::vector<double>& i_res, int column, int row)
+LinearRegressionModel::~LinearRegressionModel()
+{
+
+}
+
+void LinearRegressionModel::update()
 {
 	using namespace mlpack::regression;
 
-	arma::mat regressors = (i_data); // The dataset itself.
-	regressors.reshape(column, row);
-	regressors = regressors.t();
-	arma::vec responses = i_res;/*
-	regressors.col(4);
-	regressors.shed_col(4);*/
+	arma::mat regressors = featureModel_.data();
+	arma::vec responses = featureModel_.responses();
 
 	regressors.print("Input data:");
 	responses.print("Responses:");
@@ -23,4 +31,11 @@ void calcParams(const std::vector<double>& i_data, const std::vector<double>& i_
 	// Get the parameters, or coefficients.
 	arma::vec parameters = lr.Parameters();
 	parameters.print("Params:");
+
+	parameters_.assign(parameters.begin(), parameters.end());
+}
+
+const std::vector<double>& LinearRegressionModel::getParams()
+{
+	return parameters_;
 }

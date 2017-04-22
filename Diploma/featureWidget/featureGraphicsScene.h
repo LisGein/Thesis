@@ -1,28 +1,30 @@
 #pragma once
 #include <QGraphicsScene>
 
+class FeatureModel;
 
 class FeatureGraphicsScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
 
-	FeatureGraphicsScene(QObject *parent = 0);
+	FeatureGraphicsScene(FeatureModel& featureModel, QObject *parent = 0);
 	virtual ~FeatureGraphicsScene();
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 public slots:
-	void updateTable(const QStringList& params);
+	void updateTable(int nRawFeatures);
 
 signals:
-	void deletedFromFormula(QPair<QString, QString> parents);
-	void addedToFormula(QPair<QString, QString> parents);
+	void deletedFromFormula(QPair<int, int> parents);
+	void addedToFormula(QPair<int, int> parents);
+
+private:
+	void createHeadertem(int x, int y, int id);
 
 private:
 	QVector< QGraphicsItem* > buttons_;
-	int sizeButton_;
-
-	void createNameItem(int x, int y, const QString& data);
-
+	int buttonSize_;
+	FeatureModel& featureModel_;
 };
