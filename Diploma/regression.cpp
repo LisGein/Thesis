@@ -26,16 +26,26 @@ void LinearRegressionModel::update()
 	responses.print("Responses:");
 
 	// Regress.
-	LinearRegression lr(regressors.t(), responses, 0, false);
+	linearRegression_ = std::make_unique<LinearRegression>(regressors.t(), responses, 0, false);
 
 	// Get the parameters, or coefficients.
-	arma::vec parameters = lr.Parameters();
+	arma::vec parameters = linearRegression_->Parameters();
 	parameters.print("Params:");
-
-	parameters_.assign(parameters.begin(), parameters.end());
 }
 
-const std::vector<double>& LinearRegressionModel::getParams()
+const FeatureModel&LinearRegressionModel::getFeatureModel() const
 {
-	return parameters_;
+	return featureModel_;
+}
+
+const arma::vec& LinearRegressionModel::getParams()
+{
+	return linearRegression_->Parameters();
+}
+
+double LinearRegressionModel::predict(const arma::vec& point) const
+{
+	arma::vec res;
+	linearRegression_->Predict(arma::mat(point), res);
+	return res(0);
 }

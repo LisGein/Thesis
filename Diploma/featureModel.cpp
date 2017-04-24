@@ -67,7 +67,7 @@ std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) c
 std::string FeatureModel::getResponseName() const
 {
 	auto raw = getRawFeatures();
-	return raw[response_];
+	return raw[response_ + 1];
 }
 
 void FeatureModel::update()
@@ -106,3 +106,4 @@ const arma::vec FeatureModel::responses() const
 {
 	return dataset_.data().col(response_);
 }
+

@@ -2,6 +2,7 @@
 #include "mainWidget.h"
 #include "datasetWidget/datasetView.h"
 #include "datasetWidget/datasetModel.h"
+#include "dataPlotWidget/dataPlotWidget.h"
 #include "document.h"
 #include "dataset.h"
 #include "featureModel.h"
@@ -27,13 +28,16 @@ MainWidget::MainWidget(QWidget* parent)
 
 	layout()->addWidget(datasetView_);
 
-	QGraphicsView *gview = new QGraphicsView(this);
+	auto* gview = new QGraphicsView(this);
 	gview->setScene(document_->getFeaturesModel().getScene());
 	layout()->addWidget(gview);
 
 	datasetView_->setModel(&document_->getDatasetModel());
 
 	layout()->addWidget(formulaEdit_);
+
+	auto* dataPlotWidget = new DataPlotWidget(document_->getLinearRegressionModel(), this);
+	layout()->addWidget(dataPlotWidget);
 
 
 	QObject::connect(datasetView_, SIGNAL(insertedTable(QString)), this, SLOT(onInsertTable(QString)));

@@ -4,7 +4,6 @@ project(Diploma)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_extensions/)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_AUTOUIC ON)
 set(GUI_APP_NAME ${PROJECT_NAME})
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -34,22 +33,27 @@ set(CPP_FILES
 	datasetWidget/datasetModel.cpp
 	document.cpp
 	dataset.cpp
+	dataPlotWidget/dataPlotWidget.cpp
 	 )
 
  set(FILES_TO_MOC
 	 mainWindow.h
 	 mainWidget.h
 	 featureWidget/featureGraphicsScene.h
-#	 featureWidget/featureGraphicsItem.h
-#	 featureWidget/featureHeaderGraphicsItem.h
 	 datasetWidget/datasetView.h
+	 dataPlotWidget/dataPlotWidget.h
 	  )
+
+ set(FILES_TO_UIC
+	 dataPlotWidget/dataPlotWidget.ui
+	 )
 
 
 qt5_wrap_cpp(moc_cpps ${FILES_TO_MOC})
+qt5_wrap_ui(uic_cpps ${FILES_TO_UIC})
 
 # Add executables files:
-add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps})
+add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps})
 
 
 

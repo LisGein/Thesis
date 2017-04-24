@@ -1,6 +1,17 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
+
+#include "mlpack/core.hpp"
+
+namespace mlpack
+{
+namespace regression
+{
+class LinearRegression;
+}
+}
 
 class FeatureModel;
 
@@ -11,9 +22,12 @@ public:
 	~LinearRegressionModel();
 
 	void update();
+	const FeatureModel& getFeatureModel() const;
 
-	const std::vector<double>& getParams();
+	const arma::vec& getParams();
+	double predict(const arma::vec& point) const;
+
 private:
 	const FeatureModel& featureModel_;
-	std::vector<double> parameters_;
+	std::unique_ptr<mlpack::regression::LinearRegression> linearRegression_;
 };
