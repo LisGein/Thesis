@@ -2,9 +2,8 @@
 #include "dataPlotWidget.h"
 #include "ui_dataPlotWidget.h"
 
-#include "../featureModel.h"
-
-#include "../regression.h"
+#include "../documentTree/featureModel.h"
+#include "../documentTree/linearRegressionModel.h"
 
 #include <QLineSeries>
 #include <QScatterSeries>
@@ -17,28 +16,33 @@
 
 #include <algorithm>
 
-DataPlotWidget::DataPlotWidget(const LinearRegressionModel& linearRegression, QWidget* parent)
+DataPlotWidget::DataPlotWidget(QWidget* parent)
 	: QWidget(parent)
-	, linearRegression_(linearRegression)
+	, linearRegression_(nullptr)
 	, chartView_(std::make_unique<QtCharts::QChartView>())
 	, ui_(std::make_unique<Ui::DataPlotWidget>())
 {
 	ui_->setupUi(this);
 	ui_->chartPlace->layout()->addWidget(chartView_.get());
 
-	updateChart();
+//	updateChart();
 
-	auto features = linearRegression_.getFeatureModel().getRawFeatures();
-	for (const auto& feature : features)
-	{
-		ui_->axisCombo->addItem(to_qt(feature));
-	}
-	connect(ui_->plotBtn, SIGNAL(clicked()), this, SLOT(onPlotClicked()));
+//	auto features = linearRegression_.getFeatureModel().getRawFeatures();
+//	for (const auto& feature : features)
+//	{
+//		ui_->axisCombo->addItem(to_qt(feature));
+//	}
+//	connect(ui_->plotBtn, SIGNAL(clicked()), this, SLOT(onPlotClicked()));
 }
 
 DataPlotWidget::~DataPlotWidget()
 {
 
+}
+
+void DataPlotWidget::setRegression(LinearRegressionModel* linearRegression)
+{
+	linearRegression_ = linearRegression;
 }
 
 void DataPlotWidget::updateChart()
@@ -53,8 +57,8 @@ void DataPlotWidget::updateChart()
 	QLineSeries *series1 = new QLineSeries();
 	series1->setName("scatter2");
 
-	auto data = linearRegression_.getFeatureModel().data();
-	auto resp = linearRegression_.getFeatureModel().responses();
+	auto data = linearRegression_->getFeatureModel().data();
+	auto resp = linearRegression_->getFeatureModel().responses();
 
 
 	if (data.n_cols == 0 || data.n_rows == 0)
@@ -65,7 +69,7 @@ void DataPlotWidget::updateChart()
 
 	auto xBoundsIds = std::make_pair(0, 0);
 
-	for (int i = 0; i < data.n_rows; ++i)
+	for (size_t i = 0; i < data.n_rows; ++i)
 	{
 		auto x = data.at(i, xAxisColumn);
 		series0->append(x, resp.at(i));
@@ -76,10 +80,10 @@ void DataPlotWidget::updateChart()
 			xBoundsIds.second = i;
 	}
 
-	double predictOnMin = linearRegression_.predict(data.row(xBoundsIds.first).t());
+	double predictOnMin = linearRegression_->predict(data.row(xBoundsIds.first).t());
 	series1->append(data.at(xBoundsIds.first, xAxisColumn), predictOnMin);
 
-	double predictOnMax = linearRegression_.predict(data.row(xBoundsIds.second).t());
+	double predictOnMax = linearRegression_->predict(data.row(xBoundsIds.second).t());
 	series1->append(data.at(xBoundsIds.second, xAxisColumn), predictOnMax);
 
 

@@ -24,7 +24,7 @@ public:
 
 	const QPair<int, int> parents() const;
 
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget* parent = 0);
 
 
 private:

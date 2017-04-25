@@ -19,8 +19,10 @@ class DataPlotWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	DataPlotWidget(const LinearRegressionModel& linearRegression, QWidget *parent = nullptr);
+	DataPlotWidget(QWidget *parent = nullptr);
 	~DataPlotWidget();
+
+	void setRegression(LinearRegressionModel* linearRegression);
 
 private:
 	void updateChart();
@@ -30,7 +32,7 @@ private slots:
 
 
 private:
-	const LinearRegressionModel& linearRegression_;
+	LinearRegressionModel* linearRegression_;
 	std::unique_ptr<QtCharts::QChartView> chartView_;
 
 	std::unique_ptr<Ui::DataPlotWidget> ui_;

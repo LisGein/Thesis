@@ -2,10 +2,12 @@
 #include "featureModel.h"
 #include "featureWidget/featureGraphicsScene.h"
 #include "dataset.h"
+#include "experiment.h"
 
-FeatureModel::FeatureModel(const Dataset& dataset)
+FeatureModel::FeatureModel(const Experiment& experiment)
 	: featuresScene_(std::make_unique<FeatureGraphicsScene>(*this))
-	, dataset_(dataset)
+	, experiment_(experiment)
+	, dataset_(experiment.getDataset())
 {
 	update();
 }

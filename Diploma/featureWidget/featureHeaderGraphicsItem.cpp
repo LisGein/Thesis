@@ -1,6 +1,6 @@
 #include "common/common.h"
 #include "featureHeaderGraphicsItem.h"
-#include "featureModel.h"
+#include "documentTree/featureModel.h"
 
 #include <QPainter>
 
@@ -23,8 +23,9 @@ QRectF FeatureHeaderGraphicsItem::boundingRect() const
 	return rect_;
 }
 
-void FeatureHeaderGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void FeatureHeaderGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* parent)
 {
+	Q_UNUSED(parent)
 	QRectF rect = boundingRect();
 
 	auto br = QBrush(QColor(123, 104, 238));

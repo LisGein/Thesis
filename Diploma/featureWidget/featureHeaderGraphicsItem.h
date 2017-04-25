@@ -12,7 +12,7 @@ public:
 	QRectF boundingRect() const override;
 	void setRect();
 
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget* parent = 0) override;
 
 private:
 	const FeatureModel& featureModel_;

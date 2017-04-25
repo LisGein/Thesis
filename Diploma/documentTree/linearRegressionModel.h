@@ -19,7 +19,7 @@ class LinearRegressionModel
 {
 public:
 	LinearRegressionModel(const FeatureModel& featureModel);
-	~LinearRegressionModel();
+	virtual ~LinearRegressionModel();
 
 	void update();
 	const FeatureModel& getFeatureModel() const;

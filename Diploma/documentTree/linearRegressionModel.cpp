@@ -1,5 +1,5 @@
 #include "common/common.h"
-#include "regression.h"
+#include "linearRegressionModel.h"
 #include "featureModel.h"
 
 #include <mlpack/methods/linear_regression/linear_regression.hpp>
@@ -49,3 +49,4 @@ double LinearRegressionModel::predict(const arma::vec& point) const
 	linearRegression_->Predict(arma::mat(point), res);
 	return res(0);
 }
+

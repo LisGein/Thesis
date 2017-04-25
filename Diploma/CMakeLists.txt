@@ -19,39 +19,70 @@ INCLUDE_DIRECTORIES(${Armadillo_INCLUDE_DIR} )
 FIND_PACKAGE( Boost REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
+INCLUDE_DIRECTORIES(treeWidget)
+INCLUDE_DIRECTORIES(experimentWidget)
 set(CPP_FILES
 	common/qt.cpp
 	main.cpp
-	mainWindow.cpp
-	mainWidget.cpp
+
+	mainWindow/mainWindow.cpp
+	mainWindow/viewController.cpp
+
 	featureWidget/featureGraphicsScene.cpp
 	featureWidget/featureGraphicsItem.cpp
 	featureWidget/featureHeaderGraphicsItem.cpp
-	featureModel.cpp
-	regression.cpp
+
+	datasetWidget/datasetWidget.cpp
 	datasetWidget/datasetView.cpp
 	datasetWidget/datasetModel.cpp
-	document.cpp
-	dataset.cpp
+
+	documentTree/regression.cpp
+	documentTree/linearRegressionModel.cpp
+	documentTree/document.cpp
+	documentTree/iNode.cpp
+	documentTree/experiment.cpp
+	documentTree/featureModel.cpp
+	documentTree/dataset.cpp
+
+	treeWidget/treeModel.cpp
+	treeWidget/treeView.cpp
+
 	dataPlotWidget/dataPlotWidget.cpp
+
+	experimentWidget/experimentWidget.cpp
+	experimentWidget/experimentTreeModel.cpp
+	experimentWidget/experimentTable.cpp
 	 )
 
  set(FILES_TO_MOC
-	 mainWindow.h
-	 mainWidget.h
+	 mainWindow/mainWindow.h
+	 mainWindow/viewController.h
+
 	 featureWidget/featureGraphicsScene.h
+
 	 datasetWidget/datasetView.h
 	 dataPlotWidget/dataPlotWidget.h
+
+	 treeWidget/treeView.h
+	 treeWidget/treeModel.h
+
+	 experimentWidget/experimentWidget.h
+	 experimentWidget/experimentTreeModel.h
+	 experimentWidget/experimentTable.h
 	  )
 
  set(FILES_TO_UIC
 	 dataPlotWidget/dataPlotWidget.ui
+	 mainWindow/mainWindow.ui
+	 datasetWidget/datasetWidget.ui
+	 experimentWidget/experimentWidget.ui
 	 )
 
 
 qt5_wrap_cpp(moc_cpps ${FILES_TO_MOC})
 qt5_wrap_ui(uic_cpps ${FILES_TO_UIC})
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 # Add executables files:
 add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps})
 

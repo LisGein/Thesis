@@ -1,6 +1,6 @@
 #include "common/common.h"
 #include "featureGraphicsItem.h"
-#include "featureModel.h"
+#include "documentTree/featureModel.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -50,8 +50,10 @@ const QPair<int, int> FeatureGraphicsItem::parents() const
 	return parents_;
 }
 
-void FeatureGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void FeatureGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* parent)
 {
+	Q_UNUSED(parent)
+
 	QRectF rect = boundingRect();
 
 	if (isDisabled_)
