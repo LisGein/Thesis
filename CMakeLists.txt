@@ -50,7 +50,6 @@ set(CPP_FILES
 	dataPlotWidget/dataPlotWidget.cpp
 
 	experimentWidget/experimentWidget.cpp
-	experimentWidget/experimentTreeModel.cpp
 	experimentWidget/experimentTable.cpp
 	 )
 
@@ -61,13 +60,13 @@ set(CPP_FILES
 	 featureWidget/featureGraphicsScene.h
 
 	 datasetWidget/datasetView.h
+	 datasetWidget/datasetWidget.h
 	 dataPlotWidget/dataPlotWidget.h
 
 	 treeWidget/treeView.h
 	 treeWidget/treeModel.h
 
 	 experimentWidget/experimentWidget.h
-	 experimentWidget/experimentTreeModel.h
 	 experimentWidget/experimentTable.h
 	  )
 

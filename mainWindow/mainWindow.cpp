@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget* parent)
 	datasetWidget_->setDatasetModel(&document_->getDatasetModel());
 
 	QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(int)), this, SLOT(changeCurrentWidget(int)));
-
+	QObject::connect(datasetWidget_.get(), SIGNAL(insertedTable(QString)), this, SLOT(insertTable(QString)));
 
 	ui_->stackedWidget->addWidget(experimentWidget_.get());
 	ui_->stackedWidget->addWidget(graphicsController_.get());
@@ -64,6 +64,11 @@ void MainWindow::changeCurrentWidget(int type)
 		experimentWidget_->setDataset(&(document_->getDataset()));
 		//graphicsController_->setScene(FeatureGraphicsScene());
 	}
+}
+
+void MainWindow::insertTable(QString str)
+{
+	document_->loadFromTsv(str.toStdString());
 }
 
 

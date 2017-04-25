@@ -4,10 +4,9 @@
 #include "dataset.h"
 #include "experiment.h"
 
-FeatureModel::FeatureModel(const Experiment& experiment)
+FeatureModel::FeatureModel(const Dataset& dataset)
 	: featuresScene_(std::make_unique<FeatureGraphicsScene>(*this))
-	, experiment_(experiment)
-	, dataset_(experiment.getDataset())
+	, dataset_(dataset)
 {
 	update();
 }

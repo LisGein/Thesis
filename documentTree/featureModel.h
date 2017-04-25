@@ -15,7 +15,7 @@ class FeatureGraphicsScene;
 class FeatureModel
 {
 public:
-	FeatureModel(const Experiment& experiment);
+	FeatureModel(const Dataset& dataset);
 	~FeatureModel();
 
 	typedef std::pair<int, int> Feature;
@@ -36,7 +36,6 @@ public:
 
 private:
 	std::unique_ptr<FeatureGraphicsScene> featuresScene_;
-	const Experiment& experiment_;
 	const Dataset& dataset_;
 
 	std::set<Feature> featureSet_;

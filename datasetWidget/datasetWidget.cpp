@@ -18,4 +18,6 @@ DatasetWidget::~DatasetWidget()
 void DatasetWidget::setDatasetModel(DatasetModel* model)
 {
 	ui_->datasetView->setModel(model);
+
+	QObject::connect(ui_->datasetView, SIGNAL(insertedTable(QString)), this, SIGNAL(insertedTable(QString)));
 }

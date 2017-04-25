@@ -1,5 +1,4 @@
 #include "common/qt.h"
-#include "experimentTreeModel.h"
 #include "experimentWidget.h"
 #include "ui_experimentWidget.h"
 #include "documentTree/dataset.h"
@@ -22,8 +21,12 @@ void ExperimentWidget::setDataset(Dataset* dataset)
 {
 	ui_->response->clear();
 	dataset_ = dataset;
+
 	QStringList feature = to_qt(dataset_->getFeatures());
+	ui_->feature->setFeatures(feature);
+
 	ui_->response->addItems(feature);
 
-	ui_->feature->setFeatures(feature);
+	QObject::connect(ui_->response, SIGNAL(currentTextChanged(const QString &)), ui_->feature, SLOT(removeItem(const QString &)));
+
 }

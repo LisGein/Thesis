@@ -23,7 +23,7 @@ public:
 
 private slots:
 	 void changeCurrentWidget(int type);
-
+	void insertTable(QString str);
 
 private:
 	 void initMenu();
