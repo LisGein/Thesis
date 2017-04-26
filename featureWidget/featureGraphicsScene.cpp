@@ -38,6 +38,7 @@ void FeatureGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 				item->setChecked(true);
 			}
 			update();
+			emit updatedRegression();
 		}
 	}
 }

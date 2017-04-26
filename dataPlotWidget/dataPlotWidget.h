@@ -24,6 +24,9 @@ public:
 
 	void setRegression(LinearRegressionModel* linearRegression);
 
+public slots:
+	void updateRegression();
+
 private:
 	void updateChart();
 

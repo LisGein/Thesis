@@ -19,6 +19,7 @@ public slots:
 signals:
 	void deletedFromFormula(QPair<int, int> parents);
 	void addedToFormula(QPair<int, int> parents);
+	void updatedRegression();
 
 private:
 	void createHeadertem(int x, int y, int id);

@@ -69,8 +69,7 @@ std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) c
 
 std::string FeatureModel::getResponseName() const
 {
-	auto raw = getRawFeatures();
-	return raw[dataset_.response() + 1];
+	return dataset_.getResponseNames();
 }
 
 void FeatureModel::update()

@@ -24,9 +24,13 @@ public:
 
 	void loadFromTsv(const std::string& str);
 
+
 	void setResponse(int response);
+
+	std::string getResponseNames() const;
 	const arma::vec responses() const;
 	int response() const;
+
 
 private:
 	arma::mat data_;

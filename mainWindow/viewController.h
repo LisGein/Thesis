@@ -9,6 +9,7 @@ class DatasetView;
 class Document;
 class QGraphicsView;
 class Regression;
+class DataPlotWidget;
 
 class ViewController : public QWidget
 {
@@ -23,8 +24,19 @@ public:
 	void update();
 
 
+private slots:
+	void deleteFromFormula(QPair<int, int> feature);
+	void addToFormula(QPair<int, int> feature);
+
+
 private:
 	QGraphicsView* gview_;
 	QLineEdit* lineEdit_;
+	DataPlotWidget* dataPlotWidget_;
 	Regression* regression_;
+
+
+	void updateRegression();
+	void updateFormulaText();
+	void onDatasetUpdated();
 };

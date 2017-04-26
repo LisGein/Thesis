@@ -88,6 +88,11 @@ void Dataset::setResponse(int response)
 	response_ = response;
 }
 
+std::string Dataset::getResponseNames() const
+{
+	return names_.at(response_);
+}
+
 const arma::vec Dataset::responses() const
 {
 	return data_.col(response_);
