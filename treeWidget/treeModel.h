@@ -23,14 +23,15 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
+public:
 	int typeObject(const QModelIndex &index);
+	INode* getNodeFromIndexSafe(const QModelIndex& index) const;
 
 public slots:
 	void onAddNewChild(const QModelIndex& parent);
 
 
 private:
-	INode* getNodeFromIndexSafe(const QModelIndex& index) const;
 	int findMyRowId(const INode* node) const;
 
 private:

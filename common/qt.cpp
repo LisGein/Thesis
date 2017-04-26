@@ -17,3 +17,15 @@ QStringList to_qt(const std::vector<std::string>& stringList)
 	return res;
 }
 
+
+
+std::vector<std::string> from_qt(const QStringList& stringList)
+{
+	std::vector<std::string> res;
+	for (const auto& str : stringList)
+	{
+		res.push_back(str.toStdString());
+	}
+
+	return res;
+}

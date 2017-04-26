@@ -2,7 +2,7 @@
 #include <QTreeView>
 
 class TreeModel;
-
+class INode;
 
 class TreeView : public QTreeView
 {
@@ -23,7 +23,7 @@ private slots:
 
 signals:
 	void childAdded(const QModelIndex &parent);
-	void changedCurrentWidget(int type);
+	void changedCurrentWidget(INode* node);
 
 private:
 	QModelIndex clickedIndex_;

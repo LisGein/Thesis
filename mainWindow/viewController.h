@@ -8,7 +8,7 @@ class QLineEdit;
 class DatasetView;
 class Document;
 class QGraphicsView;
-
+class Regression;
 
 class ViewController : public QWidget
 {
@@ -18,10 +18,13 @@ public:
 	ViewController(QWidget* parent = 0);
 	virtual ~ViewController();
 
-	void setScene(FeatureGraphicsScene *scene);
+	void setRegression(Regression* regression);
+	bool containRegression() const;
+	void update();
 
 
 private:
 	QGraphicsView* gview_;
 	QLineEdit* lineEdit_;
+	Regression* regression_;
 };

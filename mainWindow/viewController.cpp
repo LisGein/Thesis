@@ -22,6 +22,7 @@ ViewController::ViewController(QWidget* parent)
 	: QWidget(parent)
 	, gview_(new QGraphicsView(this))
 	, lineEdit_(new QLineEdit(this))
+	, regression_(nullptr)
 {
 	setLayout(new QVBoxLayout(this));
 
@@ -40,9 +41,22 @@ ViewController::~ViewController()
 
 }
 
-void ViewController::setScene(FeatureGraphicsScene* scene)
+void ViewController::setRegression(Regression* regression)
 {
-	gview_->setScene(scene);
+	regression_ = regression;
+	gview_->setScene(regression_->featureModel().getScene());
+
+}
+
+bool ViewController::containRegression() const
+{
+	return regression_;
+}
+
+void ViewController::update()
+{
+	regression_->featureModel().update();
+	gview_->update();
 }
 
 

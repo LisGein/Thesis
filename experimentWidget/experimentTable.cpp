@@ -5,6 +5,7 @@ ExperimentTable::ExperimentTable(QWidget* parent)
 	: QTableWidget(parent)
 {
 	setColumnCount(2);
+	QObject::connect(this, SIGNAL(itemActivated(QTableWidgetItem*)), this, SIGNAL(featuresChanged()));
 }
 
 
@@ -15,7 +16,7 @@ ExperimentTable::~ExperimentTable()
 
 void ExperimentTable::removeItem(const QString& str)
 {
-	for (int i = 0; i != feature_.size(); ++i)
+	for (int i = 0; i != features_.size(); ++i)
 	{
 		QTableWidgetItem * it = item(i, 1);
 		if(item(i, 0)->text() == str)
@@ -29,30 +30,38 @@ void ExperimentTable::removeItem(const QString& str)
 	}
 }
 
-void ExperimentTable::setFeatures(const QStringList& feature)
+void ExperimentTable::setFeatures(const QStringList& features, const std::set<int>& enabledFeatures)
 {
-	feature_ = feature;
-	setRowCount(feature_.size());
+	features_ = features;
+	setRowCount(features_.size());
 
-
-	int i = 0;
-	for (auto &it: feature_)
+	for (int i = 0; i != features_.size(); ++i)
 	{
-		setItem(i, 0, new QTableWidgetItem(it));
+		setItem(i, 0, new QTableWidgetItem(features_[i]));
 		QTableWidgetItem *item = new QTableWidgetItem();
-		item->setCheckState(Qt::Unchecked);
+
+
+		bool checked = enabledFeatures.find(i) != enabledFeatures.end();
+		item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
 		setItem(i, 1, item);
-		++i;
 	}
 }
 
-QStringList ExperimentTable::checked() const
+std::pair<int, std::set<int> > ExperimentTable::checkedFeatures() const
 {
-	QStringList checkedList;
-	for (int i = 0; i != feature_.size(); ++i)
+	std::set<int> checkedList;
+	int count = 0;
+	int response = 0;
+	for (int i = 0; i != features_.size(); ++i)
 	{
-		if(item(i, 1)->checkState() == Qt::Checked)
-			checkedList.append(item(i, 0)->text());
+		if(item(i, 1)->checkState() == Qt::Checked || item(i, 1)->flags() == Qt::NoItemFlags)
+		{
+			checkedList.insert(i);
+			if (item(i, 1)->flags() == Qt::NoItemFlags)
+				response = count;
+			++count;
+		}
 	}
-	return checkedList;
+	return std::make_pair(response, checkedList);
 }
+

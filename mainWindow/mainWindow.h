@@ -13,6 +13,7 @@ class QSettings;
 class DatasetWidget;
 class ViewController;
 class ExperimentWidget;
+class INode;
 
 class MainWindow : public QMainWindow {
 	 Q_OBJECT
@@ -22,7 +23,7 @@ public:
 	 virtual ~MainWindow();
 
 private slots:
-	 void changeCurrentWidget(int type);
+	 void changeCurrentWidget(INode* node);
 	void insertTable(QString str);
 
 private:

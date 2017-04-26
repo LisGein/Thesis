@@ -1,6 +1,6 @@
 #pragma once
 #include <QTableWidget>
-
+#include <set>
 
 class ExperimentTable: public QTableWidget
 {
@@ -8,13 +8,16 @@ class ExperimentTable: public QTableWidget
 public:
 	ExperimentTable(QWidget* parent = 0);
 	virtual ~ExperimentTable();
-	void setFeatures(const QStringList& feature);
-	QStringList checked() const;
+	void setFeatures(const QStringList& features, const std::set<int>& enabledFeatures);
+	std::pair<int, std::set<int>> checkedFeatures() const;
 
-public slots:
+private slots:
 	void removeItem(const QString& str);
 
+signals:
+	void featuresChanged();
+
 private:
-	QStringList feature_;
+	QStringList features_;
 
 };

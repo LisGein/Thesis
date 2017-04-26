@@ -50,8 +50,12 @@ void TreeView::contextMenuEvent(QContextMenuEvent* event)
 
 void TreeView::currentChanged(const QModelIndex& current, const QModelIndex& previous)
 {
-	int type = (model_) ? model_->typeObject(current) : -1;
-	emit changedCurrentWidget(type);
+	if (model_)
+	{
+		auto* node = model_->getNodeFromIndexSafe(current);
+		emit changedCurrentWidget(node);
+	}
+
 	QTreeView::currentChanged(current, previous);
 }
 

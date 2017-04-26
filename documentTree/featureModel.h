@@ -34,10 +34,10 @@ public:
 	const arma::mat data() const;
 	const arma::vec responses() const;
 
+
 private:
 	std::unique_ptr<FeatureGraphicsScene> featuresScene_;
 	const Dataset& dataset_;
 
 	std::set<Feature> featureSet_;
-	int response_;
 };

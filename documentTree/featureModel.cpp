@@ -24,7 +24,9 @@ FeatureGraphicsScene*FeatureModel::getScene()
 const std::vector<std::string> FeatureModel::getRawFeatures() const
 {
 	std::vector<std::string> res{"1"};
-	res.insert(res.end(), dataset_.getFeatures().begin(), dataset_.getFeatures().end());
+
+	std::vector<std::string> features = dataset_.getFeatures();
+	res.insert(res.end(), features.begin(), features.end());
 	return res;
 }
 
@@ -68,14 +70,13 @@ std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) c
 std::string FeatureModel::getResponseName() const
 {
 	auto raw = getRawFeatures();
-	return raw[response_ + 1];
+	return raw[dataset_.response() + 1];
 }
 
 void FeatureModel::update()
 {
 	featureSet_.clear();
-	featuresScene_->updateTable(dataset_.columnCount() + 1);
-	response_ = dataset_.columnCount() - 1;
+	featuresScene_->updateTable(dataset_.columnCount());
 }
 
 void FeatureModel::addFeature(const Feature& feature)
@@ -105,6 +106,7 @@ const arma::mat FeatureModel::data() const
 
 const arma::vec FeatureModel::responses() const
 {
-	return dataset_.data().col(response_);
+	return dataset_.responses();
 }
+
 

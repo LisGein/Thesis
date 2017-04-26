@@ -20,6 +20,7 @@ FeatureGraphicsScene::~FeatureGraphicsScene()
 
 void FeatureGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+	update();
 	QList<QGraphicsItem *> sceneItems = items(event->scenePos());
 	for (auto &it: sceneItems)
 	{

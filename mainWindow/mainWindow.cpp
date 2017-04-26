@@ -4,20 +4,23 @@
 #include "treeWidget/treeModel.h"
 #include "treeWidget/treeView.h"
 
-#include "documentTree/document.h"
 #include "documentTree/iNode.h"
+#include "documentTree/document.h"
+#include "documentTree/regression.h"
+#include "documentTree/experiment.h"
+#include "documentTree/featureModel.h"
 
 #include "datasetWidget/datasetWidget.h"
 #include "featureWidget/featureGraphicsScene.h"
-#include "documentTree/featureModel.h"
+#include "experimentWidget/experimentWidget.h"
+#include "dataPlotWidget/dataPlotWidget.h"
 
 #include <QSettings>
 #include <QLineEdit>
 #include <QGraphicsView>
 
-#include "dataPlotWidget/dataPlotWidget.h"
 #include "viewController.h"
-#include "experimentWidget/experimentWidget.h"
+
 
 
 MainWindow::MainWindow(QWidget* parent)
@@ -43,7 +46,7 @@ MainWindow::MainWindow(QWidget* parent)
 	ui_->stackedWidget->addWidget(datasetWidget_.get());
 	datasetWidget_->setDatasetModel(&document_->getDatasetModel());
 
-	QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(int)), this, SLOT(changeCurrentWidget(int)));
+	QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(INode*)), this, SLOT(changeCurrentWidget(INode*)));
 	QObject::connect(datasetWidget_.get(), SIGNAL(insertedTable(QString)), this, SLOT(insertTable(QString)));
 
 	ui_->stackedWidget->addWidget(experimentWidget_.get());
@@ -55,15 +58,37 @@ MainWindow::~MainWindow()
 	appSettings_->setValue("WindowSize", size());
 }
 
-void MainWindow::changeCurrentWidget(int type)
+void MainWindow::changeCurrentWidget(INode* node)
 {
-	INode::TypeObject typeObj(static_cast<INode::TypeObject>(type));
-	if (typeObj != INode::TypeObject::Invalid)
+	INode::TypeObject typeObj(static_cast<INode::TypeObject>(node->type()));
+
+	if (ui_->stackedWidget->currentIndex() == 1)
+		experimentWidget_->updateFiltredDataset();
+
+	switch (typeObj)
 	{
-		ui_->stackedWidget->setCurrentIndex(int(typeObj) - 1);
-		experimentWidget_->setDataset(&(document_->getDataset()));
-		//graphicsController_->setScene(FeatureGraphicsScene());
+	case INode::TypeObject::Document:
+		ui_->stackedWidget->setCurrentIndex(0);
+		break;
+	case INode::TypeObject::Experiment:
+		ui_->stackedWidget->setCurrentIndex(1);
+		if (auto* experiment = dynamic_cast<Experiment *>(node))
+			experimentWidget_->setExperiment(experiment);
+		break;
+	case INode::TypeObject::Regression:
+		ui_->stackedWidget->setCurrentIndex(2);
+		if(!graphicsController_->containRegression())
+		{
+			if (auto* regression = dynamic_cast<Regression *>(node))
+				graphicsController_->setRegression(regression);
+
+		}
+		graphicsController_->update();
+		break;
+	default:
+		break;
 	}
+
 }
 
 void MainWindow::insertTable(QString str)

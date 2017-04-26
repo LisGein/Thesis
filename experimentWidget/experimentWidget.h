@@ -3,7 +3,7 @@
 #include <memory>
 
 
-class Dataset;
+class Experiment;
 class ExperimentTable;
 
 namespace Ui
@@ -18,9 +18,11 @@ class ExperimentWidget : public QWidget
 	ExperimentWidget(QWidget* parent = 0);
 	virtual ~ExperimentWidget();
 
-	void setDataset(Dataset* dataset);
+	void setExperiment(Experiment* experiment);
+	void updateFiltredDataset();
+
 
 private:
 	std::unique_ptr<Ui::ExperimentWidget> ui_;
-	Dataset* dataset_;
+	Experiment* experiment_;
 };
