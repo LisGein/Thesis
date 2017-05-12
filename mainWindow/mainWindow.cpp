@@ -80,7 +80,9 @@ void MainWindow::changeCurrentWidget(INode* node)
 		if(!graphicsController_->containRegression())
 		{
 			if (auto* regression = dynamic_cast<Regression *>(node))
+			{
 				graphicsController_->setRegression(regression);
+			}
 
 		}
 		graphicsController_->update();

@@ -17,8 +17,7 @@
 #include <algorithm>
 
 DataPlotWidget::DataPlotWidget(QWidget* parent)
-	: QWidget(parent)
-	, linearRegression_(nullptr)
+	: AbstractDataPlot(parent)
 	, chartView_(std::make_unique<QtCharts::QChartView>())
 	, ui_(std::make_unique<Ui::DataPlotWidget>())
 {
@@ -35,8 +34,7 @@ DataPlotWidget::~DataPlotWidget()
 
 void DataPlotWidget::setRegression(LinearRegressionModel* linearRegression)
 {
-	linearRegression_ = linearRegression;
-	updateChart();
+	AbstractDataPlot::setRegression(linearRegression);
 
 	auto features = linearRegression_->getFeatureModel().getRawFeatures();
 	for (const auto& feature : features)
@@ -46,10 +44,6 @@ void DataPlotWidget::setRegression(LinearRegressionModel* linearRegression)
 	connect(ui_->plotBtn, SIGNAL(clicked()), this, SLOT(onPlotClicked()));
 }
 
-void DataPlotWidget::updateRegression()
-{
-	updateChart();
-}
 
 void DataPlotWidget::updateChart()
 {
@@ -111,3 +105,19 @@ void DataPlotWidget::onPlotClicked()
 {
 	updateChart();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

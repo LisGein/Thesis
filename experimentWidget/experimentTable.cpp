@@ -41,7 +41,7 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::set<in
 		QTableWidgetItem *item = new QTableWidgetItem();
 
 
-		bool checked = enabledFeatures.find(i) != enabledFeatures.end();
+		bool checked = true;//enabledFeatures.find(i) != enabledFeatures.end();
 		item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
 		setItem(i, 1, item);
 	}

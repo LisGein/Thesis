@@ -10,6 +10,7 @@ class Document;
 class QGraphicsView;
 class Regression;
 class DataPlotWidget;
+class Data3DPlotWidget;
 
 class ViewController : public QWidget
 {
@@ -33,6 +34,7 @@ private:
 	QGraphicsView* gview_;
 	QLineEdit* lineEdit_;
 	DataPlotWidget* dataPlotWidget_;
+	Data3DPlotWidget* data3DPlotWidget_;
 	Regression* regression_;
 
 

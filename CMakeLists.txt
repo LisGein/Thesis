@@ -9,7 +9,8 @@ set(GUI_APP_NAME ${PROJECT_NAME})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core Widgets Charts REQUIRED PATHS ${QT_DIR})
+set(Qt5_DIR "/home/fedor/Qt/5.9/gcc_64/lib/cmake/Qt5")
+find_package(Qt5 COMPONENTS Core Widgets Charts DataVisualization REQUIRED PATHS ${Qt5_DIR})
 find_package( Mlpack REQUIRED )
 INCLUDE_DIRECTORIES(${Mlpack_INCLUDE_DIR} )
 
@@ -48,6 +49,8 @@ set(CPP_FILES
 	treeWidget/treeView.cpp
 
 	dataPlotWidget/dataPlotWidget.cpp
+	dataPlotWidget/data3DPlotWidget.cpp
+	dataPlotWidget/abstractDataPlot.cpp
 
 	experimentWidget/experimentWidget.cpp
 	experimentWidget/experimentTable.cpp
@@ -62,6 +65,9 @@ set(CPP_FILES
 	 datasetWidget/datasetView.h
 	 datasetWidget/datasetWidget.h
 	 dataPlotWidget/dataPlotWidget.h
+	 dataPlotWidget/abstractDataPlot.h
+	 dataPlotWidget/data3DPlotWidget.h
+
 
 	 treeWidget/treeView.h
 	 treeWidget/treeModel.h
@@ -92,6 +98,7 @@ target_link_libraries(${GUI_APP_NAME}
 Qt5::Core
 Qt5::Widgets
 Qt5::Charts
+Qt5::DataVisualization
 ${Mlpack_LIBRARIES}
 ${Armadillo_LIBRARIES}
 ${Boost_LIBRARIES}

@@ -3,6 +3,7 @@
 #include "datasetWidget/datasetView.h"
 #include "datasetWidget/datasetModel.h"
 #include "dataPlotWidget/dataPlotWidget.h"
+#include "dataPlotWidget/data3DPlotWidget.h"
 #include "featureWidget/featureGraphicsScene.h"
 #include "documentTree/document.h"
 #include "documentTree/dataset.h"
@@ -13,6 +14,7 @@
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <QTreeView>
+#include <QDebug>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/format.hpp>
@@ -22,7 +24,8 @@ ViewController::ViewController(QWidget* parent)
 	: QWidget(parent)
 	, gview_(new QGraphicsView(this))
 	, lineEdit_(new QLineEdit(this))
-	, dataPlotWidget_ (new DataPlotWidget(this))
+	, dataPlotWidget_ (nullptr)
+	, data3DPlotWidget_(nullptr)
 	, regression_(nullptr)
 {
 	setLayout(new QVBoxLayout(this));
@@ -32,9 +35,6 @@ ViewController::ViewController(QWidget* parent)
 	w->layout()->addWidget(gview_);
 	w->layout()->addWidget(lineEdit_);
 	layout()->addWidget(w);
-
-	layout()->addWidget(dataPlotWidget_);
-
 
 }
 
@@ -46,12 +46,29 @@ ViewController::~ViewController()
 void ViewController::setRegression(Regression* regression)
 {
 	regression_ = regression;
+
 	gview_->setScene(regression_->featureModel().getScene());
 	QObject::connect(regression_->featureModel().getScene(), SIGNAL(deletedFromFormula(QPair<int, int>)), this, SLOT(deleteFromFormula(QPair<int, int>)));
 	QObject::connect(regression_->featureModel().getScene(), SIGNAL(addedToFormula(QPair<int, int>)), this, SLOT(addToFormula(QPair<int, int>)));
 
-	dataPlotWidget_->setRegression(&(regression_->linearRegressionModel()));
-	QObject::connect(regression_->featureModel().getScene(), SIGNAL(updatedRegression()), dataPlotWidget_, SLOT(updateRegression()));
+
+	auto features = regression_->featureModel().getRawFeatures();
+	if (features.size() <= 2)
+	{
+		dataPlotWidget_ = new DataPlotWidget(this);
+		layout()->addWidget(dataPlotWidget_);
+		dataPlotWidget_->setRegression(&(regression_->linearRegressionModel()));
+		QObject::connect(regression_->featureModel().getScene(), SIGNAL(updatedRegression()), dataPlotWidget_, SLOT(updateRegression()));
+	}
+	else
+	{
+		data3DPlotWidget_ = new Data3DPlotWidget(this);
+		layout()->addWidget(data3DPlotWidget_);
+		data3DPlotWidget_->setRegression(&(regression_->linearRegressionModel()));
+		QObject::connect(regression_->featureModel().getScene(), SIGNAL(updatedRegression()), data3DPlotWidget_, SLOT(updateRegression()));
+	}
+
+
 }
 
 bool ViewController::containRegression() const
