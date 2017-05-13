@@ -14,7 +14,7 @@ ExperimentTable::~ExperimentTable()
 
 }
 
-void ExperimentTable::removeItem(const QString& str)
+void ExperimentTable::disableFeature(const QString& str)
 {
 	for (int i = 0; i != features_.size(); ++i)
 	{
@@ -41,27 +41,22 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::set<in
 		QTableWidgetItem *item = new QTableWidgetItem();
 
 
-		bool checked = true;//enabledFeatures.find(i) != enabledFeatures.end();
+		bool checked = enabledFeatures.find(i) != enabledFeatures.end();
 		item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
 		setItem(i, 1, item);
 	}
 }
 
-std::pair<int, std::set<int> > ExperimentTable::checkedFeatures() const
+std::set<int> ExperimentTable::checkedFeatures() const
 {
 	std::set<int> checkedList;
-	int count = 0;
-	int response = 0;
 	for (int i = 0; i != features_.size(); ++i)
 	{
 		if(item(i, 1)->checkState() == Qt::Checked || item(i, 1)->flags() == Qt::NoItemFlags)
 		{
 			checkedList.insert(i);
-			if (item(i, 1)->flags() == Qt::NoItemFlags)
-				response = count;
-			++count;
 		}
 	}
-	return std::make_pair(response, checkedList);
+	return checkedList;
 }
 

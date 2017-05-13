@@ -8,10 +8,11 @@
 class LinearRegressionModel;
 namespace QtDataVisualization {
 class Q3DScatter;
-
 class Q3DSurface;
 class QSurfaceDataProxy;
 class QSurface3DSeries;
+class QScatterDataProxy;
+class QScatter3DSeries;
 }
 
 class Data3DPlotWidget : public AbstractDataPlot
@@ -27,12 +28,13 @@ public:
 private:
 	void updateChart();
 
-	QtDataVisualization::Q3DScatter *graphData_;
+	QtDataVisualization::Q3DScatter *pointsGraph_;
+	QtDataVisualization::Q3DSurface *surfaceGraph_;
 
+	QtDataVisualization::QScatterDataProxy *pointsProxy_;
+	QtDataVisualization::QSurfaceDataProxy *surfaceProxy_;
 
-	QtDataVisualization::Q3DSurface *graphRegression;
-	QtDataVisualization::QSurfaceDataProxy *m_sqrtSinProxy;
-	QtDataVisualization::QSurface3DSeries *m_heightMapSeries;
-	QtDataVisualization::QSurface3DSeries *m_sqrtSinSeries;
+	QtDataVisualization::QScatter3DSeries *pointsSeries_;
+	QtDataVisualization::QSurface3DSeries *surfaceSeries_;
 
 };

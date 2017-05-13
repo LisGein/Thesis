@@ -8,9 +8,16 @@ Experiment::Experiment(const Document& document)
 	: INode("Experiment", "Regression")
 	, document_(document)
 	, enabledFeatures_()
-	, response_(0)
+
 {
-	filtredDataset_ = document_.getDataset().filterFeatures(enabledFeatures_);
+	int originalFeaturesCount = getDataset().data().n_cols;
+	for (int i = 0; i < originalFeaturesCount; ++i)
+	{
+		enabledFeatures_.insert(i);
+	}
+
+	response_ = originalFeaturesCount - 1;
+	updateFiltredDataset();
 }
 
 Experiment::~Experiment()
@@ -41,12 +48,16 @@ void Experiment::setEnabledFeatures(const std::set<int>& enabled)
 
 void Experiment::setResponse(int response)
 {
-	filtredDataset_.setResponse(response);
+	response_ = response;
+	updateFiltredDataset();
 }
 
 void Experiment::updateFiltredDataset()
 {
-	filtredDataset_ = document_.getDataset().filterFeatures(enabledFeatures_);
+	auto extendedFeatures = enabledFeatures_;
+	extendedFeatures.insert(response_);
+
+	filtredDataset_ = document_.getDataset().filterFeatures(extendedFeatures);
 }
 
 void Experiment::update()

@@ -24,17 +24,10 @@ public:
 
 	void loadFromTsv(const std::string& str);
 
-
-	void setResponse(int response);
-
-	std::string getResponseNames() const;
-	const arma::vec responses() const;
-	int response() const;
+	const arma::vec getColumnVector(int id) const;
 
 
 private:
 	arma::mat data_;
 	std::vector<std::string> names_;
-	int response_;
-
 };

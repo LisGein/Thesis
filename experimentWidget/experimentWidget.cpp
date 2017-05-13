@@ -5,6 +5,7 @@
 #include "documentTree/experiment.h"
 
 
+
 ExperimentWidget::ExperimentWidget(QWidget* parent)
 	: QWidget(parent)
 	, ui_(std::make_unique<Ui::ExperimentWidget>())
@@ -12,7 +13,7 @@ ExperimentWidget::ExperimentWidget(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	QObject::connect(ui_->response, SIGNAL(currentTextChanged(const QString &)), ui_->feature, SLOT(removeItem(const QString &)));
+	QObject::connect(ui_->response, SIGNAL(currentTextChanged(const QString &)), ui_->feature, SLOT(disableFeature(const QString &)));
 	QObject::connect(ui_->feature, SIGNAL(featuresChanged()), this, SLOT(updateFiltredDataset()));
 }
 
@@ -29,8 +30,14 @@ void ExperimentWidget::setExperiment(Experiment* experiment)
 
 	QStringList features = to_qt(experiment_->getDataset().getNames());
 
-	ui_->feature->setFeatures(features, experiment_->getEnabledFeatures());
 	ui_->response->addItems(features);
+
+	auto filteredResponse = experiment_->getResponseColumn();
+	auto originalResponse = *std::next(experiment_->getEnabledFeatures().begin(), filteredResponse);
+	ui_->response->setCurrentIndex(originalResponse);
+
+	ui_->feature->setFeatures(features, experiment_->getEnabledFeatures());
+	ui_->feature->disableFeature(ui_->response->currentText());
 }
 
 void ExperimentWidget::updateFiltredDataset()
@@ -39,8 +46,9 @@ void ExperimentWidget::updateFiltredDataset()
 
 	if(experiment_)
 	{
-		experiment_->setEnabledFeatures(checkedFeatures.second);
-		experiment_->setResponse(checkedFeatures.first);
+		experiment_->setEnabledFeatures(checkedFeatures);
+		auto originalResponse = ui_->response->currentIndex();
+		experiment_->setResponse(std::distance(experiment_->getEnabledFeatures().begin(), experiment_->getEnabledFeatures().find(originalResponse)));
 	}
 }
 

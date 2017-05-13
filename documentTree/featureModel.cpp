@@ -4,9 +4,10 @@
 #include "dataset.h"
 #include "experiment.h"
 
-FeatureModel::FeatureModel(const Dataset& dataset)
+FeatureModel::FeatureModel(const Experiment& experiment)
 	: featuresScene_(std::make_unique<FeatureGraphicsScene>(*this))
-	, dataset_(dataset)
+	, experiment_(experiment)
+	, dataset_(experiment_.getFiltredDataset())
 {
 	update();
 }
@@ -16,7 +17,7 @@ FeatureModel::~FeatureModel()
 
 }
 
-FeatureGraphicsScene*FeatureModel::getScene()
+FeatureGraphicsScene* FeatureModel::getScene()
 {
 	return featuresScene_.get();
 }
@@ -26,6 +27,7 @@ const std::vector<std::string> FeatureModel::getRawFeatures() const
 	std::vector<std::string> res{"1"};
 
 	std::vector<std::string> features = dataset_.getFeatures();
+	features.erase(std::next(features.begin(), experiment_.getResponseColumn()));
 	res.insert(res.end(), features.begin(), features.end());
 	return res;
 }
@@ -69,7 +71,7 @@ std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) c
 
 std::string FeatureModel::getResponseName() const
 {
-	return dataset_.getResponseNames();
+	return dataset_.getNames()[experiment_.getResponseColumn()];
 }
 
 void FeatureModel::update()
@@ -105,7 +107,7 @@ const arma::mat FeatureModel::data() const
 
 const arma::vec FeatureModel::responses() const
 {
-	return dataset_.responses();
+	return dataset_.getColumnVector(experiment_.getResponseColumn());
 }
 
 

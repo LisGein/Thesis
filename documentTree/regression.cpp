@@ -28,7 +28,7 @@ FeatureModel& Regression::featureModel()
 Regression::Regression(const Experiment& expirement)
 	: INode("Regression", "")
 	, experiment_(expirement)
-	, featureModel_(experiment_.getFiltredDataset())
+	, featureModel_(experiment_)
 	, linearRegressionModel_(featureModel_)
 {
 

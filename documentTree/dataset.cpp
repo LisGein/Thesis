@@ -5,9 +5,8 @@
 
 
 Dataset::Dataset()
-	: data_(arma::zeros(3,3))
-	, names_({"x1", "x2", "y"})
-	, response_(2)
+	: data_(arma::zeros(1,1))
+	, names_({"Insert data"})
 {
 
 }
@@ -15,11 +14,9 @@ Dataset::Dataset()
 Dataset::Dataset(const arma::mat& data, const std::vector<std::string>& features)
 	: data_(data)
 	, names_(features)
-	, response_(data_.n_cols)
 {
 
 }
-
 
 int Dataset::rowCount() const
 {
@@ -39,7 +36,6 @@ double Dataset::get(int row, int column) const
 std::vector<std::string> Dataset::getFeatures() const
 {
 	std::vector<std::string> features = names_;
-	features.erase(features.begin() + response_);
 	return features;
 }
 
@@ -56,19 +52,20 @@ const arma::mat& Dataset::data() const
 Dataset Dataset::filterFeatures(const std::set<int>& enabledFeatures) const
 {
 	arma::mat featureColumns(data_.n_rows, 0);
+	std::vector<std::string> filteredFeatures;
+
 	for (const auto& feature : enabledFeatures)
 	{
 		arma::mat featureColumn = data_.col(feature);
 		featureColumns.insert_cols(featureColumns.n_cols, featureColumn);
+
+		filteredFeatures.push_back(names_[feature]);
+
 	}
 
-	std::vector<std::string> filteredFeatures;
-	for (const auto& id : enabledFeatures )
-	{
-		filteredFeatures.push_back(names_[id]);
-	}
 
-	return Dataset(featureColumns, filteredFeatures);
+	Dataset res(featureColumns, filteredFeatures);
+	return res;
 }
 
 void Dataset::loadFromTsv(const std::string& str)
@@ -83,23 +80,8 @@ void Dataset::loadFromTsv(const std::string& str)
 	data_.load(istr);
 }
 
-void Dataset::setResponse(int response)
+const arma::vec Dataset::getColumnVector(int id) const
 {
-	response_ = response;
-}
-
-std::string Dataset::getResponseNames() const
-{
-	return names_.at(response_);
-}
-
-const arma::vec Dataset::responses() const
-{
-	return data_.col(response_);
-}
-
-int Dataset::response() const
-{
-	return response_;
+	return data_.col(id);
 }
 

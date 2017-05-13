@@ -9,10 +9,10 @@ public:
 	ExperimentTable(QWidget* parent = 0);
 	virtual ~ExperimentTable();
 	void setFeatures(const QStringList& features, const std::set<int>& enabledFeatures);
-	std::pair<int, std::set<int>> checkedFeatures() const;
+	std::set<int> checkedFeatures() const;
 
-private slots:
-	void removeItem(const QString& str);
+public slots:
+	void disableFeature(const QString& str);
 
 signals:
 	void featuresChanged();

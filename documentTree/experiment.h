@@ -21,7 +21,14 @@ public:
 	const Dataset& getFiltredDataset() const;
 	const std::set<int>& getEnabledFeatures() const;
 	void setEnabledFeatures(const std::set<int>& enabled);
+
+	/// \brief set column ID of response
+	/// \param response ID in scope of filtered dataset
 	void setResponse(int response);
+
+	/// \brief get response column
+	/// \return ID in scope of filtered dataset
+	int getResponseColumn() const { return response_; }
 
 	void update();
 

@@ -6,82 +6,75 @@
 #include <QVBoxLayout>
 #include <QtDataVisualization/QScatterDataProxy>
 #include <QtDataVisualization/QScatter3DSeries>
+#include <QtDataVisualization/Q3DSurface>
+#include <QtDataVisualization/QSurfaceDataProxy>
+#include <QtDataVisualization/QSurface3DSeries>
 #include <QtDataVisualization/Q3DScatter>
 #include <QtDataVisualization/Q3DCamera>
 #include <QtCore/qmath.h>
 #include <QtGui/QScreen>
 
 
-#include <QtDataVisualization/Q3DSurface>
-#include <QtDataVisualization/QSurfaceDataProxy>
-#include <QtDataVisualization/QSurface3DSeries>
+
 
 using namespace QtDataVisualization;
 
 Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 	: AbstractDataPlot(parent)
-	, graphData_(new Q3DScatter())
-	, graphRegression(new Q3DSurface())
+	, pointsGraph_(new Q3DScatter())
+	, surfaceGraph_(new Q3DSurface())
 {
 	setLayout(new QHBoxLayout(this));
 
-	QWidget *containerLeft = QWidget::createWindowContainer(graphData_);
+	QWidget *containerLeft = QWidget::createWindowContainer(pointsGraph_);
 
 
-	QSize screenSize = graphData_->screen()->size();
+	QSize screenSize = pointsGraph_->screen()->size();
 	containerLeft->setMinimumSize(QSize(screenSize.width() / 4, screenSize.height() / 2));
 	containerLeft->setMaximumSize(screenSize);
 	containerLeft->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	containerLeft->setFocusPolicy(Qt::StrongFocus);
-
 	layout()->addWidget(containerLeft);
 
-	QWidget *containerRight = QWidget::createWindowContainer(graphRegression);
+	QWidget *containerRight = QWidget::createWindowContainer(surfaceGraph_);
 	containerRight->setMinimumSize(QSize(screenSize.width() / 4, screenSize.height() / 2));
 	containerRight->setMaximumSize(screenSize);
 	containerRight->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	containerRight->setFocusPolicy(Qt::StrongFocus);
 	layout()->addWidget(containerRight);
 
-
-
-
 	{
-		QScatterDataProxy *proxy = new QScatterDataProxy;
-		QScatter3DSeries *series = new QScatter3DSeries(proxy);
-		series->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
-		series->setMeshSmooth(true);
-		graphData_->addSeries(series);
+		pointsProxy_ = new QScatterDataProxy;
+		pointsSeries_ = new QScatter3DSeries(pointsProxy_);
+		pointsSeries_->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
+		pointsSeries_->setMeshSmooth(true);
+		pointsGraph_->addSeries(pointsSeries_);
 
 
-		graphData_->axisX()->setTitle("X");
-		graphData_->axisY()->setTitle("Y");
-		graphData_->axisZ()->setTitle("Z");
-		graphData_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
-
+		pointsGraph_->axisX()->setTitle("X");
+		pointsGraph_->axisY()->setTitle("Y");
+		pointsGraph_->axisZ()->setTitle("Z");
+		pointsGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
 	}
 
 	{
+		surfaceProxy_ = new QSurfaceDataProxy();
+		surfaceSeries_ = new QSurface3DSeries(surfaceProxy_);
+		surfaceSeries_->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
+		surfaceSeries_->setFlatShadingEnabled(false);
 
+		surfaceGraph_->addSeries(surfaceSeries_);
 
-		graphRegression->setAxisX(new QValue3DAxis);
-		graphRegression->setAxisY(new QValue3DAxis);
-		graphRegression->setAxisZ(new QValue3DAxis);
-		graphRegression->axisX()->setAutoAdjustRange(true);
-		graphRegression->axisY()->setAutoAdjustRange(true);
-		graphRegression->axisZ()->setAutoAdjustRange(true);
-		graphRegression->axisX()->setTitle("X");
-		graphRegression->axisY()->setTitle("Y");
-		graphRegression->axisZ()->setTitle("Z");
-		graphRegression->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
-
-		m_sqrtSinProxy = new QSurfaceDataProxy();
-		m_sqrtSinSeries = new QSurface3DSeries(m_sqrtSinProxy);
-
-
-		m_sqrtSinSeries->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
-		m_sqrtSinSeries->setFlatShadingEnabled(true);
-		graphRegression->addSeries(m_sqrtSinSeries);/*
+		surfaceGraph_->setAxisX(new QValue3DAxis);
+		surfaceGraph_->setAxisY(new QValue3DAxis);
+		surfaceGraph_->setAxisZ(new QValue3DAxis);
+		surfaceGraph_->axisX()->setAutoAdjustRange(true);
+		surfaceGraph_->axisY()->setAutoAdjustRange(true);
+		surfaceGraph_->axisZ()->setAutoAdjustRange(true);
+		surfaceGraph_->axisX()->setTitle("X");
+		surfaceGraph_->axisY()->setTitle("Y");
+		surfaceGraph_->axisZ()->setTitle("Z");
+		surfaceGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
 
 		//set green to red gradient
 
@@ -93,9 +86,9 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 			gr.setColorAt(2.0, Qt::red);
 			gr.setColorAt(4.0, Qt::darkRed);
 
-			graphRegression->seriesList().at(0)->setBaseGradient(gr);
-			graphRegression->seriesList().at(0)->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
-		}*/
+			surfaceSeries_->setBaseGradient(gr);
+			surfaceSeries_->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
+		}
 
 	}
 
@@ -119,83 +112,83 @@ void Data3DPlotWidget::updateChart()
 	auto data = linearRegression_->getFeatureModel().data();
 	auto resp = linearRegression_->getFeatureModel().responses();
 
-	if (data.n_cols == 0 || data.n_rows == 0)
+	if (data.n_cols < 2 || data.n_rows == 0)
 		return;
 
 
-	QScatterDataArray *dataArray = new QScatterDataArray;
-	dataArray->resize(data.n_rows);
-	QScatterDataItem *ptrToDataArray = &dataArray->first();
+	QScatterDataArray *pointsArray = new QScatterDataArray;
+	pointsArray->resize(data.n_rows);
+	QScatterDataItem *ptrToDataArray = &pointsArray->first();
 
 
 	for (size_t i = 0; i < data.n_rows; ++i)
 	{
-		ptrToDataArray->setPosition(QVector3D(data.at(i, 0), data.at(i, 1), resp.at(i)));
+		ptrToDataArray->setPosition(QVector3D(data.at(i, 0), resp.at(i), data.at(i, 1))); //y axis looks top
 		ptrToDataArray++;
 	}
 
-	graphData_->seriesList().at(0)->dataProxy()->resetArray(dataArray);
+	pointsProxy_->resetArray(pointsArray);
 
 
-	QSurfaceDataArray *regresssionArray = new QSurfaceDataArray;
-	regresssionArray->reserve(data.size());
+	QSurfaceDataArray *surfaceArray = new QSurfaceDataArray;
+	surfaceArray->reserve(10);
 
 
-	auto xBoundsIds = std::make_pair(0.0, 0.0);
-	auto yBoundsIds = std::make_pair(0.0, 0.0);
+	std::pair<double, double> xBounds, zBounds;
+	bool firstTime = true;
 
 	for (size_t i = 0; i < data.n_rows; ++i)
 	{
 		auto x = data.at(i, 0);
-		auto y = data.at(i, 1);
+		auto z = data.at(i, 1);
 
-		if (i == 0)
+		if (firstTime)
 		{
-			xBoundsIds = std::make_pair(x, x);
-			yBoundsIds = std::make_pair(y, y);
+			xBounds = std::make_pair(x, x);
+			zBounds = std::make_pair(z, z);
+			firstTime = false;
 		}
 		else
 		{
 
-			if (x < xBoundsIds.first)
-				xBoundsIds.first = x;
-			if (x > xBoundsIds.second)
-				xBoundsIds.second = x;
+			if (x < xBounds.first)
+				xBounds.first = x;
+			if (x > xBounds.second)
+				xBounds.second = x;
 
 
-			if (y < yBoundsIds.first)
-				yBoundsIds.first = y;
-			if (y > yBoundsIds.second)
-				yBoundsIds.second = y;
+			if (z < zBounds.first)
+				zBounds.first = z;
+			if (z > zBounds.second)
+				zBounds.second = z;
 		}
 	}
 
 
-
-
-
+	float stepX = (xBounds.second - xBounds.first) / (data.n_rows - 1);
+	float stepZ = (zBounds.second - zBounds.first) / (data.n_rows - 1);
 
 	for (size_t i = 0; i < 10; ++i)
 	{
-
 		QSurfaceDataRow *newRow = new QSurfaceDataRow(10);
+		double x = xBounds.first + i * stepX;
 
-		double x = xBoundsIds.first + i *((xBoundsIds.second - xBoundsIds.first)/data.n_rows);
 		for (int j = 0; j < 10; j++)
 		{
-			double y = yBoundsIds.first + j *((yBoundsIds.second - yBoundsIds.first)/data.n_rows);
+			double z = zBounds.first + j * stepZ;
+
 			arma::vec p = arma::zeros(data.n_cols);
 			p[0] = x;
-			p[1] = y;
+			p[1] = z;
 			double predict = linearRegression_->predict(p);
-			//double predict = x * y;
-			QVector3D v(x, y, predict);
-			(*newRow)[0].setPosition(v);
+
+			QVector3D v(x, predict, z);
+			(*newRow)[j].setPosition(v);
 		}
 
-		*regresssionArray << newRow;
+		*surfaceArray << newRow;
 
 	}
 
-	m_sqrtSinProxy->resetArray(regresssionArray);
+	surfaceProxy_->resetArray(surfaceArray);
 }
