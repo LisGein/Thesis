@@ -8,7 +8,7 @@
 #include "mlpack/core.hpp"
 
 class Experiment;
-class Dataset;
+class DatasetColumnsView;
 
 class FeatureGraphicsScene;
 
@@ -37,8 +37,9 @@ public:
 
 private:
 	std::unique_ptr<FeatureGraphicsScene> featuresScene_;
-	const Experiment& experiment_;
-	const Dataset& dataset_;
+    const Experiment& experiment_;
+    const DatasetColumnsView& dataset_;
+    const DatasetColumnsView& responses_;
 
 	std::set<Feature> featureSet_;
 };

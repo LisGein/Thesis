@@ -8,8 +8,8 @@ class ExperimentTable: public QTableWidget
 public:
 	ExperimentTable(QWidget* parent = 0);
 	virtual ~ExperimentTable();
-	void setFeatures(const QStringList& features, const std::set<int>& enabledFeatures);
-	std::set<int> checkedFeatures() const;
+	void setFeatures(const QStringList& features, const std::vector<int> &enabledFeatures);
+	std::list<int> checkedFeatures() const;
 
 public slots:
 	void disableFeature(const QString& str);

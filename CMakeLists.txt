@@ -9,8 +9,8 @@ set(GUI_APP_NAME ${PROJECT_NAME})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(Qt5_DIR "/home/fedor/Qt/5.9/gcc_64/lib/cmake/Qt5")
-find_package(Qt5 COMPONENTS Core Widgets Charts DataVisualization REQUIRED PATHS ${Qt5_DIR})
+set(Qt5_DIR "/opt/Qt/Qt5/5.8/gcc_64/lib/cmake")
+find_package(Qt5 COMPONENTS Core Widgets Charts DataVisualization REQUIRED PATHS ${Qt5_DIR} NO_DEFAULT_PATH)
 find_package( Mlpack REQUIRED )
 INCLUDE_DIRECTORIES(${Mlpack_INCLUDE_DIR} )
 
@@ -42,8 +42,9 @@ set(CPP_FILES
 	documentTree/document.cpp
 	documentTree/iNode.cpp
 	documentTree/experiment.cpp
-	documentTree/featureModel.cpp
-	documentTree/dataset.cpp
+        documentTree/featureModel.cpp
+        documentTree/dataset.cpp
+        documentTree/datasetColumnsView.cpp
 
 	treeWidget/treeModel.cpp
 	treeWidget/treeView.cpp

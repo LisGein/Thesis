@@ -1,13 +1,14 @@
 #include "common/common.h"
 #include "featureModel.h"
 #include "featureWidget/featureGraphicsScene.h"
-#include "dataset.h"
+#include "datasetColumnsView.h"
 #include "experiment.h"
 
 FeatureModel::FeatureModel(const Experiment& experiment)
 	: featuresScene_(std::make_unique<FeatureGraphicsScene>(*this))
 	, experiment_(experiment)
-	, dataset_(experiment_.getFiltredDataset())
+    , dataset_(experiment_.filtredDataset())
+    , responses_(experiment_.responses())
 {
 	update();
 }
@@ -26,9 +27,10 @@ const std::vector<std::string> FeatureModel::getRawFeatures() const
 {
 	std::vector<std::string> res{"1"};
 
-	std::vector<std::string> features = dataset_.getFeatures();
-	features.erase(std::next(features.begin(), experiment_.getResponseColumn()));
-	res.insert(res.end(), features.begin(), features.end());
+    auto features = dataset_.getFeatureNames();
+    res.insert(res.end(), features.begin(), features.end());
+    auto responses = responses_.getFeatureNames();
+    res.insert(res.end(), responses.begin(), responses.end());
 	return res;
 }
 
@@ -71,13 +73,13 @@ std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) c
 
 std::string FeatureModel::getResponseName() const
 {
-	return dataset_.getNames()[experiment_.getResponseColumn()];
+    return responses_.getFeatureNames()[0];
 }
 
 void FeatureModel::update()
 {
 	featureSet_.clear();
-	featuresScene_->updateTable(dataset_.columnCount());
+    featuresScene_->updateTable(dataset_.originDataset().columnCount());
 }
 
 void FeatureModel::addFeature(const Feature& feature)
@@ -92,7 +94,7 @@ void FeatureModel::removeFeature(const Feature& feature)
 
 const arma::mat FeatureModel::data() const
 {
-	arma::mat extendedDataset = dataset_.data();
+    arma::mat extendedDataset = dataset_.originDataset().data();
 	extendedDataset.insert_cols(0, arma::ones<arma::vec>(extendedDataset.n_rows));
 
 	arma::mat featureColumns(extendedDataset.n_rows, 0);
@@ -107,7 +109,7 @@ const arma::mat FeatureModel::data() const
 
 const arma::vec FeatureModel::responses() const
 {
-	return dataset_.getColumnVector(experiment_.getResponseColumn());
+    return responses_.getColumnVector(0);
 }
 
 

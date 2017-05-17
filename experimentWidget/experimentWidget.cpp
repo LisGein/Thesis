@@ -30,13 +30,12 @@ void ExperimentWidget::setExperiment(Experiment* experiment)
 
 	QStringList features = to_qt(experiment_->getDataset().getNames());
 
-	ui_->response->addItems(features);
+    ui_->response->addItems(features);
 
-	auto filteredResponse = experiment_->getResponseColumn();
-	auto originalResponse = *std::next(experiment_->getEnabledFeatures().begin(), filteredResponse);
-	ui_->response->setCurrentIndex(originalResponse);
+    int originalResponse = experiment_->filtredDataset().originColumns(0);
+    ui_->response->setCurrentIndex(originalResponse);
 
-	ui_->feature->setFeatures(features, experiment_->getEnabledFeatures());
+    ui_->feature->setFeatures(features, experiment_->getEnabledFeatures());
 	ui_->feature->disableFeature(ui_->response->currentText());
 }
 
@@ -45,10 +44,9 @@ void ExperimentWidget::updateFiltredDataset()
 	const auto& checkedFeatures = ui_->feature->checkedFeatures();
 
 	if(experiment_)
-	{
-		experiment_->setEnabledFeatures(checkedFeatures);
-		auto originalResponse = ui_->response->currentIndex();
-		experiment_->setResponse(std::distance(experiment_->getEnabledFeatures().begin(), experiment_->getEnabledFeatures().find(originalResponse)));
+    {
+        experiment_->setEnabledFeatures(checkedFeatures);
+        experiment_->setResponse(ui_->response->currentIndex());
 	}
 }
 

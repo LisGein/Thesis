@@ -4,6 +4,8 @@
 
 #include "abstractDataPlot.h"
 
+#include "mlpack/core.hpp"
+
 
 class LinearRegressionModel;
 namespace QtDataVisualization {
@@ -27,6 +29,8 @@ public:
 
 private:
 	void updateChart();
+    void updateDataChart(const arma::mat& data, const arma::vec& resp);
+    void updateRegressionChart(const auto& data);
 
 	QtDataVisualization::Q3DScatter *pointsGraph_;
 	QtDataVisualization::Q3DSurface *surfaceGraph_;

@@ -6,18 +6,17 @@
 
 Experiment::Experiment(const Document& document)
 	: INode("Experiment", "Regression")
-	, document_(document)
-	, enabledFeatures_()
-
+    , document_(document)
+    , filtredDataset_(document.getDataset())
+    , response_(document.getDataset())
 {
 	int originalFeaturesCount = getDataset().data().n_cols;
-	for (int i = 0; i < originalFeaturesCount; ++i)
-	{
-		enabledFeatures_.insert(i);
+    for (int i = 0; i < originalFeaturesCount - 1; ++i)
+    {
+        filtredDataset_.addFeature(i);
 	}
 
-	response_ = originalFeaturesCount - 1;
-	updateFiltredDataset();
+    response_.addFeature(originalFeaturesCount - 1);
 }
 
 Experiment::~Experiment()
@@ -30,34 +29,33 @@ const Dataset& Experiment::getDataset() const
 	return document_.getDataset();
 }
 
-const Dataset& Experiment::getFiltredDataset() const
+const DatasetColumnsView& Experiment::filtredDataset() const
 {
-	return filtredDataset_;
+    return filtredDataset_;
 }
 
-const std::set<int>& Experiment::getEnabledFeatures() const
+const DatasetColumnsView &Experiment::responses() const
 {
-	return enabledFeatures_;
+    return response_;
 }
 
-void Experiment::setEnabledFeatures(const std::set<int>& enabled)
+const std::vector<int> Experiment::getEnabledFeatures() const
 {
-	enabledFeatures_ = enabled;
-	updateFiltredDataset();
+    auto features = filtredDataset_.features();
+    auto responses = response_.features();
+    features.insert(features.end(), responses.begin(), responses.end());
+    return features;
+}
+
+void Experiment::setEnabledFeatures(const std::list<int>& enabled)
+{
+    filtredDataset_.addFeatures(enabled);
 }
 
 void Experiment::setResponse(int response)
 {
-	response_ = response;
-	updateFiltredDataset();
-}
-
-void Experiment::updateFiltredDataset()
-{
-	auto extendedFeatures = enabledFeatures_;
-	extendedFeatures.insert(response_);
-
-	filtredDataset_ = document_.getDataset().filterFeatures(extendedFeatures);
+    response_.clear();
+    response_.addFeature(response);
 }
 
 void Experiment::update()

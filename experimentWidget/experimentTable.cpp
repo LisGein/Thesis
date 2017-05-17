@@ -30,10 +30,14 @@ void ExperimentTable::disableFeature(const QString& str)
 	}
 }
 
-void ExperimentTable::setFeatures(const QStringList& features, const std::set<int>& enabledFeatures)
+void ExperimentTable::setFeatures(const QStringList& features, const std::vector<int>& enabledFeatures)
 {
 	features_ = features;
 	setRowCount(features_.size());
+
+    std::set<int> s;// ToDo
+    for (auto it : enabledFeatures)
+        s.insert(it);
 
 	for (int i = 0; i != features_.size(); ++i)
 	{
@@ -41,20 +45,20 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::set<in
 		QTableWidgetItem *item = new QTableWidgetItem();
 
 
-		bool checked = enabledFeatures.find(i) != enabledFeatures.end();
+        bool checked = s.find(i) != s.end();
 		item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
 		setItem(i, 1, item);
 	}
 }
 
-std::set<int> ExperimentTable::checkedFeatures() const
+std::list<int> ExperimentTable::checkedFeatures() const
 {
-	std::set<int> checkedList;
+    std::list<int> checkedList;
 	for (int i = 0; i != features_.size(); ++i)
 	{
 		if(item(i, 1)->checkState() == Qt::Checked || item(i, 1)->flags() == Qt::NoItemFlags)
 		{
-			checkedList.insert(i);
+            checkedList.push_back(i);
 		}
 	}
 	return checkedList;

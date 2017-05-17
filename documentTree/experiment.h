@@ -2,14 +2,16 @@
 #include "iNode.h"
 
 #include "dataset.h"
+#include "datasetColumnsView.h"
 
 #include <memory>
 #include <vector>
 #include <set>
+#include <list>
+
 
 class Regression;
 class Document;
-
 
 class Experiment : public INode
 {
@@ -17,10 +19,14 @@ public:
 	Experiment(const Document& document);
 	virtual ~Experiment();
 
-	const Dataset& getDataset() const;
-	const Dataset& getFiltredDataset() const;
-	const std::set<int>& getEnabledFeatures() const;
-	void setEnabledFeatures(const std::set<int>& enabled);
+    const Dataset& getDataset() const;
+
+    const DatasetColumnsView& filtredDataset() const;
+    const DatasetColumnsView& responses() const;
+
+
+    const std::vector<int> getEnabledFeatures() const;
+    void setEnabledFeatures(const std::list<int> &enabled);
 
 	/// \brief set column ID of response
 	/// \param response ID in scope of filtered dataset
@@ -28,7 +34,7 @@ public:
 
 	/// \brief get response column
 	/// \return ID in scope of filtered dataset
-	int getResponseColumn() const { return response_; }
+    int getResponseColumn() const { return response_.originColumns(0); }
 
 	void update();
 
@@ -40,13 +46,10 @@ public:
 	void addNewChild() override;
 	virtual TypeObject type() const override;
 
-private:
-	void updateFiltredDataset();
 
 private:
 	std::vector<std::unique_ptr<Regression>> regressions_;
-	const Document& document_;
-	Dataset filtredDataset_;
-	std::set<int> enabledFeatures_;
-	int response_;
+    const Document& document_;
+    DatasetColumnsView filtredDataset_;
+    DatasetColumnsView response_;
 };
