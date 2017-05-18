@@ -15,7 +15,9 @@ DatasetColumnsView::~DatasetColumnsView()
 
 void DatasetColumnsView::addFeature(int feature)
 {
-    features_.push_back(feature);
+    auto result = std::find(features_.begin(), features_.end(), feature);
+    if (result == features_.end())
+        features_.push_back(feature);
 }
 
 void DatasetColumnsView::removeFeature(int feature)
@@ -30,7 +32,7 @@ void DatasetColumnsView::removeFeature(int feature)
 void DatasetColumnsView::addFeatures(const std::list<int> &features)
 {
     for (auto it: features)
-        features_.push_back(it);
+        addFeature(it);
 }
 
 void DatasetColumnsView::clear()
@@ -62,7 +64,7 @@ std::vector<std::string> DatasetColumnsView::getFeatureNames() const
 
     std::vector<std::string> res = originDataset_.getNames();
     for (int i = 0; i < res.size(); ++i)
-        if (featuresIds.find(i) == featuresIds.end())
+        if (featuresIds.find(i) != featuresIds.end())
             features.push_back(res[i]);
 
     return features;

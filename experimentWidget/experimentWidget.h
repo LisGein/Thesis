@@ -13,12 +13,14 @@ namespace Ui
 
 class ExperimentWidget : public QWidget
 {
-	Q_OBJECT
-	public:
+    Q_OBJECT
+public:
 	ExperimentWidget(QWidget* parent = 0);
 	virtual ~ExperimentWidget();
 
 	void setExperiment(Experiment* experiment);
+
+public slots:
 	void updateFiltredDataset();
 
 

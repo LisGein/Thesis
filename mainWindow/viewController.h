@@ -9,8 +9,7 @@ class DatasetView;
 class Document;
 class QGraphicsView;
 class Regression;
-class DataPlotWidget;
-class Data3DPlotWidget;
+class PlotController;
 
 class ViewController : public QWidget
 {
@@ -32,10 +31,9 @@ private slots:
 
 private:
 	QGraphicsView* gview_;
-	QLineEdit* lineEdit_;
-	DataPlotWidget* dataPlotWidget_;
-	Data3DPlotWidget* data3DPlotWidget_;
+    QLineEdit* lineEdit_;
 	Regression* regression_;
+    PlotController* plotController_;
 
 
 	void updateRegression();

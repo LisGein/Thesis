@@ -1,3 +1,5 @@
+#include "common/common.h"
+
 #include "data3DPlotWidget.h"
 
 #include "../documentTree/featureModel.h"
@@ -13,9 +15,10 @@
 #include <QtDataVisualization/Q3DCamera>
 #include <QtCore/qmath.h>
 #include <QtGui/QScreen>
+#include <QComboBox>
 #include <QDebug>
-
-
+#include <QGridLayout>
+#include <QLabel>
 
 
 using namespace QtDataVisualization;
@@ -24,6 +27,10 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
     : AbstractDataPlot(parent)
     , pointsGraph_(new Q3DScatter())
     , surfaceGraph_(new Q3DSurface())
+    , axisXCombo_(new QComboBox(this))
+    , axisZCombo_(new QComboBox(this))
+    , surfaceProxy_(new QSurfaceDataProxy(this))
+    , pointsProxy_(new QScatterDataProxy(this))
 {
     setLayout(new QHBoxLayout(this));
 
@@ -45,7 +52,6 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
     layout()->addWidget(containerRight);
 
     {
-        pointsProxy_ = new QScatterDataProxy;
         pointsSeries_ = new QScatter3DSeries(pointsProxy_);
         pointsSeries_->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
         pointsSeries_->setMeshSmooth(true);
@@ -60,9 +66,7 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
         pointsGraph_->axisZ()->setAutoAdjustRange(true);
         pointsGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
     }
-
     {
-        surfaceProxy_ = new QSurfaceDataProxy();
         surfaceSeries_ = new QSurface3DSeries(surfaceProxy_);
         surfaceSeries_->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
         surfaceSeries_->setFlatShadingEnabled(false);
@@ -97,6 +101,26 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 
     }
 
+
+    QWidget* axisWidget = new QWidget(this);
+    QGridLayout* lay = new QGridLayout(axisWidget);
+
+    QLabel *labelX = new QLabel("Axis x:", axisWidget);
+    lay->addWidget(labelX, 0, 0);
+    lay->addWidget(axisXCombo_, 0, 1);
+    QLabel *labelZ = new QLabel("Axis z:", axisWidget);
+    lay->addWidget(labelZ, 1, 0);
+    lay->addWidget(axisZCombo_, 1, 1);
+
+
+    axisWidget->setLayout(lay);
+
+
+    layout()->addWidget(axisWidget);
+
+    connect(axisXCombo_, SIGNAL(currentTextChanged(const QString &)), this, SLOT(changeX(const QString &)));
+    connect(axisZCombo_, SIGNAL(currentTextChanged(const QString &)), this, SLOT(changeZ(const QString &)));
+
 }
 
 Data3DPlotWidget::~Data3DPlotWidget()
@@ -108,7 +132,30 @@ void Data3DPlotWidget::setRegression(LinearRegressionModel* linearRegression)
 {
     AbstractDataPlot::setRegression(linearRegression);
     updateChart();
+}
 
+void Data3DPlotWidget::setAxisNames(const std::vector<std::string> &names)
+{
+    axisXCombo_->clear();
+    axisZCombo_->clear();
+
+    for (const auto& feature : names)
+    {
+        axisXCombo_->addItem(to_qt(feature));
+        axisZCombo_->addItem(to_qt(feature));
+
+        axisZCombo_->setCurrentIndex(1);
+    }
+}
+
+void Data3DPlotWidget::changeX(const QString &text)
+{
+    updateChart();
+}
+
+void Data3DPlotWidget::changeZ(const QString &text)
+{
+    updateChart();
 }
 
 void Data3DPlotWidget::updateChart()
@@ -121,11 +168,19 @@ void Data3DPlotWidget::updateChart()
         return;
 
 
-    updateDataChart(data, resp);
-    updateRegressionChart(data);
+
+    int axisX = linearRegression_->getFeatureModel().nameToColumn(axisXCombo_->currentText().toStdString());
+    if (axisX == -1)
+        axisX = 0;
+    int axisZ = linearRegression_->getFeatureModel().nameToColumn(axisZCombo_->currentText().toStdString());
+    if (axisZ == -1)
+        axisZ = 1;
+
+    updateDataChart(data, resp, axisX, axisZ);
+    updateRegressionChart(data, axisX, axisZ);
 }
 
-void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp)
+void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp, int axisX, int axisZ)
 {
     qDebug() << "x, y, z";
     QScatterDataArray *pointsArray = new QScatterDataArray;
@@ -136,7 +191,7 @@ void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& r
     for (size_t i = 0; i < data.n_rows; ++i)
     {
 
-        QVector3D v(data.at(i, 0), resp.at(i), data.at(i, 1));//y axis looks top
+        QVector3D v(data.at(i, axisX), resp.at(i), data.at(i, axisZ));//y axis looks top
         qDebug() << v;
         ptrToDataArray->setPosition(v);
         ptrToDataArray++;
@@ -145,7 +200,7 @@ void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& r
     pointsProxy_->resetArray(pointsArray);
 }
 
-void Data3DPlotWidget::updateRegressionChart(const auto& data)
+void Data3DPlotWidget::updateRegressionChart(const auto& data, int axisX, int axisZ)
 {
     QSurfaceDataArray *surfaceArray = new QSurfaceDataArray;
 
@@ -155,8 +210,8 @@ void Data3DPlotWidget::updateRegressionChart(const auto& data)
 
     for (size_t i = 0; i < data.n_rows; ++i)
     {
-        auto x = data.at(i, 0);
-        auto z = data.at(i, 1);
+        auto x = data.at(i, axisX);
+        auto z = data.at(i, axisZ);
 
         if (firstTime)
         {
@@ -187,7 +242,7 @@ void Data3DPlotWidget::updateRegressionChart(const auto& data)
     float stepZ = (zBounds.second - zBounds.first) / (2*(data.n_rows - 1));
 
     double x = xBounds.first - stepX;
-    do
+    do //ToDo
     {
         QSurfaceDataRow *newRow = new QSurfaceDataRow;
 

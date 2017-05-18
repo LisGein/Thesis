@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "abstractDataPlot.h"
 
 AbstractDataPlot::AbstractDataPlot(QWidget* parent)
@@ -15,7 +16,7 @@ AbstractDataPlot::~AbstractDataPlot()
 void AbstractDataPlot::setRegression(LinearRegressionModel* linearRegression)
 {
 	linearRegression_ = linearRegression;
-	updateChart();
+    updateChart();
 }
 
 void AbstractDataPlot::updateRegression()

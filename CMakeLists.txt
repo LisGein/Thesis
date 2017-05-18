@@ -26,8 +26,9 @@ set(CPP_FILES
 	common/qt.cpp
 	main.cpp
 
-	mainWindow/mainWindow.cpp
-	mainWindow/viewController.cpp
+        mainWindow/mainWindow.cpp
+        mainWindow/viewController.cpp
+        mainWindow/plotController.cpp
 
 	featureWidget/featureGraphicsScene.cpp
 	featureWidget/featureGraphicsItem.cpp
@@ -60,6 +61,7 @@ set(CPP_FILES
  set(FILES_TO_MOC
 	 mainWindow/mainWindow.h
 	 mainWindow/viewController.h
+         mainWindow/plotController.h
 
 	 featureWidget/featureGraphicsScene.h
 

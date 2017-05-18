@@ -17,13 +17,6 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="plotBtn">
-       <property name="text">
-        <string>Plot</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QComboBox" name="axisCombo"/>
      </item>
      <item>

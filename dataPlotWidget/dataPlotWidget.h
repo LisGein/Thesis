@@ -7,35 +7,26 @@
 
 class LinearRegressionModel;
 
-namespace QtCharts
-{
-	class QChartView;
-}
-
-namespace Ui
-{
-class DataPlotWidget;
-}
+namespace QtCharts{ class QChartView; }
+namespace Ui{ class DataPlotWidget; }
 
 class DataPlotWidget : public AbstractDataPlot
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	DataPlotWidget(QWidget *parent = nullptr);
-	~DataPlotWidget();
+    DataPlotWidget(QWidget *parent = nullptr);
+    ~DataPlotWidget();
 
-	virtual void setRegression(LinearRegressionModel* linearRegression);
-
+    virtual void setRegression(LinearRegressionModel* linearRegression) override;
+    virtual void setAxisNames(const std::vector<std::string> &names) override;
 
 private:
-	virtual void updateChart();
+    virtual void updateChart();
 
 private slots:
-	void onPlotClicked();
-
+    void changeX(const QString &text);
 
 private:
-	std::unique_ptr<QtCharts::QChartView> chartView_;
-
-	std::unique_ptr<Ui::DataPlotWidget> ui_;
+    std::unique_ptr<QtCharts::QChartView> chartView_;
+    std::unique_ptr<Ui::DataPlotWidget> ui_;
 };
