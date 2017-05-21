@@ -134,18 +134,21 @@ void Data3DPlotWidget::setRegression(LinearRegressionModel* linearRegression)
     updateChart();
 }
 
-void Data3DPlotWidget::setAxisNames(const std::vector<std::string> &names)
+void Data3DPlotWidget::setAxisNames(const std::set<int> &axisIds)
 {
+    AbstractDataPlot::setAxisNames(axisIds);
     axisXCombo_->clear();
     axisZCombo_->clear();
 
-    for (const auto& feature : names)
+    const FeatureModel& model = linearRegression_->getFeatureModel();
+    for (const auto& feature : axisIds_)
     {
-        axisXCombo_->addItem(to_qt(feature));
-        axisZCombo_->addItem(to_qt(feature));
-
-        axisZCombo_->setCurrentIndex(1);
+        QString name = to_qt(model.idTofeatureName(feature));
+        axisByName_.insert(feature, name);
+        axisXCombo_->addItem(name);
+        axisZCombo_->addItem(name);
     }
+    axisZCombo_->setCurrentIndex(1);
 }
 
 void Data3DPlotWidget::changeX(const QString &text)
@@ -167,31 +170,37 @@ void Data3DPlotWidget::updateChart()
     if (data.n_cols < 2 || data.n_rows == 0)
         return;
 
+    FeatureModel::Feature x = linearRegression_->getFeatureModel().nameToFeature(axisXCombo_->currentText().toStdString());
+    if (x.first == -1)
+    {
+        x = std::make_pair<int, int>(0, 0);
+    }
+
+    FeatureModel::Feature z = linearRegression_->getFeatureModel().nameToFeature(axisZCombo_->currentText().toStdString());
+    if (z.first == -1)
+    {
+        z = std::make_pair<int, int>(1, 0);
+    }
+
+    arma::vec xColumn = linearRegression_->getFeatureModel().columnAt(x);
+    arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(z);
 
 
-    int axisX = linearRegression_->getFeatureModel().nameToColumn(axisXCombo_->currentText().toStdString());
-    if (axisX == -1)
-        axisX = 0;
-    int axisZ = linearRegression_->getFeatureModel().nameToColumn(axisZCombo_->currentText().toStdString());
-    if (axisZ == -1)
-        axisZ = 1;
-
-    updateDataChart(data, resp, axisX, axisZ);
-    updateRegressionChart(data, axisX, axisZ);
+    updateDataChart(data, resp, xColumn, zColumn);
+    updateRegressionChart(data, xColumn, zColumn);
 }
 
-void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp, int axisX, int axisZ)
+void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn)
 {
     qDebug() << "x, y, z";
     QScatterDataArray *pointsArray = new QScatterDataArray;
     pointsArray->resize(data.n_rows);
     QScatterDataItem *ptrToDataArray = &pointsArray->first();
 
-
     for (size_t i = 0; i < data.n_rows; ++i)
     {
 
-        QVector3D v(data.at(i, axisX), resp.at(i), data.at(i, axisZ));//y axis looks top
+        QVector3D v(xColumn.at(i), resp.at(i), zColumn.at(i));//y axis looks top
         qDebug() << v;
         ptrToDataArray->setPosition(v);
         ptrToDataArray++;
@@ -200,7 +209,7 @@ void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& r
     pointsProxy_->resetArray(pointsArray);
 }
 
-void Data3DPlotWidget::updateRegressionChart(const auto& data, int axisX, int axisZ)
+void Data3DPlotWidget::updateRegressionChart(const arma::mat &data, const arma::vec &xColumn, const arma::vec &zColumn)
 {
     QSurfaceDataArray *surfaceArray = new QSurfaceDataArray;
 
@@ -210,8 +219,8 @@ void Data3DPlotWidget::updateRegressionChart(const auto& data, int axisX, int ax
 
     for (size_t i = 0; i < data.n_rows; ++i)
     {
-        auto x = data.at(i, axisX);
-        auto z = data.at(i, axisZ);
+        auto x = xColumn.at(i);
+        auto z = zColumn.at(i);
 
         if (firstTime)
         {
@@ -242,6 +251,24 @@ void Data3DPlotWidget::updateRegressionChart(const auto& data, int axisX, int ax
     float stepZ = (zBounds.second - zBounds.first) / (2*(data.n_rows - 1));
 
     double x = xBounds.first - stepX;
+
+
+
+    std::map<int, double> raw;
+    int idX = -1;
+    int idZ = -1;
+
+
+    for (QMap<int, QString>::iterator feature = axisByName_.begin(); feature != axisByName_.end(); ++feature)
+    {
+        int key = feature.key();
+        auto it = raw.emplace(key, 0.0);
+        if (feature.value() == axisXCombo_->currentText())
+            idX = key;
+        if (feature.value() == axisZCombo_->currentText())
+            idZ = key;
+    }
+
     do //ToDo
     {
         QSurfaceDataRow *newRow = new QSurfaceDataRow;
@@ -251,13 +278,22 @@ void Data3DPlotWidget::updateRegressionChart(const auto& data, int axisX, int ax
         double z = zBounds.first - stepZ;
 
         size_t j = 0;
+        std::map<int, double> rawFeatures = raw;
+
+        auto iterX = rawFeatures.find(idX);
+        if (iterX != rawFeatures.end())
+            iterX->second = x;
         do
         {
             z += stepZ;
-            arma::vec p = arma::zeros(data.n_cols);
-            p[0] = x;
-            p[1] = z;
-            double predict = linearRegression_->predict(p);
+
+
+            auto iterZ = rawFeatures.find(idZ);
+            if (iterZ != rawFeatures.end())
+                iterZ->second = z;
+
+            arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
+            double predict = linearRegression_->predict(res);
 
             QVector3D v(x, predict, z);
             qDebug() << v;

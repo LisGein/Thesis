@@ -6,6 +6,8 @@
 
 #include "mlpack/core.hpp"
 
+#include <QMap>
+
 
 class LinearRegressionModel;
 namespace QtDataVisualization {
@@ -26,7 +28,7 @@ public:
     virtual ~Data3DPlotWidget();
 
     virtual void setRegression(LinearRegressionModel* linearRegression) override;
-    virtual void setAxisNames(const std::vector<std::string> &names) override;
+    virtual void setAxisNames(const std::set<int> &axisIds) override;
 
 private slots:
     void changeX(const QString &text);
@@ -34,8 +36,8 @@ private slots:
 
 private:
     void updateChart();
-    void updateDataChart(const arma::mat& data, const arma::vec& resp, int axisX, int axisZ);
-    void updateRegressionChart(const auto& data, int axisX, int axisZ);
+    void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
+    void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
 
     QtDataVisualization::Q3DScatter *pointsGraph_;
     QtDataVisualization::Q3DSurface *surfaceGraph_;
@@ -48,4 +50,6 @@ private:
 
     QComboBox* axisXCombo_;
     QComboBox* axisZCombo_;
+
+    QMap<int, QString> axisByName_;
 };

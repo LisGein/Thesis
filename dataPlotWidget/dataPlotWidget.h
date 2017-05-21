@@ -18,7 +18,7 @@ public:
     ~DataPlotWidget();
 
     virtual void setRegression(LinearRegressionModel* linearRegression) override;
-    virtual void setAxisNames(const std::vector<std::string> &names) override;
+    virtual void setAxisNames(const std::set<int> &axisIds) override;
 
 private:
     virtual void updateChart();

@@ -33,7 +33,7 @@ void LinearRegressionModel::update()
 	parameters.print("Params:");
 }
 
-const FeatureModel&LinearRegressionModel::getFeatureModel() const
+const FeatureModel& LinearRegressionModel::getFeatureModel() const
 {
 	return featureModel_;
 }

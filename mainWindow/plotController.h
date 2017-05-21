@@ -1,6 +1,8 @@
 #pragma once
 #include <QWidget>
 
+#include <set>
+
 
 class DataPlotWidget;
 class Data3DPlotWidget;
@@ -14,7 +16,7 @@ public:
     virtual ~PlotController();
 
     void setRegression(Regression* regression);
-    void setAxisNames(const std::vector<std::string>& names);
+    void setAxisNames(const std::set<int> &names);
 
 private slots:
     void changeGraphic();

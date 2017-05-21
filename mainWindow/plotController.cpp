@@ -43,7 +43,7 @@ void PlotController::setRegression(Regression *regression)
     QObject::connect(regression->featureModel().getScene(), SIGNAL(updatedRegression()), data3DPlotWidget_, SLOT(updateRegression()));
 }
 
-void PlotController::setAxisNames(const std::vector<std::string> &names)
+void PlotController::setAxisNames(const std::set<int> &names)
 {
     dataPlotWidget_->setAxisNames(names);
     data3DPlotWidget_->setAxisNames(names);

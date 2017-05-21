@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <memory>
+#include <set>
 
 
 class LinearRegressionModel;
@@ -14,7 +15,7 @@ public:
 	virtual ~AbstractDataPlot();
 
     virtual void setRegression(LinearRegressionModel* linearRegression);
-    virtual void setAxisNames(const std::vector<std::string> &names) = 0;
+    virtual void setAxisNames(const std::set<int> &axisIds);
 
 public slots:
 	void updateRegression();
@@ -24,4 +25,5 @@ protected:
 
 
     LinearRegressionModel* linearRegression_;
+    std::set<int> axisIds_;
 };

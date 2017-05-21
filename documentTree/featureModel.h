@@ -24,24 +24,32 @@ public:
     const std::vector<std::string> getRawFeatures() const;
     const std::vector<std::string> getFeatureNames() const;
 
-    const std::set<std::string> getRawNames() const;
+    const std::set<int> getRawIds() const;
+    void getFinalColumnIdsByRow();
 
+
+
+    int nameToOriginColumn(const std::string& name) const;
+    int featureToOriginColumn(const Feature& feature) const;
+    const Feature nameToFeature(const std::string &srt) const;
+    std::string idTofeatureName(int id) const;
 
     std::string getFeatureName(const Feature& feature, bool nameOne = false) const;
-
-
-	std::string getResponseName() const;
-
-    int nameToColumn(const std::string& name) const;
+    std::string getResponseName() const;
 
 	void update();
 
 	void addFeature(const Feature& feature);
 	void removeFeature(const Feature& feature);
 
-	const arma::mat data() const;
-	const arma::vec responses() const;
+    const arma::mat data() const;
+    const arma::vec responses() const;
 
+    const arma::vec columnAt(const Feature &feature) const;
+
+    const arma::mat originData() const;
+
+    arma::vec getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const;
 
 private:
 	std::unique_ptr<FeatureGraphicsScene> featuresScene_;
@@ -56,4 +64,6 @@ private:
 
 
     void updateData();
+
+
 };

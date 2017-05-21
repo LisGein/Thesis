@@ -46,19 +46,29 @@ const std::vector<std::string> FeatureModel::getFeatureNames() const
     return names;
 }
 
-const std::set<std::string> FeatureModel::getRawNames() const
+const std::set<int> FeatureModel::getRawIds() const
 {
-    auto raw = getRawFeatures();
-    std::set<std::string> raws;
+    std::set<int> raws;
     for (const auto& feature : featureSet_)
-        if (feature.first != 0 && feature.second != 0)
-        {
-            raws.insert(raw[feature.first]);
-            raws.insert(raw[feature.second]);
-        }
+    {
+        if (feature.first != 0 )
+            raws.insert(feature.first);
+        if (feature.second != 0)
+            raws.insert(feature.second);
+    }
 
     return raws;
 }
+
+std::string FeatureModel::idTofeatureName(int id) const
+{
+    if (id == 0)
+        return std::string();
+
+    auto raw = getRawFeatures();
+    return raw[id];
+}
+
 
 std::string FeatureModel::getFeatureName(const Feature& feature, bool nameOne) const
 {
@@ -90,18 +100,30 @@ std::string FeatureModel::getResponseName() const
     return responses_.getFeatureNames()[0];
 }
 
-int FeatureModel::nameToColumn(const std::string &name) const
+int FeatureModel::nameToOriginColumn(const std::string &name) const
 {
-    auto itFeature = nameToFeature_.find(name);
-    if (itFeature == nameToFeature_.end())
+    Feature itFeature = nameToFeature(name);
+    if (itFeature.first == -1 && itFeature.second == -1)
         return -1;
 
+    return featureToOriginColumn(itFeature);
+}
 
-    auto itColumn = featureToColumn_.find(itFeature->second);
+int FeatureModel::featureToOriginColumn(const Feature &feature) const
+{
+    auto itColumn = featureToColumn_.find(feature);
     if (itColumn == featureToColumn_.end())
         return -1;
 
     return itColumn->second;
+}
+
+const FeatureModel::Feature FeatureModel::nameToFeature(const std::string &srt) const
+{
+    auto itFeature = nameToFeature_.find(srt);
+    if (itFeature == nameToFeature_.end())
+        return std::pair<int, int>(-1, -1);
+    return itFeature->second;
 }
 
 void FeatureModel::update()
@@ -135,6 +157,36 @@ const arma::vec FeatureModel::responses() const
 {
     return responses_.getColumnVector(0);
 }
+const arma::mat FeatureModel::originData() const
+{
+    return dataset_.originDataset().data();
+}
+
+arma::vec FeatureModel::getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const
+{
+    arma::vec res;
+
+    for (const auto& feature : featureSet_)
+    {
+        auto itFirst = rawFeaturesValue.find(feature.first);
+        if (itFirst != rawFeaturesValue.end())
+        {
+            auto itSecond = rawFeaturesValue.find(feature.second);
+            if (itSecond != rawFeaturesValue.end())
+                res << itFirst->second * itSecond->second;
+        }
+    }
+
+    return res;
+}
+
+const arma::vec FeatureModel::columnAt(const Feature& feature) const
+{
+    arma::mat extendedDataset = dataset_.originDataset().data();
+    extendedDataset.insert_cols(0, arma::ones<arma::vec>(extendedDataset.n_rows));
+    return arma::vec(extendedDataset.col(feature.first) % extendedDataset.col(feature.second));
+}
+
 
 void FeatureModel::updateData()
 {
@@ -150,7 +202,5 @@ void FeatureModel::updateData()
         featureToColumn_.emplace(feature, column);
         ++column;
     }
-
 }
-
 

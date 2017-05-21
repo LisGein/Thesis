@@ -19,6 +19,11 @@ void AbstractDataPlot::setRegression(LinearRegressionModel* linearRegression)
     updateChart();
 }
 
+void AbstractDataPlot::setAxisNames(const std::set<int> &axisIds)
+{
+    axisIds_ = axisIds;
+}
+
 void AbstractDataPlot::updateRegression()
 {
 	updateChart();

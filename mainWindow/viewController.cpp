@@ -25,8 +25,8 @@ ViewController::ViewController(QWidget* parent)
     : QWidget(parent)
     , gview_(new QGraphicsView(this))
     , lineEdit_(new QLineEdit(this))
-    , plotController_ (new PlotController(this))
     , regression_(nullptr)
+    , plotController_ (new PlotController(this))
 {
     setLayout(new QVBoxLayout(this));
 
@@ -82,7 +82,7 @@ void ViewController::addToFormula(QPair<int, int> feature)
 void ViewController::updateRegression()
 {
     regression_->linearRegressionModel().update();
-    plotController_->setAxisNames(regression_->featureModel().getFeatureNames());
+    plotController_->setAxisNames(regression_->featureModel().getRawIds());
     updateFormulaText();
 }
 

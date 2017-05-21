@@ -46,12 +46,14 @@ void DataPlotWidget::setRegression(LinearRegressionModel* linearRegression)
     connect(ui_->axisCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(changeX(const QString &)));
 }
 
-void DataPlotWidget::setAxisNames(const std::vector<std::string> &names)
+void DataPlotWidget::setAxisNames(const std::set<int> &axisIds)
 {
+    AbstractDataPlot::setAxisNames(axisIds);
     ui_->axisCombo->clear();
 
-    for (const auto& feature : names)
-        ui_->axisCombo->addItem(to_qt(feature));
+    const FeatureModel& model = linearRegression_->getFeatureModel();
+    for (const auto& feature : axisIds)
+        ui_->axisCombo->addItem(to_qt(model.idTofeatureName(feature)));
 }
 
 void DataPlotWidget::updateChart()
