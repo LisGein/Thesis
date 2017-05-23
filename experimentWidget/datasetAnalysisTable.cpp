@@ -8,12 +8,14 @@
 DatasetAnalysisTable::DatasetAnalysisTable(QWidget *parent)
     : QTableWidget(parent)
 {
-    setRowCount(5);
+    setRowCount(6);
     QStringList verticalHeader;
     verticalHeader.append("Average value");
     verticalHeader.append("Median");
     verticalHeader.append("Standard deviation");
     verticalHeader.append("Variance");
+    verticalHeader.append("Minimum");
+    verticalHeader.append("Maximum");
     setVerticalHeaderLabels(verticalHeader);
 }
 
@@ -34,7 +36,8 @@ void DatasetAnalysisTable::setFeatures(const QStringList &features, const Datase
         setItem(1, i, new QTableWidgetItem(QString::number(median(vector))));
         setItem(2, i, new QTableWidgetItem(QString::number(stddev(vector))));
         setItem(3, i, new QTableWidgetItem(QString::number(var(vector))));
-        //setItem(4, i, new QTableWidgetItem(QString::number(arma::range(vector))));
+        setItem(4, i, new QTableWidgetItem(QString::number(min(vector))));
+        setItem(5, i, new QTableWidgetItem(QString::number(max(vector))));
     }
     setHorizontalHeaderLabels(features);
 }
