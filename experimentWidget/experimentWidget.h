@@ -5,6 +5,7 @@
 
 class Experiment;
 class ExperimentTable;
+class DatasetAnalysisTable;
 
 namespace Ui
 {

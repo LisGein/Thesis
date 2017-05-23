@@ -31,13 +31,14 @@ public:
     virtual void setAxisNames(const std::set<int> &axisIds) override;
 
 private slots:
-    void changeX(const QString &text);
-    void changeZ(const QString &text);
+    void changeX(const QString &);
+    void changeZ(const QString &);
 
 private:
     void updateChart();
     void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
     void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
+
 
     QtDataVisualization::Q3DScatter *pointsGraph_;
     QtDataVisualization::Q3DSurface *surfaceGraph_;

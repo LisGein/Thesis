@@ -21,16 +21,18 @@
 #include <QLabel>
 
 
+const int GRID_SIZE = 20;
+
 using namespace QtDataVisualization;
 
 Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
     : AbstractDataPlot(parent)
     , pointsGraph_(new Q3DScatter())
     , surfaceGraph_(new Q3DSurface())
-    , axisXCombo_(new QComboBox(this))
-    , axisZCombo_(new QComboBox(this))
     , surfaceProxy_(new QSurfaceDataProxy(this))
     , pointsProxy_(new QScatterDataProxy(this))
+    , axisXCombo_(new QComboBox(this))
+    , axisZCombo_(new QComboBox(this))
 {
     setLayout(new QHBoxLayout(this));
 
@@ -145,18 +147,18 @@ void Data3DPlotWidget::setAxisNames(const std::set<int> &axisIds)
     {
         QString name = to_qt(model.idTofeatureName(feature));
         axisByName_.insert(feature, name);
-        axisXCombo_->addItem(name);
-        axisZCombo_->addItem(name);
+        axisXCombo_->addItem(name, QVariant(feature));
+        axisZCombo_->addItem(name, QVariant(feature));
     }
     axisZCombo_->setCurrentIndex(1);
 }
 
-void Data3DPlotWidget::changeX(const QString &text)
+void Data3DPlotWidget::changeX(const QString &)
 {
     updateChart();
 }
 
-void Data3DPlotWidget::changeZ(const QString &text)
+void Data3DPlotWidget::changeZ(const QString &)
 {
     updateChart();
 }
@@ -170,20 +172,18 @@ void Data3DPlotWidget::updateChart()
     if (data.n_cols < 2 || data.n_rows == 0)
         return;
 
-    FeatureModel::Feature x = linearRegression_->getFeatureModel().nameToFeature(axisXCombo_->currentText().toStdString());
-    if (x.first == -1)
-    {
-        x = std::make_pair<int, int>(0, 0);
-    }
+    int x = axisXCombo_->currentData().toInt();
+    if (x == -1)
+        x = 0;
 
-    FeatureModel::Feature z = linearRegression_->getFeatureModel().nameToFeature(axisZCombo_->currentText().toStdString());
-    if (z.first == -1)
-    {
-        z = std::make_pair<int, int>(1, 0);
-    }
 
-    arma::vec xColumn = linearRegression_->getFeatureModel().columnAt(x);
-    arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(z);
+    int z = axisZCombo_->currentData().toInt();
+    if (z == -1)
+        z = 0;
+
+
+    arma::vec xColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(x, 0));
+    arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(z, 0));
 
 
     updateDataChart(data, resp, xColumn, zColumn);
@@ -247,8 +247,8 @@ void Data3DPlotWidget::updateRegressionChart(const arma::mat &data, const arma::
     surfaceGraph_->axisX()->setRange(xBounds.first - 0.1, xBounds.second + 0.1);
     surfaceGraph_->axisZ()->setRange(zBounds.first - 0.1, zBounds.second + 0.1);
     qDebug() << "x, y, z predict";
-    float stepX = (xBounds.second - xBounds.first) / (2*(data.n_rows - 1));
-    float stepZ = (zBounds.second - zBounds.first) / (2*(data.n_rows - 1));
+    float stepX = (xBounds.second - xBounds.first) / GRID_SIZE;
+    float stepZ = (zBounds.second - zBounds.first) / GRID_SIZE;
 
     double x = xBounds.first - stepX;
 
@@ -258,18 +258,18 @@ void Data3DPlotWidget::updateRegressionChart(const arma::mat &data, const arma::
     int idX = -1;
     int idZ = -1;
 
-
+//FIXME remove comparison with String
     for (QMap<int, QString>::iterator feature = axisByName_.begin(); feature != axisByName_.end(); ++feature)
     {
         int key = feature.key();
-        auto it = raw.emplace(key, 0.0);
+        raw.emplace(key, 0.0);
         if (feature.value() == axisXCombo_->currentText())
             idX = key;
         if (feature.value() == axisZCombo_->currentText())
             idZ = key;
     }
 
-    do //ToDo
+    do
     {
         QSurfaceDataRow *newRow = new QSurfaceDataRow;
 

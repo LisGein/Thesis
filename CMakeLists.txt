@@ -56,6 +56,7 @@ set(CPP_FILES
 
 	experimentWidget/experimentWidget.cpp
 	experimentWidget/experimentTable.cpp
+    experimentWidget/datasetAnalysisTable.cpp
 	 )
 
  set(FILES_TO_MOC
@@ -77,6 +78,7 @@ set(CPP_FILES
 
 	 experimentWidget/experimentWidget.h
 	 experimentWidget/experimentTable.h
+     experimentWidget/datasetAnalysisTable.h
 	  )
 
  set(FILES_TO_UIC

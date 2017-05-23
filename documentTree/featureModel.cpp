@@ -137,7 +137,39 @@ void FeatureModel::update()
 void FeatureModel::addFeature(const Feature& feature)
 {
     featureSet_.insert(feature);
-    nameToFeature_.emplace(getFeatureName(feature), feature);
+
+    auto raw = getRawFeatures(); //TODO: optimize
+
+    std::string name;
+    if (feature.first != 0 && feature.second != 0)
+    {
+        if (feature.first == feature.second)
+        {
+            name = raw[feature.first] + "^2";
+            nameToFeature_.emplace(name, feature);
+            nameToFeature_.emplace(raw[feature.first], Feature(feature.first, 0));
+        }
+        else
+        {
+            name = raw[feature.first] + "*" + raw[feature.second];
+            nameToFeature_.emplace(name, feature);
+            nameToFeature_.emplace(raw[feature.first], Feature(feature.first, 0));
+            nameToFeature_.emplace(raw[feature.second], Feature(feature.second, 0));
+        }
+    }
+    else
+    {
+        if(feature.first == 0)
+        {
+            name = raw[feature.second];
+            nameToFeature_.emplace(raw[feature.second], Feature(feature.second, 0));
+        }
+        else if (feature.second == 0)
+        {
+            name = raw[feature.first];
+            nameToFeature_.emplace(raw[feature.first], Feature(feature.first, 0));
+        }
+    }
     updateData();
 }
 

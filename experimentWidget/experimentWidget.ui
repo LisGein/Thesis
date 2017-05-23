@@ -40,6 +40,9 @@
      <item>
       <widget class="ExperimentTable" name="feature"/>
      </item>
+     <item>
+      <widget class="DatasetAnalysisTable" name="analisys"/>
+     </item>
     </layout>
    </item>
   </layout>
@@ -49,6 +52,11 @@
    <class>ExperimentTable</class>
    <extends>QTableWidget</extends>
    <header>experimentTable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DatasetAnalysisTable</class>
+   <extends>QTableWidget</extends>
+   <header location="global">datasetAnalysisTable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

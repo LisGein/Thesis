@@ -78,7 +78,7 @@ void DataPlotWidget::updateChart()
             return;
 
         // x in tearms of plot widget
-        int xAxisColumn = data.n_cols - 1; //TODO: !!hardcode!! set with gui
+        int xAxisColumn = data.n_cols - 1; //FIXME: !!hardcode!! set with gui
 
         auto xBoundsIds = std::make_pair(0, 0);
 

@@ -56,14 +56,14 @@ int DatasetColumnsView::originColumns(int filteredId) const
 std::vector<std::string> DatasetColumnsView::getFeatureNames() const
 {
     std::set<int> featuresIds;
-    for (int i = 0; i < features_.size(); ++i)
+    for (size_t i = 0; i < features_.size(); ++i)
         featuresIds.insert(features_[i]);
 
     std::vector<std::string> features;
 
 
     std::vector<std::string> res = originDataset_.getNames();
-    for (int i = 0; i < res.size(); ++i)
+    for (size_t i = 0; i < res.size(); ++i)
         if (featuresIds.find(i) != featuresIds.end())
             features.push_back(res[i]);
 

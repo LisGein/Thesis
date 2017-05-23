@@ -35,7 +35,7 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::vector
 	features_ = features;
 	setRowCount(features_.size());
 
-    std::set<int> s;// ToDo
+    std::set<int> s;// FIXME remove vector to set
     for (auto it : enabledFeatures)
         s.insert(it);
 

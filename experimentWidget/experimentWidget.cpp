@@ -36,6 +36,7 @@ void ExperimentWidget::setExperiment(Experiment* experiment)
     ui_->response->setCurrentIndex(originalResponse);
 
     ui_->feature->setFeatures(features, experiment_->getEnabledFeatures());
+    ui_->analisys->setFeatures(features, experiment_->getDataset());
 	ui_->feature->disableFeature(ui_->response->currentText());
 }
 
