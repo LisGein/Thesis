@@ -16,6 +16,7 @@
 #include <QLineEdit>
 #include <QTreeView>
 #include <QDebug>
+#include <QSplitter>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/format.hpp>
@@ -34,8 +35,14 @@ ViewController::ViewController(QWidget* parent)
     w->setLayout(new QVBoxLayout(this));
     w->layout()->addWidget(gview_);
     w->layout()->addWidget(lineEdit_);
-    w->layout()->addWidget(plotController_);
-    layout()->addWidget(w);
+
+    QSplitter *split = new QSplitter(this);
+    split->setOrientation(Qt::Vertical);
+    split->addWidget(w);
+    split->addWidget(plotController_);
+    split->setChildrenCollapsible(false);
+
+    layout()->addWidget(split);
 
 }
 

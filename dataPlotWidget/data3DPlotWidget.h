@@ -27,18 +27,14 @@ public:
     Data3DPlotWidget(QWidget *parent = nullptr);
     virtual ~Data3DPlotWidget();
 
-    virtual void setRegression(LinearRegressionModel* linearRegression) override;
-    virtual void setAxisNames(const std::set<int> &axisIds) override;
-
-private slots:
-    void changeX(const QString &);
-    void changeZ(const QString &);
 
 private:
-    void updateChart();
+    virtual void updateChart(const arma::mat& data, const arma::vec& resp) override;
+
     void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
     void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
 
+    void setGradient();
 
     QtDataVisualization::Q3DScatter *pointsGraph_;
     QtDataVisualization::Q3DSurface *surfaceGraph_;
@@ -49,8 +45,6 @@ private:
     QtDataVisualization::QScatter3DSeries *pointsSeries_;
     QtDataVisualization::QSurface3DSeries *surfaceSeries_;
 
-    QComboBox* axisXCombo_;
-    QComboBox* axisZCombo_;
 
     QMap<int, QString> axisByName_;
 };

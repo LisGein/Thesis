@@ -15,13 +15,12 @@
 #include <QtDataVisualization/Q3DCamera>
 #include <QtCore/qmath.h>
 #include <QtGui/QScreen>
-#include <QComboBox>
 #include <QDebug>
+#include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
 
 
-const int GRID_SIZE = 20;
 
 using namespace QtDataVisualization;
 
@@ -29,13 +28,9 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
     : AbstractDataPlot(parent)
     , pointsGraph_(new Q3DScatter())
     , surfaceGraph_(new Q3DSurface())
-    , surfaceProxy_(new QSurfaceDataProxy(this))
     , pointsProxy_(new QScatterDataProxy(this))
-    , axisXCombo_(new QComboBox(this))
-    , axisZCombo_(new QComboBox(this))
+    , surfaceProxy_(new QSurfaceDataProxy(this))
 {
-    setLayout(new QHBoxLayout(this));
-
     QWidget *containerLeft = QWidget::createWindowContainer(pointsGraph_);
 
 
@@ -87,41 +82,9 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
         surfaceGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
         surfaceGraph_->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
 
-        //set green to red gradient
-
-        {
-
-            QLinearGradient gr;
-            gr.setColorAt(-2.0, Qt::darkGreen);
-            gr.setColorAt(0.5, Qt::yellow);
-            gr.setColorAt(2.0, Qt::red);
-            gr.setColorAt(4.0, Qt::darkRed);
-
-            surfaceSeries_->setBaseGradient(gr);
-            surfaceSeries_->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
-        }
 
     }
 
-
-    QWidget* axisWidget = new QWidget(this);
-    QGridLayout* lay = new QGridLayout(axisWidget);
-
-    QLabel *labelX = new QLabel("Axis x:", axisWidget);
-    lay->addWidget(labelX, 0, 0);
-    lay->addWidget(axisXCombo_, 0, 1);
-    QLabel *labelZ = new QLabel("Axis z:", axisWidget);
-    lay->addWidget(labelZ, 1, 0);
-    lay->addWidget(axisZCombo_, 1, 1);
-
-
-    axisWidget->setLayout(lay);
-
-
-    layout()->addWidget(axisWidget);
-
-    connect(axisXCombo_, SIGNAL(currentTextChanged(const QString &)), this, SLOT(changeX(const QString &)));
-    connect(axisZCombo_, SIGNAL(currentTextChanged(const QString &)), this, SLOT(changeZ(const QString &)));
 
 }
 
@@ -130,69 +93,26 @@ Data3DPlotWidget::~Data3DPlotWidget()
 
 }
 
-void Data3DPlotWidget::setRegression(LinearRegressionModel* linearRegression)
+void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 {
-    AbstractDataPlot::setRegression(linearRegression);
-    updateChart();
-}
-
-void Data3DPlotWidget::setAxisNames(const std::set<int> &axisIds)
-{
-    AbstractDataPlot::setAxisNames(axisIds);
-    axisXCombo_->clear();
-    axisZCombo_->clear();
-
-    const FeatureModel& model = linearRegression_->getFeatureModel();
-    for (const auto& feature : axisIds_)
-    {
-        QString name = to_qt(model.idTofeatureName(feature));
-        axisByName_.insert(feature, name);
-        axisXCombo_->addItem(name, QVariant(feature));
-        axisZCombo_->addItem(name, QVariant(feature));
-    }
-    axisZCombo_->setCurrentIndex(1);
-}
-
-void Data3DPlotWidget::changeX(const QString &)
-{
-    updateChart();
-}
-
-void Data3DPlotWidget::changeZ(const QString &)
-{
-    updateChart();
-}
-
-void Data3DPlotWidget::updateChart()
-{
-
-    auto data = linearRegression_->getFeatureModel().data();
-    auto resp = linearRegression_->getFeatureModel().responses();
-
-    if (data.n_cols < 2 || data.n_rows == 0)
+    if (axisZCombo_->box->currentIndex() == -1)
         return;
 
-    int x = axisXCombo_->currentData().toInt();
-    if (x == -1)
-        x = 0;
-
-
-    int z = axisZCombo_->currentData().toInt();
-    if (z == -1)
-        z = 0;
-
-
+    int x = axisXCombo_->box->currentData().toInt();
     arma::vec xColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(x, 0));
+
+    int z = axisZCombo_->box->currentData().toInt();
     arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(z, 0));
 
 
     updateDataChart(data, resp, xColumn, zColumn);
     updateRegressionChart(data, xColumn, zColumn);
+
+    setGradient();
 }
 
 void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn)
 {
-    qDebug() << "x, y, z";
     QScatterDataArray *pointsArray = new QScatterDataArray;
     pointsArray->resize(data.n_rows);
     QScatterDataItem *ptrToDataArray = &pointsArray->first();
@@ -201,7 +121,6 @@ void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& r
     {
 
         QVector3D v(xColumn.at(i), resp.at(i), zColumn.at(i));//y axis looks top
-        qDebug() << v;
         ptrToDataArray->setPosition(v);
         ptrToDataArray++;
     }
@@ -213,96 +132,76 @@ void Data3DPlotWidget::updateRegressionChart(const arma::mat &data, const arma::
 {
     QSurfaceDataArray *surfaceArray = new QSurfaceDataArray;
 
-
-    std::pair<double, double> xBounds, zBounds;
-    bool firstTime = true;
-
-    for (size_t i = 0; i < data.n_rows; ++i)
-    {
-        auto x = xColumn.at(i);
-        auto z = zColumn.at(i);
-
-        if (firstTime)
-        {
-            xBounds = std::make_pair(x, x);
-            zBounds = std::make_pair(z, z);
-            firstTime = false;
-        }
-        else
-        {
-
-            if (x < xBounds.first)
-                xBounds.first = x;
-            if (x > xBounds.second)
-                xBounds.second = x;
-
-
-            if (z < zBounds.first)
-                zBounds.first = z;
-            if (z > zBounds.second)
-                zBounds.second = z;
-        }
-    }
+    auto xBounds = bounds(data, xColumn);
+    auto zBounds = bounds(data, zColumn);
 
     surfaceGraph_->axisX()->setRange(xBounds.first - 0.1, xBounds.second + 0.1);
     surfaceGraph_->axisZ()->setRange(zBounds.first - 0.1, zBounds.second + 0.1);
-    qDebug() << "x, y, z predict";
+
     float stepX = (xBounds.second - xBounds.first) / GRID_SIZE;
     float stepZ = (zBounds.second - zBounds.first) / GRID_SIZE;
 
-    double x = xBounds.first - stepX;
+    double x = xBounds.first;
 
 
 
     std::map<int, double> raw;
-    int idX = -1;
-    int idZ = -1;
+    std::pair<int, int> ids(0, 1);
 
-//FIXME remove comparison with String
-    for (QMap<int, QString>::iterator feature = axisByName_.begin(); feature != axisByName_.end(); ++feature)
+    for (const auto& key : axisIds_)
     {
-        int key = feature.key();
         raw.emplace(key, 0.0);
-        if (feature.value() == axisXCombo_->currentText())
-            idX = key;
-        if (feature.value() == axisZCombo_->currentText())
-            idZ = key;
+        if (key == axisXCombo_->box->currentData().toInt())
+            ids.first = key;
+        if (key == axisZCombo_->box->currentData().toInt())
+            ids.second = key;
     }
 
-    do
+    while (x < xBounds.second)
     {
         QSurfaceDataRow *newRow = new QSurfaceDataRow;
 
-        x += stepX;
+        double z = zBounds.first;
 
-        double z = zBounds.first - stepZ;
-
-        size_t j = 0;
         std::map<int, double> rawFeatures = raw;
 
-        auto iterX = rawFeatures.find(idX);
-        if (iterX != rawFeatures.end())
-            iterX->second = x;
-        do
         {
-            z += stepZ;
+            auto iterX = rawFeatures.find(ids.first);
+            if (iterX != rawFeatures.end())
+                iterX->second = x;
+        }
 
-
-            auto iterZ = rawFeatures.find(idZ);
-            if (iterZ != rawFeatures.end())
-                iterZ->second = z;
+        while (z < zBounds.second)
+        {
+            {
+                auto iterZ = rawFeatures.find(ids.second);
+                if (iterZ != rawFeatures.end())
+                    iterZ->second = z;
+            }
 
             arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
             double predict = linearRegression_->predict(res);
 
             QVector3D v(x, predict, z);
-            qDebug() << v;
             (*newRow).append(QSurfaceDataItem(v));
-            ++j;
-        } while (z < zBounds.second);
+            z += stepZ;
 
+        }
         surfaceArray->append(newRow);
 
-    } while (x < xBounds.second);
+        x += stepX;
+    }
     surfaceProxy_->resetArray(surfaceArray);
+}
+
+void Data3DPlotWidget::setGradient()
+{
+    QLinearGradient gr;
+    gr.setColorAt(0.0, Qt::black);
+    gr.setColorAt(0.33, Qt::blue);
+    gr.setColorAt(0.67, Qt::red);
+    gr.setColorAt(1.0, Qt::yellow);
+
+    surfaceSeries_->setBaseGradient(gr);
+    surfaceSeries_->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
 }

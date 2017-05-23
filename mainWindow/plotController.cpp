@@ -19,15 +19,14 @@ PlotController::PlotController(QWidget *parent)
 {
     dataPlotWidget_->hide();
 
-    setLayout(new QHBoxLayout(this));
-
-
-    QPushButton* act = new QPushButton("Change graphic", this);
-    layout()->addWidget(act);
-    QObject::connect(act, SIGNAL(released()), this, SLOT(changeGraphic()));
+    setLayout(new QVBoxLayout(this));
 
     layout()->addWidget(dataPlotWidget_);
     layout()->addWidget(data3DPlotWidget_);
+
+    QPushButton* act = new QPushButton(QObject::tr("Change graphic"), this);
+    layout()->addWidget(act);
+    QObject::connect(act, SIGNAL(released()), this, SLOT(changeGraphic()));
 }
 
 PlotController::~PlotController()

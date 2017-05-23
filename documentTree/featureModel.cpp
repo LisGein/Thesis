@@ -212,7 +212,7 @@ arma::vec FeatureModel::getFinalFeaturesValue(const std::map<int, double> &rawFe
     return res;
 }
 
-const arma::vec FeatureModel::columnAt(const Feature& feature) const
+const arma::vec FeatureModel::columnAt(Feature feature) const
 {
     arma::mat extendedDataset = dataset_.originDataset().data();
     extendedDataset.insert_cols(0, arma::ones<arma::vec>(extendedDataset.n_rows));

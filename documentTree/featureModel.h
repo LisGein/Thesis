@@ -45,7 +45,7 @@ public:
     const arma::mat data() const;
     const arma::vec responses() const;
 
-    const arma::vec columnAt(const Feature &feature) const;
+    const arma::vec columnAt(Feature feature) const;
 
     const arma::mat originData() const;
 
