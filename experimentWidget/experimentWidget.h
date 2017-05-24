@@ -23,6 +23,7 @@ public:
 
 public slots:
 	void updateFiltredDataset();
+    void updateResponse(const QString &name);
 
 
 private:

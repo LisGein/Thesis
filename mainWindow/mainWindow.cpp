@@ -21,6 +21,8 @@
 
 #include "viewController.h"
 
+#include <boost/property_tree/json_parser.hpp>
+
 
 
 MainWindow::MainWindow(QWidget* parent)
@@ -51,6 +53,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 	ui_->stackedWidget->addWidget(experimentWidget_.get());
 	ui_->stackedWidget->addWidget(graphicsController_.get());
+
+    QObject::connect(ui_->saveAction, SIGNAL(triggered(bool)), this, SLOT(saveRegression()));
+    QObject::connect(ui_->openAction, SIGNAL(triggered(bool)), this, SLOT(openRegression()));
 }
 
 MainWindow::~MainWindow()
@@ -95,7 +100,41 @@ void MainWindow::changeCurrentWidget(INode* node)
 
 void MainWindow::insertTable(QString str)
 {
-	document_->loadFromTsv(str.toStdString());
+    document_->loadFromTsv(str.toStdString());
+}
+
+void MainWindow::openRegression()
+{
+    std::ifstream file("/home/lisgein/tmp/somefile.json");
+    if ( file )
+    {
+        std::stringstream buffer;
+
+        buffer << file.rdbuf();
+        boost::property_tree::ptree inventoryTree;
+        boost::property_tree::read_json(buffer, inventoryTree);
+
+        document_->openRegression(inventoryTree);
+
+        file.close();
+    }
+}
+
+void MainWindow::saveRegression()
+{
+    boost::property_tree::ptree inventoryTree;
+
+    document_->saveRegression(inventoryTree);
+
+    std::stringstream output_stream;
+    boost::property_tree::write_json(output_stream, inventoryTree);
+
+    std::string myString = output_stream.str();
+
+    std::ofstream myfile;
+    myfile.open ("/home/lisgein/tmp/somefile.json");
+    myfile << myString;
+    myfile.close();
 }
 
 

@@ -17,7 +17,7 @@ public:
     void addFeature(int feature);
     void removeFeature(int feature);
 
-    void addFeatures(const std::list<int>& features);
+    void setFeatures(const std::list<int>& features);
 
     void clear();
 

@@ -5,6 +5,9 @@
 
 #include "mlpack/core.hpp"
 
+#include <boost/property_tree/ptree.hpp>
+
+
 class Dataset
 {
 public:
@@ -23,6 +26,9 @@ public:
 	Dataset filterFeatures(const std::set<int>& enabledFeatures) const;
 
 	void loadFromTsv(const std::string& str);
+
+    void saveRegression(boost::property_tree::ptree& inventoryTree);
+    void openRegression(boost::property_tree::ptree& dataset);
 
 	const arma::vec getColumnVector(int id) const;
 

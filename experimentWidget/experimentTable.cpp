@@ -5,7 +5,7 @@ ExperimentTable::ExperimentTable(QWidget* parent)
 	: QTableWidget(parent)
 {
 	setColumnCount(2);
-	QObject::connect(this, SIGNAL(itemActivated(QTableWidgetItem*)), this, SIGNAL(featuresChanged()));
+    QObject::connect(this, SIGNAL(itemClicked(QTableWidgetItem*)), this, SIGNAL(featuresChanged()));
 }
 
 
@@ -56,7 +56,7 @@ std::list<int> ExperimentTable::checkedFeatures() const
     std::list<int> checkedList;
 	for (int i = 0; i != features_.size(); ++i)
 	{
-		if(item(i, 1)->checkState() == Qt::Checked || item(i, 1)->flags() == Qt::NoItemFlags)
+        if(item(i, 1)->checkState() == Qt::Checked)
 		{
             checkedList.push_back(i);
 		}

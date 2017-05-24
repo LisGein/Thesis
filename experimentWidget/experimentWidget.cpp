@@ -13,7 +13,7 @@ ExperimentWidget::ExperimentWidget(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	QObject::connect(ui_->response, SIGNAL(currentTextChanged(const QString &)), ui_->feature, SLOT(disableFeature(const QString &)));
+    QObject::connect(ui_->response, SIGNAL(currentTextChanged(const QString &)),this, SLOT(updateResponse(const QString &)));
 	QObject::connect(ui_->feature, SIGNAL(featuresChanged()), this, SLOT(updateFiltredDataset()));
 }
 
@@ -48,7 +48,13 @@ void ExperimentWidget::updateFiltredDataset()
     {
         experiment_->setEnabledFeatures(checkedFeatures);
         experiment_->setResponse(ui_->response->currentIndex());
-	}
+    }
+}
+
+void ExperimentWidget::updateResponse(const QString &name)
+{
+    ui_->feature->disableFeature(name);
+    updateFiltredDataset();
 }
 
 

@@ -48,6 +48,7 @@ public:
     const arma::vec columnAt(Feature feature) const;
 
     const arma::mat originData() const;
+    const std::set<Feature>& featureSet() const;
 
     arma::vec getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const;
 

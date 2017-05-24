@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include <boost/property_tree/ptree.hpp>
+
+
 class INode
 {
 public:
@@ -21,6 +24,9 @@ public:
 	virtual INode* child(int id) = 0;
 	virtual const INode* parentItem() const = 0;
 	virtual void addNewChild() = 0;
+
+    virtual void openRegression(boost::property_tree::ptree &inventoryTree) = 0;
+    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) = 0;
 
 	const INode* child(int id) const;
 
@@ -44,6 +50,10 @@ public:
 	INode* child(int) override;
 	const INode* parentItem() const override;
 	void addNewChild() override;
+
+    virtual void openRegression(boost::property_tree::ptree &inventoryTree);
+    virtual void saveRegression(boost::property_tree::ptree &inventoryTree);
+
 
 private:
 	INode& firstLevel_;

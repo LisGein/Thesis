@@ -24,6 +24,9 @@ public:
     const DatasetColumnsView& filtredDataset() const;
     const DatasetColumnsView& responses() const;
 
+    virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
+
 
     const std::vector<int> getEnabledFeatures() const;
     void setEnabledFeatures(const std::list<int> &enabled);

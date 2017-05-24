@@ -47,5 +47,26 @@ void Regression::addNewChild()
 
 INode::TypeObject Regression::type() const
 {
-	return TypeObject::Regression;
+    return TypeObject::Regression;
+}
+
+void Regression::openRegression(boost::property_tree::ptree &inventoryTree)
+{
+
+}
+
+void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)
+{
+    namespace pt = boost::property_tree;
+
+    const std::set<FeatureModel::Feature>& feature = featureModel_.featureSet();
+
+    for (auto &it : feature)
+    {
+        pt::ptree cellSecond;
+        cellSecond.put_value(it.second);
+
+        inventoryTree.push_back(std::make_pair(boost::lexical_cast<std::string>(it.first), cellSecond));
+    }
+
 }

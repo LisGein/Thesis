@@ -20,6 +20,9 @@ public:
 
 	void loadFromTsv(const std::string& tsv);
 
+    virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
+
 	// INode interface
 public:
 	int childCount() const override;

@@ -29,8 +29,9 @@ void DatasetColumnsView::removeFeature(int feature)
     }
 }
 
-void DatasetColumnsView::addFeatures(const std::list<int> &features)
+void DatasetColumnsView::setFeatures(const std::list<int> &features)
 {
+    features_.clear();//FIXME list to vector
     for (auto it: features)
         addFeature(it);
 }

@@ -52,6 +52,16 @@ const INode* Root::parentItem() const
 
 void Root::addNewChild()
 {
-	return;
+    return;
+}
+
+void Root::openRegression(boost::property_tree::ptree &inventoryTree)
+{
+
+}
+
+void Root::saveRegression(boost::property_tree::ptree &inventoryTree)
+{
+
 }
 

@@ -194,6 +194,11 @@ const arma::mat FeatureModel::originData() const
     return dataset_.originDataset().data();
 }
 
+const std::set<FeatureModel::Feature> &FeatureModel::featureSet() const
+{
+    return featureSet_;
+}
+
 arma::vec FeatureModel::getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const
 {
     arma::vec res;
