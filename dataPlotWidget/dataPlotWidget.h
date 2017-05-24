@@ -15,6 +15,7 @@ class DataPlotWidget : public AbstractDataPlot
 public:
     DataPlotWidget(QWidget *parent = nullptr);
     virtual ~DataPlotWidget();
+    virtual void clear();
 
 private:
     virtual void updateChart(const arma::mat& data, const arma::vec& resp) override;

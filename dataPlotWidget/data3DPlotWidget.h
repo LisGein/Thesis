@@ -26,6 +26,7 @@ class Data3DPlotWidget : public AbstractDataPlot
 public:
     Data3DPlotWidget(QWidget *parent = nullptr);
     virtual ~Data3DPlotWidget();
+    virtual void clear();
 
 
 private:
@@ -33,6 +34,7 @@ private:
 
     void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
     void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
+
 
     void setGradient();
 

@@ -43,6 +43,7 @@ public slots:
 protected:
     virtual void updateChart(const arma::mat& data, const arma::vec& resp) = 0;
     std::pair<double, double> bounds(const arma::mat &data, const arma::vec &column) const;
+    virtual void clear() = 0;
 
 
     LinearRegressionModel* linearRegression_;

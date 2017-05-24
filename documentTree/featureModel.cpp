@@ -131,7 +131,7 @@ void FeatureModel::update()
     featureSet_.clear();
     nameToFeature_.clear();
     updateData();
-    featuresScene_->updateTable(dataset_.originDataset().columnCount());
+    featuresScene_->updateTable(dataset_.features().size() + 1);
 }
 
 void FeatureModel::addFeature(const Feature& feature)

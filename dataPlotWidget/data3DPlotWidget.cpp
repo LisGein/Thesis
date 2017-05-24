@@ -52,7 +52,6 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
         pointsSeries_ = new QScatter3DSeries(pointsProxy_);
         pointsSeries_->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
         pointsSeries_->setMeshSmooth(true);
-        pointsGraph_->addSeries(pointsSeries_);
 
 
         pointsGraph_->axisX()->setTitle("X");
@@ -68,7 +67,6 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
         surfaceSeries_->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
         surfaceSeries_->setFlatShadingEnabled(false);
 
-        surfaceGraph_->addSeries(surfaceSeries_);
 
         surfaceGraph_->setAxisX(new QValue3DAxis);
         surfaceGraph_->setAxisY(new QValue3DAxis);
@@ -93,6 +91,17 @@ Data3DPlotWidget::~Data3DPlotWidget()
 
 }
 
+void Data3DPlotWidget::clear()
+{
+    QList<QScatter3DSeries *> pointsSeries = pointsGraph_->seriesList();
+    for (auto &it :pointsSeries)
+        pointsGraph_->removeSeries(it);
+
+    QList<QSurface3DSeries *> series = surfaceGraph_->seriesList();
+    for (auto &it :series)
+        surfaceGraph_->removeSeries(it);
+}
+
 void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 {
     if (axisZCombo_->box->currentIndex() == -1)
@@ -113,6 +122,9 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn)
 {
+    if (pointsGraph_->seriesList().empty())
+        pointsGraph_->addSeries(pointsSeries_);
+
     QScatterDataArray *pointsArray = new QScatterDataArray;
     pointsArray->resize(data.n_rows);
     QScatterDataItem *ptrToDataArray = &pointsArray->first();
@@ -130,6 +142,9 @@ void Data3DPlotWidget::updateDataChart(const arma::mat& data, const arma::vec& r
 
 void Data3DPlotWidget::updateRegressionChart(const arma::mat &data, const arma::vec &xColumn, const arma::vec &zColumn)
 {
+    if (surfaceGraph_->seriesList().empty())
+        surfaceGraph_->addSeries(surfaceSeries_);
+
     QSurfaceDataArray *surfaceArray = new QSurfaceDataArray;
 
     auto xBounds = bounds(data, xColumn);

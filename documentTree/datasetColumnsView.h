@@ -29,6 +29,7 @@ public:
     const arma::vec getColumnVector(int id) const;
     const std::vector<int>& features() const;
 
+
 private:
     const Dataset& originDataset_;
     std::vector<int> features_;

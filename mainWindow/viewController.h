@@ -23,7 +23,6 @@ public:
 	bool containRegression() const;
 	void update();
 
-
 private slots:
 	void deleteFromFormula(QPair<int, int> feature);
 	void addToFormula(QPair<int, int> feature);

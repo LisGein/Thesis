@@ -36,6 +36,7 @@ PlotController::~PlotController()
 
 void PlotController::setRegression(Regression *regression)
 {
+    regression->featureModel().updateData();
     dataPlotWidget_->setRegression(&(regression->linearRegressionModel()));
     data3DPlotWidget_->setRegression(&(regression->linearRegressionModel()));
     QObject::connect(regression->featureModel().getScene(), SIGNAL(updatedRegression()), dataPlotWidget_, SLOT(updateRegression()));

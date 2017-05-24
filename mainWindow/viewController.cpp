@@ -60,6 +60,7 @@ void ViewController::setRegression(Regression* regression)
     QObject::connect(regression_->featureModel().getScene(), SIGNAL(addedToFormula(QPair<int, int>)), this, SLOT(addToFormula(QPair<int, int>)));
 
     plotController_->setRegression(regression);
+    updateRegression();
 }
 
 bool ViewController::containRegression() const
@@ -72,7 +73,6 @@ void ViewController::update()
     regression_->featureModel().update();
     gview_->update();
 }
-
 
 void ViewController::deleteFromFormula(QPair<int, int> feature)
 {

@@ -1,6 +1,9 @@
 #include "featureGraphicsScene.h"
 #include "featureGraphicsItem.h"
 #include "featureHeaderGraphicsItem.h"
+
+#include "documentTree/featureModel.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 
@@ -60,6 +63,7 @@ void FeatureGraphicsScene::updateTable(int nRawFeatures)
 	QRect rect(buttonSize_, buttonSize_, buttonSize_ - 1, buttonSize_ - 1);
 	{
 		int pos = buttonSize_;
+
 		for(int i = 0; i < nRawFeatures; ++i)
 		{
 			createHeadertem(pos, 0, i);
@@ -70,13 +74,16 @@ void FeatureGraphicsScene::updateTable(int nRawFeatures)
 	}
 
 
+    const std::set<FeatureModel::Feature> &featureSet = featureModel_.featureSet();
+
 	for(int row = 0; row < nRawFeatures; ++row)
 	{
 		for(int col = 0; col < nRawFeatures; ++col)
 		{
 			FeatureGraphicsItem *item = new FeatureGraphicsItem(featureModel_, rect, qMakePair(row, col));
 			if (col > row)
-				item->setDisabled();
+                item->setDisabled();
+            item->setChecked(featureSet.find(FeatureModel::Feature(row, col)) != featureSet.end());
 			buttons_.push_back(item);
 			addItem(item);
 			rect.moveTo(rect.x() + buttonSize_, rect.y());

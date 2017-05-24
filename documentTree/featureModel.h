@@ -52,6 +52,8 @@ public:
 
     arma::vec getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const;
 
+    void updateData();
+
 private:
 	std::unique_ptr<FeatureGraphicsScene> featuresScene_;
     const Experiment& experiment_;
@@ -64,7 +66,6 @@ private:
     arma::mat featureColumns_;
 
 
-    void updateData();
 
 
 };

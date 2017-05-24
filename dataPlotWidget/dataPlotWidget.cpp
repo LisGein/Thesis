@@ -30,6 +30,11 @@ DataPlotWidget::~DataPlotWidget()
 
 }
 
+void DataPlotWidget::clear()
+{
+
+}
+
 void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 {
 

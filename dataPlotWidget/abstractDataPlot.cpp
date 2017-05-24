@@ -77,9 +77,9 @@ void AbstractDataPlot::updateRegression()
         auto resp = linearRegression_->getFeatureModel().responses();
 
         if (data.n_cols == 0 || data.n_rows == 0)
-            return;
-
-        updateChart(data, resp);
+            clear();
+        else
+            updateChart(data, resp);
     }
 }
 

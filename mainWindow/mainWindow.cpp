@@ -82,7 +82,7 @@ void MainWindow::changeCurrentWidget(INode* node, int row)
 		break;
 	case INode::TypeObject::Regression:
 		ui_->stackedWidget->setCurrentIndex(2);
-		if(!graphicsController_->containRegression())
+        //if(!graphicsController_->containRegression())
 		{
 			if (auto* regression = dynamic_cast<Regression *>(node))
 			{
