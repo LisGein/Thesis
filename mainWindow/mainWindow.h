@@ -23,7 +23,7 @@ public:
     virtual ~MainWindow();
 
 private slots:
-    void changeCurrentWidget(INode* node);
+    void changeCurrentWidget(INode* node, int row);
     void insertTable(QString str);
 
     void openRegression();

@@ -23,7 +23,7 @@ private slots:
 
 signals:
 	void childAdded(const QModelIndex &parent);
-	void changedCurrentWidget(INode* node);
+    void changedCurrentWidget(INode* node, int row);
 
 private:
 	QModelIndex clickedIndex_;

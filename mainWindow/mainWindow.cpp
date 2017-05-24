@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget* parent)
 	ui_->stackedWidget->addWidget(datasetWidget_.get());
 	datasetWidget_->setDatasetModel(&document_->getDatasetModel());
 
-	QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(INode*)), this, SLOT(changeCurrentWidget(INode*)));
+    QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(INode*, int)), this, SLOT(changeCurrentWidget(INode*, int)));
 	QObject::connect(datasetWidget_.get(), SIGNAL(insertedTable(QString)), this, SLOT(insertTable(QString)));
 
 	ui_->stackedWidget->addWidget(experimentWidget_.get());
@@ -63,7 +63,7 @@ MainWindow::~MainWindow()
 	appSettings_->setValue("WindowSize", size());
 }
 
-void MainWindow::changeCurrentWidget(INode* node)
+void MainWindow::changeCurrentWidget(INode* node, int row)
 {
 	INode::TypeObject typeObj(static_cast<INode::TypeObject>(node->type()));
 

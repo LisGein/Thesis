@@ -61,6 +61,20 @@ std::list<int> ExperimentTable::checkedFeatures() const
             checkedList.push_back(i);
 		}
 	}
-	return checkedList;
+    return checkedList;
+}
+
+void ExperimentTable::updateFeature(const std::vector<int> &checked)
+{
+    std::set<int> s;// FIXME remove vector to set
+    for (auto it : checked)
+        s.insert(it);
+    for (int i = 0; i != features_.size(); ++i)
+    {
+        bool checked = s.find(i) != s.end();
+        QTableWidgetItem * it = item(i, 1);
+        it->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
+    }
+
 }
 

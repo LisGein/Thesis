@@ -11,6 +11,8 @@ public:
 	void setFeatures(const QStringList& features, const std::vector<int> &enabledFeatures);
 	std::list<int> checkedFeatures() const;
 
+    void updateFeature(const std::vector<int>& checked);
+
 public slots:
 	void disableFeature(const QString& str);
 

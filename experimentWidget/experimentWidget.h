@@ -19,7 +19,7 @@ public:
 	ExperimentWidget(QWidget* parent = 0);
 	virtual ~ExperimentWidget();
 
-	void setExperiment(Experiment* experiment);
+    void setExperiment(Experiment* experiment);
 
 public slots:
 	void updateFiltredDataset();
