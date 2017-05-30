@@ -32,7 +32,7 @@ ViewController::ViewController(QWidget* parent)
     setLayout(new QVBoxLayout(this));
 
     QWidget *w = new QWidget(this);
-    w->setLayout(new QVBoxLayout(this));
+	w->setLayout(new QVBoxLayout());
     w->layout()->addWidget(gview_);
     w->layout()->addWidget(lineEdit_);
 

@@ -63,10 +63,17 @@ void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)
 
     for (auto &it : feature)
     {
+        pt::ptree feature;
+
+        pt::ptree cellFirst;
+        cellFirst.put_value(it.first);
+        feature.push_back(std::make_pair("", cellFirst));
+
         pt::ptree cellSecond;
         cellSecond.put_value(it.second);
+        feature.push_back(std::make_pair("", cellSecond));
 
-        inventoryTree.push_back(std::make_pair(boost::lexical_cast<std::string>(it.first), cellSecond));
+        inventoryTree.push_back(std::make_pair("", feature));
     }
 
 }

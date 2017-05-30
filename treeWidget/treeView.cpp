@@ -53,7 +53,7 @@ void TreeView::currentChanged(const QModelIndex& current, const QModelIndex& pre
 	if (model_)
 	{
 		auto* node = model_->getNodeFromIndexSafe(current);
-        emit changedCurrentWidget(node, current.row());
+		emit changedCurrentWidget(node);
 	}
 
 	QTreeView::currentChanged(current, previous);
