@@ -18,6 +18,7 @@ public:
 	int columnCount() const;
 
 	double get(int row, int column) const;
+	void set(int row, int column, double data);
 	std::vector<std::string> getFeatures() const;
 	const std::vector<std::string>& getNames() const;
 
@@ -31,6 +32,8 @@ public:
     void openRegression(boost::property_tree::ptree& dataset);
 
 	const arma::vec getColumnVector(int id) const;
+	void addColumn(const std::string &columnName);
+	void addRow();
 
 
 private:

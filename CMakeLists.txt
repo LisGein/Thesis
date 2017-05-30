@@ -62,6 +62,8 @@ set(FILES_TO_MOC
 
     datasetWidget/datasetView.h
     datasetWidget/datasetWidget.h
+	datasetWidget/datasetModel.h
+
     dataPlotWidget/dataPlotWidget.h
     dataPlotWidget/abstractDataPlot.h
     dataPlotWidget/data3DPlotWidget.h
@@ -76,9 +78,8 @@ set(FILES_TO_MOC
     )
 
 set(FILES_TO_UIC
-    dataPlotWidget/dataPlotWidget.ui
-    mainWindow/mainWindow.ui
-    datasetWidget/datasetWidget.ui
+	dataPlotWidget/dataPlotWidget.ui
+	mainWindow/mainWindow.ui
     experimentWidget/experimentWidget.ui
     )
 

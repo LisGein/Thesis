@@ -8,15 +8,15 @@
 
 
 Dataset::Dataset()
-    : data_(arma::zeros(1,1))
-    , names_({"Insert data"})
+	: data_(arma::zeros(3,3))
+	, names_({"x", "y", "z"})
 {
 
 }
 
 Dataset::Dataset(const arma::mat& data, const std::vector<std::string>& features)
     : data_(data)
-    , names_(features)
+	, names_(features)
 {
 
 }
@@ -33,7 +33,12 @@ int Dataset::columnCount() const
 
 double Dataset::get(int row, int column) const
 {
-    return data_.at(row, column);
+	return data_.at(row, column);
+}
+
+void Dataset::set(int row, int column, double data)
+{
+	data_(row, column) = data;
 }
 
 std::vector<std::string> Dataset::getFeatures() const
@@ -148,6 +153,17 @@ void Dataset::openRegression(boost::property_tree::ptree &dataset)
 
 const arma::vec Dataset::getColumnVector(int id) const
 {
-    return data_.col(id);
+	return data_.col(id);
+}
+
+void Dataset::addColumn(const std::string &columnName)
+{
+	data_.resize(data_.n_rows, data_.n_cols + 1);
+	names_.push_back(columnName);
+}
+
+void Dataset::addRow()
+{
+	data_.resize(data_.n_rows + 1, data_.n_cols);
 }
 
