@@ -45,6 +45,7 @@
     </property>
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
+    <addaction name="tsvAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -73,6 +74,11 @@
   <action name="aboutAction">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="tsvAction">
+   <property name="text">
+    <string>Load Tsv table</string>
    </property>
   </action>
  </widget>

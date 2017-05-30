@@ -15,6 +15,7 @@
 #include "experimentWidget/experimentWidget.h"
 #include "dataPlotWidget/dataPlotWidget.h"
 
+#include <QDebug>
 #include <QSettings>
 #include <QLineEdit>
 #include <QGraphicsView>
@@ -22,7 +23,6 @@
 #include "viewController.h"
 
 #include <boost/property_tree/json_parser.hpp>
-
 
 
 MainWindow::MainWindow(QWidget* parent)
@@ -48,14 +48,14 @@ MainWindow::MainWindow(QWidget* parent)
 	ui_->stackedWidget->addWidget(datasetWidget_.get());
 	datasetWidget_->setDatasetModel(&document_->getDatasetModel());
 
-    QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(INode*, int)), this, SLOT(changeCurrentWidget(INode*, int)));
-	QObject::connect(datasetWidget_.get(), SIGNAL(insertedTable(QString)), this, SLOT(insertTable(QString)));
+	QObject::connect(ui_->documentView, SIGNAL(changedCurrentWidget(INode*)), this, SLOT(changeCurrentWidget(INode*)));
+	QObject::connect(datasetWidget_.get(), SIGNAL(updatedTable(std::string)), this, SLOT(updateTable(std::string)));
 
 	ui_->stackedWidget->addWidget(experimentWidget_.get());
 	ui_->stackedWidget->addWidget(graphicsController_.get());
 
-    QObject::connect(ui_->saveAction, SIGNAL(triggered(bool)), this, SLOT(saveRegression()));
-    QObject::connect(ui_->openAction, SIGNAL(triggered(bool)), this, SLOT(openRegression()));
+	QObject::connect(ui_->saveAction, SIGNAL(triggered(bool)), this, SLOT(saveRegression()));
+	QObject::connect(ui_->openAction, SIGNAL(triggered(bool)), this, SLOT(openRegression()));
 }
 
 MainWindow::~MainWindow()
@@ -63,7 +63,7 @@ MainWindow::~MainWindow()
 	appSettings_->setValue("WindowSize", size());
 }
 
-void MainWindow::changeCurrentWidget(INode* node, int row)
+void MainWindow::changeCurrentWidget(INode* node)
 {
 	INode::TypeObject typeObj(static_cast<INode::TypeObject>(node->type()));
 
@@ -82,14 +82,14 @@ void MainWindow::changeCurrentWidget(INode* node, int row)
 		break;
 	case INode::TypeObject::Regression:
 		ui_->stackedWidget->setCurrentIndex(2);
-        //if(!graphicsController_->containRegression())
+		//if(!graphicsController_->containRegression())
+	{
+		if (auto* regression = dynamic_cast<Regression *>(node))
 		{
-			if (auto* regression = dynamic_cast<Regression *>(node))
-			{
-				graphicsController_->setRegression(regression);
-			}
-
+			graphicsController_->setRegression(regression);
 		}
+
+	}
 		graphicsController_->update();
 		break;
 	default:
@@ -98,43 +98,43 @@ void MainWindow::changeCurrentWidget(INode* node, int row)
 
 }
 
-void MainWindow::insertTable(QString str)
+void MainWindow::updateTable(std::string str)
 {
-    document_->loadFromTsv(str.toStdString());
+	document_->loadFromTsv(str);
 }
 
 void MainWindow::openRegression()
 {
-    std::ifstream file("/home/lisgein/tmp/somefile.json");
-    if ( file )
-    {
-        std::stringstream buffer;
+	std::ifstream file("/home/lisgein/tmp/somefile.json");
+	if ( file )
+	{
+		std::stringstream buffer;
 
-        buffer << file.rdbuf();
-        boost::property_tree::ptree inventoryTree;
-        boost::property_tree::read_json(buffer, inventoryTree);
+		buffer << file.rdbuf();
+		boost::property_tree::ptree inventoryTree;
+		boost::property_tree::read_json(buffer, inventoryTree);
 
-        document_->openRegression(inventoryTree);
+		document_->openRegression(inventoryTree);
 
-        file.close();
-    }
+		file.close();
+	}
 }
 
 void MainWindow::saveRegression()
 {
-    boost::property_tree::ptree inventoryTree;
+	boost::property_tree::ptree inventoryTree;
 
-    document_->saveRegression(inventoryTree);
+	document_->saveRegression(inventoryTree);
 
-    std::stringstream output_stream;
-    boost::property_tree::write_json(output_stream, inventoryTree);
+	std::stringstream output_stream;
+	boost::property_tree::write_json(output_stream, inventoryTree);
 
-    std::string myString = output_stream.str();
+	std::string myString = output_stream.str();
 
-    std::ofstream myfile;
-    myfile.open ("/home/lisgein/tmp/somefile.json");
-    myfile << myString;
-    myfile.close();
+	std::ofstream myfile;
+	myfile.open ("/home/lisgein/tmp/somefile.json");
+	myfile << myString;
+	myfile.close();
 }
 
 

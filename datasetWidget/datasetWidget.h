@@ -1,13 +1,13 @@
 #pragma once
 #include <memory>
 #include <QWidget>
+#include <QMenu>
+
 
 class DatasetModel;
-
-namespace Ui
-{
-	class DatasetWidget;
-}
+class QMenuBar;
+class DatasetView;
+class QTableView;
 
 class DatasetWidget : public QWidget
 {
@@ -18,8 +18,14 @@ public:
 	void setDatasetModel(DatasetModel* model);
 
 signals:
-	void insertedTable(QString params);
+	void updatedTable(std::string params);
+
+private slots:
+	void loadFromXls();
+	void loadFromTsv();
 
 private:
-	std::unique_ptr<Ui::DatasetWidget> ui_;
+	QMenuBar *menu_;
+	DatasetView *datasetView_;
+	QTableView *featureParams_;
 };
