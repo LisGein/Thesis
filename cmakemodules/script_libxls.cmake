@@ -1,0 +1,6 @@
+set(XLS_PATH ${PROJECT_SOURCE_DIR}/../Libs/xlsxio/)
+
+find_library(XLS "libxlsxio_read.a" ${HINTS} PATHS ${XLS_PATH} NO_DEFAULT_PATH REQUIRED)
+add_library(xls STATIC IMPORTED )
+set_property(TARGET xls PROPERTY IMPORTED_LOCATION ${XLS})
+set_property(TARGET xls PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${XLS_PATH}/include)
