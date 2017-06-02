@@ -17,71 +17,71 @@ include(cmakemodules/script_findlibs.cmake REQUIRED)
 INCLUDE_DIRECTORIES(treeWidget)
 INCLUDE_DIRECTORIES(experimentWidget)
 set(CPP_FILES
-    common/qt.cpp
-    main.cpp
+	common/qt.cpp
+	main.cpp
 
-    mainWindow/mainWindow.cpp
-    mainWindow/viewController.cpp
-    mainWindow/plotController.cpp
+	mainWindow/mainWindow.cpp
+	mainWindow/viewController.cpp
+	mainWindow/plotController.cpp
 
-    featureWidget/featureGraphicsScene.cpp
-    featureWidget/featureGraphicsItem.cpp
-    featureWidget/featureHeaderGraphicsItem.cpp
+	featureWidget/featureGraphicsScene.cpp
+	featureWidget/featureGraphicsItem.cpp
+	featureWidget/featureHeaderGraphicsItem.cpp
 
-    datasetWidget/datasetWidget.cpp
-    datasetWidget/datasetView.cpp
-    datasetWidget/datasetModel.cpp
+	datasetWidget/datasetWidget.cpp
+	datasetWidget/datasetView.cpp
+	datasetWidget/datasetModel.cpp
 
-    documentTree/regression.cpp
-    documentTree/linearRegressionModel.cpp
-    documentTree/document.cpp
-    documentTree/iNode.cpp
-    documentTree/experiment.cpp
-    documentTree/featureModel.cpp
-    documentTree/dataset.cpp
-    documentTree/datasetColumnsView.cpp
+	documentTree/regression.cpp
+	documentTree/linearRegressionModel.cpp
+	documentTree/document.cpp
+	documentTree/iNode.cpp
+	documentTree/experiment.cpp
+	documentTree/featureModel.cpp
+	documentTree/dataset.cpp
+	documentTree/datasetColumnsView.cpp
 
-    treeWidget/treeModel.cpp
-    treeWidget/treeView.cpp
+	treeWidget/treeModel.cpp
+	treeWidget/treeView.cpp
 
-    dataPlotWidget/dataPlotWidget.cpp
-    dataPlotWidget/data3DPlotWidget.cpp
-    dataPlotWidget/abstractDataPlot.cpp
+	dataPlotWidget/dataPlotWidget.cpp
+	dataPlotWidget/data3DPlotWidget.cpp
+	dataPlotWidget/abstractDataPlot.cpp
 
-    experimentWidget/experimentWidget.cpp
-    experimentWidget/experimentTable.cpp
-    experimentWidget/datasetAnalysisTable.cpp
-    )
+	experimentWidget/experimentWidget.cpp
+	experimentWidget/experimentTable.cpp
+	experimentWidget/datasetAnalysisTable.cpp
+	)
 
 set(FILES_TO_MOC
-    mainWindow/mainWindow.h
-    mainWindow/viewController.h
-    mainWindow/plotController.h
+	mainWindow/mainWindow.h
+	mainWindow/viewController.h
+	mainWindow/plotController.h
 
-    featureWidget/featureGraphicsScene.h
+	featureWidget/featureGraphicsScene.h
 
-    datasetWidget/datasetView.h
-    datasetWidget/datasetWidget.h
+	datasetWidget/datasetView.h
+	datasetWidget/datasetWidget.h
 	datasetWidget/datasetModel.h
 
-    dataPlotWidget/dataPlotWidget.h
-    dataPlotWidget/abstractDataPlot.h
-    dataPlotWidget/data3DPlotWidget.h
+	dataPlotWidget/dataPlotWidget.h
+	dataPlotWidget/abstractDataPlot.h
+	dataPlotWidget/data3DPlotWidget.h
 
 
-    treeWidget/treeView.h
-    treeWidget/treeModel.h
+	treeWidget/treeView.h
+	treeWidget/treeModel.h
 
-    experimentWidget/experimentWidget.h
-    experimentWidget/experimentTable.h
-    experimentWidget/datasetAnalysisTable.h
-    )
+	experimentWidget/experimentWidget.h
+	experimentWidget/experimentTable.h
+	experimentWidget/datasetAnalysisTable.h
+	)
 
 set(FILES_TO_UIC
 	dataPlotWidget/dataPlotWidget.ui
 	mainWindow/mainWindow.ui
-    experimentWidget/experimentWidget.ui
-    )
+	experimentWidget/experimentWidget.ui
+	)
 
 
 qt5_wrap_cpp(moc_cpps ${FILES_TO_MOC})
@@ -95,17 +95,17 @@ add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps})
 
 #This is the command to connect libraries to a target:
 target_link_libraries(${GUI_APP_NAME}
-    xls
-    expat
-    ziplib
-    zlib
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Charts
-    Qt5::DataVisualization
-    ${Mlpack_LIBRARIES}
-    ${Armadillo_LIBRARIES}
-    ${Boost_LIBRARIES}
-    )
+	xls
+	expat
+	ziplib
+	zlib
+	Qt5::Core
+	Qt5::Widgets
+	Qt5::Charts
+	Qt5::DataVisualization
+	${Mlpack_LIBRARIES}
+	${Armadillo_LIBRARIES}
+	${Boost_LIBRARIES}
+	)
 
 

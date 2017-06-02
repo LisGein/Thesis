@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsItem>
 
+
 class FeatureModel;
 
 class FeatureGraphicsItem: public QGraphicsItem
@@ -8,9 +9,9 @@ class FeatureGraphicsItem: public QGraphicsItem
 
 public:
 	FeatureGraphicsItem(const FeatureModel& featureModel,
-							  const QRect& rect,
-							  const QPair<int, int>& parents,
-							  QGraphicsItem *parent = 0);
+						const QRect& rect,
+						const QPair<int, int>& parents,
+						QGraphicsItem *parent = 0);
 
 	virtual ~FeatureGraphicsItem();
 

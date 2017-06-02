@@ -22,31 +22,31 @@ class QComboBox;
 
 class Data3DPlotWidget : public AbstractDataPlot
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    Data3DPlotWidget(QWidget *parent = nullptr);
-    virtual ~Data3DPlotWidget();
-    virtual void clear();
+	Data3DPlotWidget(QWidget *parent = nullptr);
+	virtual ~Data3DPlotWidget();
+	virtual void clear();
 
 
 private:
-    virtual void updateChart(const arma::mat& data, const arma::vec& resp) override;
+	virtual void updateChart(const arma::mat& data, const arma::vec& resp) override;
 
-    void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
-    void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
-
-
-    void setGradient();
-
-    QtDataVisualization::Q3DScatter *pointsGraph_;
-    QtDataVisualization::Q3DSurface *surfaceGraph_;
-
-    QtDataVisualization::QScatterDataProxy *pointsProxy_;
-    QtDataVisualization::QSurfaceDataProxy *surfaceProxy_;
-
-    QtDataVisualization::QScatter3DSeries *pointsSeries_;
-    QtDataVisualization::QSurface3DSeries *surfaceSeries_;
+	void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
+	void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
 
 
-    QMap<int, QString> axisByName_;
+	void setGradient();
+
+	QtDataVisualization::Q3DScatter *pointsGraph_;
+	QtDataVisualization::Q3DSurface *surfaceGraph_;
+
+	QtDataVisualization::QScatterDataProxy *pointsProxy_;
+	QtDataVisualization::QSurfaceDataProxy *surfaceProxy_;
+
+	QtDataVisualization::QScatter3DSeries *pointsSeries_;
+	QtDataVisualization::QSurface3DSeries *surfaceSeries_;
+
+
+	QMap<int, QString> axisByName_;
 };

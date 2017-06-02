@@ -8,16 +8,11 @@ class DatasetAnalysisTable: public QTableWidget
 {
 	Q_OBJECT
 public:
-    DatasetAnalysisTable(QWidget* parent = 0);
-    virtual ~DatasetAnalysisTable();
-    void setFeatures(const QStringList &features, const Dataset &dataset);
-
-
-public slots:
-
-signals:
+	DatasetAnalysisTable(QWidget* parent = 0);
+	virtual ~DatasetAnalysisTable();
+	void setFeatures(const QStringList &features, const Dataset &dataset);
 
 private:
-    QStringList features_;
+	QStringList features_;
 
 };

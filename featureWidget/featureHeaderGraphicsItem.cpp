@@ -4,6 +4,7 @@
 
 #include <QPainter>
 
+
 FeatureHeaderGraphicsItem::FeatureHeaderGraphicsItem(const FeatureModel& featureModel, const QRect& rect, int id, QGraphicsItem *parent)
 	: QGraphicsItem (parent)
 	, featureModel_(featureModel)

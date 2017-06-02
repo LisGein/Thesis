@@ -30,6 +30,8 @@ private slots:
 	void addedColumn();
 	void addedRow();
 
+	void headerContextMenu(const QPoint &point);
+
 private:
 	QShortcut* insertShortcut_;
 	QPoint clickedCursor_;

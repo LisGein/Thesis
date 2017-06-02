@@ -1,6 +1,7 @@
 #pragma once
 #include <QTreeView>
 
+
 class TreeModel;
 class INode;
 
@@ -13,7 +14,6 @@ public:
 
 	void setModel(TreeModel *model);
 	void contextMenuEvent(QContextMenuEvent *event) override;
-
 
 protected slots:
 	virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;

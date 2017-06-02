@@ -7,6 +7,8 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QInputDialog>
+#include <QHeaderView>
+#include <QDebug>
 
 
 DatasetView::DatasetView(QWidget* parent)
@@ -19,6 +21,8 @@ DatasetView::DatasetView(QWidget* parent)
 	QObject::connect(this, SIGNAL(addColumn()), this, SLOT(addedColumn()));
 	QObject::connect(this, SIGNAL(addRow()), this, SLOT(addedRow()));
 	setEditTriggers(QAbstractItemView::AllEditTriggers);
+	horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(headerContextMenu(const QPoint&)));
 }
 
 DatasetView::~DatasetView()
@@ -101,5 +105,29 @@ void DatasetView::addedRow()
 	model_->beginReset();
 	model_->dataset_.addRow();
 	model_->endReset();
+}
+
+void DatasetView::headerContextMenu(const QPoint& point)
+{
+	QMenu menu(this);
+	clickedCursor_ = viewport()->mapToGlobal(point);
+
+	QAction *columnAdd = new QAction(tr("Add column"));
+	connect(columnAdd, SIGNAL(triggered(bool)), this, SIGNAL(addColumn()));
+	menu.addAction(columnAdd);
+
+	QAction *rowAdd = new QAction(tr("Add row"));
+	connect(rowAdd, SIGNAL(triggered(bool)), this, SIGNAL(addRow()));
+	menu.addAction(rowAdd);
+
+	QAction *del = new QAction(tr("Delete this column"));
+	connect(del, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
+	menu.addAction(del);
+
+	QAction *rename = new QAction(tr("Rename this column"));
+	connect(rename, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
+	menu.addAction(rename);
+
+	menu.exec(viewport()->mapToGlobal(point));
 }
 

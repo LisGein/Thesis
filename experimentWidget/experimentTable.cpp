@@ -5,9 +5,8 @@ ExperimentTable::ExperimentTable(QWidget* parent)
 	: QTableWidget(parent)
 {
 	setColumnCount(2);
-    QObject::connect(this, SIGNAL(itemClicked(QTableWidgetItem*)), this, SIGNAL(featuresChanged()));
+	QObject::connect(this, SIGNAL(itemClicked(QTableWidgetItem*)), this, SIGNAL(featuresChanged()));
 }
-
 
 ExperimentTable::~ExperimentTable()
 {
@@ -35,9 +34,9 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::vector
 	features_ = features;
 	setRowCount(features_.size());
 
-    std::set<int> s;// FIXME remove vector to set
-    for (auto it : enabledFeatures)
-        s.insert(it);
+	std::set<int> s;// FIXME remove vector to set
+	for (auto it : enabledFeatures)
+		s.insert(it);
 
 	for (int i = 0; i != features_.size(); ++i)
 	{
@@ -45,7 +44,7 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::vector
 		QTableWidgetItem *item = new QTableWidgetItem();
 
 
-        bool checked = s.find(i) != s.end();
+		bool checked = s.find(i) != s.end();
 		item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
 		setItem(i, 1, item);
 	}
@@ -53,28 +52,28 @@ void ExperimentTable::setFeatures(const QStringList& features, const std::vector
 
 std::list<int> ExperimentTable::checkedFeatures() const
 {
-    std::list<int> checkedList;
+	std::list<int> checkedList;
 	for (int i = 0; i != features_.size(); ++i)
 	{
-        if(item(i, 1)->checkState() == Qt::Checked)
+		if(item(i, 1)->checkState() == Qt::Checked)
 		{
-            checkedList.push_back(i);
+			checkedList.push_back(i);
 		}
 	}
-    return checkedList;
+	return checkedList;
 }
 
 void ExperimentTable::updateFeature(const std::vector<int> &checked)
 {
-    std::set<int> s;// FIXME remove vector to set
-    for (auto it : checked)
-        s.insert(it);
-    for (int i = 0; i != features_.size(); ++i)
-    {
-        bool checked = s.find(i) != s.end();
-        QTableWidgetItem * it = item(i, 1);
-        it->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
-    }
+	std::set<int> s;// FIXME remove vector to set
+	for (auto it : checked)
+		s.insert(it);
+	for (int i = 0; i != features_.size(); ++i)
+	{
+		bool checked = s.find(i) != s.end();
+		QTableWidgetItem * it = item(i, 1);
+		it->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
+	}
 
 }
 

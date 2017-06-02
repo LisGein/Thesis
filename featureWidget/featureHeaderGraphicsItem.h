@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsItem>
 
+
 class FeatureModel;
 
 class FeatureHeaderGraphicsItem: public QGraphicsItem

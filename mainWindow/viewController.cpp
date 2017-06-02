@@ -23,26 +23,26 @@
 
 
 ViewController::ViewController(QWidget* parent)
-    : QWidget(parent)
-    , gview_(new QGraphicsView(this))
-    , lineEdit_(new QLineEdit(this))
-    , regression_(nullptr)
-    , plotController_ (new PlotController(this))
+	: QWidget(parent)
+	, gview_(new QGraphicsView(this))
+	, lineEdit_(new QLineEdit(this))
+	, regression_(nullptr)
+	, plotController_ (new PlotController(this))
 {
-    setLayout(new QVBoxLayout(this));
+	setLayout(new QVBoxLayout(this));
 
-    QWidget *w = new QWidget(this);
+	QWidget *w = new QWidget(this);
 	w->setLayout(new QVBoxLayout());
-    w->layout()->addWidget(gview_);
-    w->layout()->addWidget(lineEdit_);
+	w->layout()->addWidget(gview_);
+	w->layout()->addWidget(lineEdit_);
 
-    QSplitter *split = new QSplitter(this);
-    split->setOrientation(Qt::Vertical);
-    split->addWidget(w);
-    split->addWidget(plotController_);
-    split->setChildrenCollapsible(false);
+	QSplitter *split = new QSplitter(this);
+	split->setOrientation(Qt::Vertical);
+	split->addWidget(w);
+	split->addWidget(plotController_);
+	split->setChildrenCollapsible(false);
 
-    layout()->addWidget(split);
+	layout()->addWidget(split);
 
 }
 
@@ -53,71 +53,86 @@ ViewController::~ViewController()
 
 void ViewController::setRegression(Regression* regression)
 {
-    regression_ = regression;
+	regression_ = regression;
 
-    gview_->setScene(regression_->featureModel().getScene());
-    QObject::connect(regression_->featureModel().getScene(), SIGNAL(deletedFromFormula(QPair<int, int>)), this, SLOT(deleteFromFormula(QPair<int, int>)));
-    QObject::connect(regression_->featureModel().getScene(), SIGNAL(addedToFormula(QPair<int, int>)), this, SLOT(addToFormula(QPair<int, int>)));
+	gview_->setScene(regression_->featureModel().getScene());
+	QObject::connect(regression_->featureModel().getScene(), SIGNAL(deletedFromFormula(QPair<int, int>)), this, SLOT(deleteFromFormula(QPair<int, int>)));
+	QObject::connect(regression_->featureModel().getScene(), SIGNAL(addedToFormula(QPair<int, int>)), this, SLOT(addToFormula(QPair<int, int>)));
 
-    plotController_->setRegression(regression);
-    updateRegression();
+	plotController_->setRegression(regression);
+	updateRegression();
 }
 
 bool ViewController::containRegression() const
 {
-    return regression_;
+	return regression_;
 }
 
 void ViewController::update()
 {
-    regression_->featureModel().update();
-    gview_->update();
+	regression_->featureModel().update();
+	gview_->update();
 }
 
 void ViewController::deleteFromFormula(QPair<int, int> feature)
 {
-    regression_->featureModel().removeFeature(from_qt(feature));
-    updateRegression();
+	regression_->featureModel().removeFeature(from_qt(feature));
+	updateRegression();
 }
 
 void ViewController::addToFormula(QPair<int, int> feature)
 {
-    regression_->featureModel().addFeature(from_qt(feature));
-    updateRegression();
+	regression_->featureModel().addFeature(from_qt(feature));
+	updateRegression();
 }
 
 void ViewController::updateRegression()
 {
-    regression_->linearRegressionModel().update();
-    plotController_->setAxisNames(regression_->featureModel().getRawIds());
-    updateFormulaText();
+	regression_->linearRegressionModel().update();
+	plotController_->setAxisNames(regression_->featureModel().getRawIds());
+	updateFormulaText();
 }
 
 void ViewController::updateFormulaText()
 {
-    auto params = regression_->linearRegressionModel().getParams();
-    auto featureNames = regression_->featureModel().getFeatureNames();
-    auto response = regression_->featureModel().getResponseName();
+	auto params = regression_->linearRegressionModel().getParams();
+	auto featureNames = regression_->featureModel().getFeatureNames();
+	auto response = regression_->featureModel().getResponseName();
 
-    std::vector<std::string> summands;
-    std::transform(params.begin(), params.end(),
-                   featureNames.begin(),
-                   std::back_inserter(summands),
-                   [](double param, const std::string& name)
-    {
-        if (!name.empty())
-            return boost::str(boost::format("%.2f*%s") % param % name);
-        return boost::str(boost::format("%.2f") % param);
-    });
+	std::vector<std::string> summands;
+	std::transform(params.begin(), params.end(),
+				   featureNames.begin(),
+				   std::back_inserter(summands),
+				   [](double param, const std::string& name)
+	{
+		std::string format =  (0.01 < qAbs(param) && qAbs(param) < 1000) ? "%.2f" : "%E";
 
-    std::string expr = boost::algorithm::join(summands, " + ");
+		if (!name.empty())
+			return boost::str(boost::format(format+"*%s") % param % name);
 
-    lineEdit_->setText(to_qt(response + " = " + expr));
+		return boost::str(boost::format(format) % param);
+	});
+
+	std::string expr;
+	for (auto it = summands.begin(); it != summands.end(); ++it)
+	{
+		assert(it->size());
+
+		expr += " ";
+
+		if((*it)[0] == '-')
+			it->insert(1, " ");
+		else if (it != summands.begin())
+			expr += "+ ";
+
+		expr += *it;
+	}
+	lineEdit_->setText(to_qt(response + " = " + expr));
 }
 
 void ViewController::onDatasetUpdated()
 {
-    regression_->featureModel().update();
-    regression_->linearRegressionModel().update();
+	regression_->featureModel().update();
+	regression_->linearRegressionModel().update();
 }
 

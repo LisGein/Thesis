@@ -4,6 +4,7 @@
 #include "linearRegressionModel.h"
 #include "featureModel.h"
 
+
 class Experiment;
 
 class Regression : public INode
@@ -20,10 +21,10 @@ public:
 	void addNewChild() override;
 	virtual TypeObject type() const override;
 
+	virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
 
-    virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
-    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
-
+private:
 	const Experiment& experiment_;
 	FeatureModel featureModel_;
 	LinearRegressionModel linearRegressionModel_;

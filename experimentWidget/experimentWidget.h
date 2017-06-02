@@ -9,22 +9,21 @@ class DatasetAnalysisTable;
 
 namespace Ui
 {
-	class ExperimentWidget;
+class ExperimentWidget;
 }
 
 class ExperimentWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 	ExperimentWidget(QWidget* parent = 0);
 	virtual ~ExperimentWidget();
 
-    void setExperiment(Experiment* experiment);
+	void setExperiment(Experiment* experiment);
 
 public slots:
 	void updateFiltredDataset();
-    void updateResponse(const QString &name);
-
+	void updateResponse(const QString &name);
 
 private:
 	std::unique_ptr<Ui::ExperimentWidget> ui_;

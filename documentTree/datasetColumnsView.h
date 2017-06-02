@@ -12,25 +12,25 @@ class Dataset;
 class DatasetColumnsView
 {
 public:
-    DatasetColumnsView(const Dataset& originDataset);
-    ~DatasetColumnsView();
-    void addFeature(int feature);
-    void removeFeature(int feature);
+	DatasetColumnsView(const Dataset& originDataset);
+	~DatasetColumnsView();
+	void addFeature(int feature);
+	void removeFeature(int feature);
 
-    void setFeatures(const std::list<int>& features);
+	void setFeatures(const std::list<int>& features);
 
-    void clear();
+	void clear();
 
-    const Dataset& originDataset() const;
+	const Dataset& originDataset() const;
 
-    int originColumns(int filteredId) const;
+	int originColumns(int filteredId) const;
 
-    std::vector<std::string> getFeatureNames() const;
-    const arma::vec getColumnVector(int id) const;
-    const std::vector<int>& features() const;
+	std::vector<std::string> getFeatureNames() const;
+	const arma::vec getColumnVector(int id) const;
+	const std::vector<int>& features() const;
 
 
 private:
-    const Dataset& originDataset_;
-    std::vector<int> features_;
+	const Dataset& originDataset_;
+	std::vector<int> features_;
 };

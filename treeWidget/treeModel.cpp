@@ -14,14 +14,13 @@ TreeModel::~TreeModel()
 {
 }
 
-
 QVariant TreeModel::data(const QModelIndex& index, int role) const
 {
 	if (!index.isValid())
 		return QVariant();
 
 	if (role != Qt::DisplayRole)
-		 return QVariant();
+		return QVariant();
 
 	INode *node = getNodeFromIndexSafe(index);
 
@@ -31,7 +30,7 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
 Qt::ItemFlags TreeModel::flags(const QModelIndex& index) const
 {
 	if (!index.isValid())
-		 return 0;
+		return 0;
 
 	return QAbstractItemModel::flags(index);
 }
@@ -83,7 +82,7 @@ QModelIndex TreeModel::parent(const QModelIndex& index) const
 	if (node == rootItem_)
 		return QModelIndex();
 
-	 const INode* parent = node->parentItem();
+	const INode* parent = node->parentItem();
 
 	return createIndex(findMyRowId(parent), 0, const_cast<INode *>(parent));
 }

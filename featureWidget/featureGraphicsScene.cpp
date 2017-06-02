@@ -74,7 +74,7 @@ void FeatureGraphicsScene::updateTable(int nRawFeatures)
 	}
 
 
-    const std::set<FeatureModel::Feature> &featureSet = featureModel_.featureSet();
+	const std::set<FeatureModel::Feature> &featureSet = featureModel_.featureSet();
 
 	for(int row = 0; row < nRawFeatures; ++row)
 	{
@@ -82,8 +82,8 @@ void FeatureGraphicsScene::updateTable(int nRawFeatures)
 		{
 			FeatureGraphicsItem *item = new FeatureGraphicsItem(featureModel_, rect, qMakePair(row, col));
 			if (col > row)
-                item->setDisabled();
-            item->setChecked(featureSet.find(FeatureModel::Feature(row, col)) != featureSet.end());
+				item->setDisabled();
+			item->setChecked(featureSet.find(FeatureModel::Feature(row, col)) != featureSet.end());
 			buttons_.push_back(item);
 			addItem(item);
 			rect.moveTo(rect.x() + buttonSize_, rect.y());

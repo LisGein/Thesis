@@ -19,17 +19,17 @@ public:
 	Experiment(const Document& document);
 	virtual ~Experiment();
 
-    const Dataset& getDataset() const;
+	const Dataset& getDataset() const;
 
-    const DatasetColumnsView& filtredDataset() const;
-    const DatasetColumnsView& responses() const;
+	const DatasetColumnsView& filtredDataset() const;
+	const DatasetColumnsView& responses() const;
 
-    virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
-    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
 
 
-    const std::vector<int> getEnabledFeatures() const;
-    void setEnabledFeatures(const std::list<int> &enabled);
+	const std::vector<int> getEnabledFeatures() const;
+	void setEnabledFeatures(const std::list<int> &enabled);
 
 	/// \brief set column ID of response
 	/// \param response ID in scope of filtered dataset
@@ -37,7 +37,7 @@ public:
 
 	/// \brief get response column
 	/// \return ID in scope of filtered dataset
-    int getResponseColumn() const { return response_.originColumns(0); }
+	int getResponseColumn() const { return response_.originColumns(0); }
 
 	void update();
 
@@ -52,7 +52,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Regression>> regressions_;
-    const Document& document_;
-    DatasetColumnsView filtredDataset_;
-    DatasetColumnsView response_;
+	const Document& document_;
+	DatasetColumnsView filtredDataset_;
+	DatasetColumnsView response_;
 };

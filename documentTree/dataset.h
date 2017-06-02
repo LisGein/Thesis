@@ -28,8 +28,8 @@ public:
 
 	void loadFromTsv(const std::string& str);
 
-    void saveRegression(boost::property_tree::ptree& inventoryTree);
-    void openRegression(boost::property_tree::ptree& dataset);
+	void saveRegression(boost::property_tree::ptree& inventoryTree);
+	void openRegression(boost::property_tree::ptree& dataset);
 
 	const arma::vec getColumnVector(int id) const;
 	void addColumn(const std::string &columnName);

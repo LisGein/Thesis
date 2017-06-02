@@ -10,19 +10,19 @@ class Regression;
 
 class PlotController: public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    PlotController(QWidget* parent = nullptr);
-    virtual ~PlotController();
+	PlotController(QWidget* parent = nullptr);
+	virtual ~PlotController();
 
-    void setRegression(Regression* regression);
-    void setAxisNames(const std::set<int> &names);
+	void setRegression(Regression* regression);
+	void setAxisNames(const std::set<int> &names);
 
 private slots:
-    void changeGraphic();
+	void changeGraphic();
 
 private:
-    DataPlotWidget* dataPlotWidget_;
-    Data3DPlotWidget* data3DPlotWidget_;
+	DataPlotWidget* dataPlotWidget_;
+	Data3DPlotWidget* data3DPlotWidget_;
 
 };

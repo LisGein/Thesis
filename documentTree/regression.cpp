@@ -3,6 +3,7 @@
 
 #include "experiment.h"
 
+
 int Regression::childCount() const
 {
 	return 0;
@@ -47,7 +48,7 @@ void Regression::addNewChild()
 
 INode::TypeObject Regression::type() const
 {
-    return TypeObject::Regression;
+	return TypeObject::Regression;
 }
 
 void Regression::openRegression(boost::property_tree::ptree &inventoryTree)
@@ -57,23 +58,23 @@ void Regression::openRegression(boost::property_tree::ptree &inventoryTree)
 
 void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)
 {
-    namespace pt = boost::property_tree;
+	namespace pt = boost::property_tree;
 
-    const std::set<FeatureModel::Feature>& feature = featureModel_.featureSet();
+	const std::set<FeatureModel::Feature>& feature = featureModel_.featureSet();
 
-    for (auto &it : feature)
-    {
-        pt::ptree feature;
+	for (auto &it : feature)
+	{
+		pt::ptree feature;
 
-        pt::ptree cellFirst;
-        cellFirst.put_value(it.first);
-        feature.push_back(std::make_pair("", cellFirst));
+		pt::ptree cellFirst;
+		cellFirst.put_value(it.first);
+		feature.push_back(std::make_pair("", cellFirst));
 
-        pt::ptree cellSecond;
-        cellSecond.put_value(it.second);
-        feature.push_back(std::make_pair("", cellSecond));
+		pt::ptree cellSecond;
+		cellSecond.put_value(it.second);
+		feature.push_back(std::make_pair("", cellSecond));
 
-        inventoryTree.push_back(std::make_pair("", feature));
-    }
+		inventoryTree.push_back(std::make_pair("", feature));
+	}
 
 }

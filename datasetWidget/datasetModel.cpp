@@ -71,6 +71,7 @@ bool DatasetModel::setData(const QModelIndex &index, const QVariant &value, int 
 		lastEditable_ = QPair<int, int>(index.row(), index.column());
 		dataset_.set(index.row(), index.column(), value.toDouble());
 	}
+	return QAbstractTableModel::setData(index, value, role);
 }
 
 const QPair<int, int> &DatasetModel::lastEditable() const

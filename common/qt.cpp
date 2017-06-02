@@ -1,6 +1,7 @@
 #include "common.h"
 #include "qt.h"
 
+
 QString to_qt(const std::string& str)
 {
 	return QString::fromStdString(str);

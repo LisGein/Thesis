@@ -3,6 +3,7 @@
 #include <vector>
 #include "iNode.h"
 
+
 class Dataset;
 class DatasetModel;
 class Experiment;
@@ -20,8 +21,8 @@ public:
 
 	void loadFromTsv(const std::string& tsv);
 
-    virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
-    virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
 
 	// INode interface
 public:

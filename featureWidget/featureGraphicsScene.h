@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsScene>
 
+
 class FeatureModel;
 
 class FeatureGraphicsScene : public QGraphicsScene

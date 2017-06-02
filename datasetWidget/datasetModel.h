@@ -2,6 +2,7 @@
 #include <QAbstractTableModel>
 #include <mlpack/methods/linear_regression/linear_regression.hpp>
 
+
 using namespace mlpack::regression;
 
 class Dataset;

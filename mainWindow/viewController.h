@@ -3,6 +3,7 @@
 #include <QMap>
 #include <memory>
 
+
 class FeatureGraphicsScene;
 class QLineEdit;
 class DatasetView;
@@ -27,12 +28,11 @@ private slots:
 	void deleteFromFormula(QPair<int, int> feature);
 	void addToFormula(QPair<int, int> feature);
 
-
 private:
 	QGraphicsView* gview_;
-    QLineEdit* lineEdit_;
+	QLineEdit* lineEdit_;
 	Regression* regression_;
-    PlotController* plotController_;
+	PlotController* plotController_;
 
 
 	void updateRegression();
