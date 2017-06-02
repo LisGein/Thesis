@@ -19,6 +19,8 @@
 #include <QSettings>
 #include <QLineEdit>
 #include <QGraphicsView>
+#include <QFileDialog>
+#include <QTextStream>
 
 #include "viewController.h"
 
@@ -105,12 +107,14 @@ void MainWindow::updateTable(std::string str)
 
 void MainWindow::openRegression()
 {
-	std::ifstream file("/home/lisgein/tmp/somefile.json");
-	if ( file )
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Json (*.json)"));
+	if ( fileName.size() )
 	{
-		std::stringstream buffer;
+		std::ifstream file(fileName.toStdString());
 
+		std::stringstream buffer;
 		buffer << file.rdbuf();
+
 		boost::property_tree::ptree inventoryTree;
 		boost::property_tree::read_json(buffer, inventoryTree);
 
@@ -122,19 +126,25 @@ void MainWindow::openRegression()
 
 void MainWindow::saveRegression()
 {
-	boost::property_tree::ptree inventoryTree;
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), "", tr("Json (*.json)"));
+	if (fileName.size())
+	{
+		if (!fileName.contains(".json"))
+			fileName.push_back(".json");
 
-	document_->saveRegression(inventoryTree);
+		boost::property_tree::ptree inventoryTree;
+		document_->saveRegression(inventoryTree);
 
-	std::stringstream output_stream;
-	boost::property_tree::write_json(output_stream, inventoryTree);
+		std::stringstream output_stream;
+		boost::property_tree::write_json(output_stream, inventoryTree);
 
-	std::string myString = output_stream.str();
+		std::string myString = output_stream.str();
 
-	std::ofstream myfile;
-	myfile.open ("/home/lisgein/tmp/somefile.json");
-	myfile << myString;
-	myfile.close();
+		std::ofstream ofile;
+		ofile.open(fileName.toStdString());
+		ofile << myString;
+		ofile.close();
+	}
 }
 
 

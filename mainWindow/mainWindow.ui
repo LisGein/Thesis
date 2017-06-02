@@ -45,7 +45,6 @@
     </property>
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
-    <addaction name="tsvAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
