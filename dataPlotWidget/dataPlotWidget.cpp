@@ -40,13 +40,13 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 	using namespace QtCharts;
 
-	QScatterSeries *series0 = new QScatterSeries();
-	series0->setName("scatter1");
-	series0->setMarkerShape(QScatterSeries::MarkerShapeCircle);
-	series0->setMarkerSize(10.0);
+    QScatterSeries *pointsSeries = new QScatterSeries();
+    pointsSeries->setName("points");
+    pointsSeries->setMarkerShape(QScatterSeries::MarkerShapeCircle);
+    pointsSeries->setMarkerSize(10.0);
 
-	QLineSeries *series1 = new QLineSeries();
-	series1->setName("scatter2");
+    QLineSeries *regressionSeries = new QLineSeries();
+    regressionSeries->setName("regression");
 
 
 	// x in tearms of plot widget
@@ -57,7 +57,7 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 	auto xBounds = bounds(data, xColumn);
 
 	for (size_t i = 0; i < data.n_rows; ++i)
-		series0->append(xColumn.at(i), resp.at(i));
+        pointsSeries->append(xColumn.at(i), resp.at(i));
 
 
 	float stepX = (xBounds.second - xBounds.first) / GRID_SIZE;
@@ -82,14 +82,14 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 		arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
 		double predict = linearRegression_->predict(res);
-		series1->append(x, predict);
+        regressionSeries->append(x, predict);
 		x += stepX;
 	}
 
 	QChart *chart = new QChart();
 	chart->legend()->hide();
-	chart->addSeries(series0);
-	chart->addSeries(series1);
+    chart->addSeries(pointsSeries);
+    chart->addSeries(regressionSeries);
 	chart->createDefaultAxes();
 	chart->setTitle("Simple line chart example");
 

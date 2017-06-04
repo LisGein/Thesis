@@ -202,16 +202,23 @@ const std::set<FeatureModel::Feature> &FeatureModel::featureSet() const
 
 arma::vec FeatureModel::getFinalFeaturesValue(const std::map<int, double> &rawFeaturesValue) const
 {
-	arma::vec res;
+	arma::vec res(featureSet_.size());
 
+	auto extendedRawFeaturesValue = rawFeaturesValue;
+	extendedRawFeaturesValue[0] = 1.;
+
+	int i = 0;
 	for (const auto& feature : featureSet_)
 	{
-		auto itFirst = rawFeaturesValue.find(feature.first);
-		if (itFirst != rawFeaturesValue.end())
+		auto itFirst = extendedRawFeaturesValue.find(feature.first);
+		if (itFirst != extendedRawFeaturesValue.end())
 		{
-			auto itSecond = rawFeaturesValue.find(feature.second);
-			if (itSecond != rawFeaturesValue.end())
-				res << itFirst->second * itSecond->second;
+			auto itSecond = extendedRawFeaturesValue.find(feature.second);
+			if (itSecond != extendedRawFeaturesValue.end())
+			{
+				res[i] = itFirst->second * itSecond->second;
+				++i;
+			}
 		}
 	}
 
