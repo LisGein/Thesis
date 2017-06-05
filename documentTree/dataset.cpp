@@ -104,7 +104,7 @@ void Dataset::saveRegression(boost::property_tree::ptree &dataset)
 		for(size_t c = 0; c < data_.n_cols; ++c)
 		{
 			pt::ptree row;
-			for (int r = 0; r < data_.n_rows; ++r)
+			for (size_t r = 0; r < data_.n_rows; ++r)
 			{
 				pt::ptree cell;
 				cell.put_value(data_.at(r, c));

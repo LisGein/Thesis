@@ -51,9 +51,9 @@ INode::TypeObject Regression::type() const
 	return TypeObject::Regression;
 }
 
-void Regression::openRegression(boost::property_tree::ptree &inventoryTree)
+void Regression::openRegression(boost::property_tree::ptree &/*inventoryTree*/)
 {
-
+// TODO:openRegression
 }
 
 void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)

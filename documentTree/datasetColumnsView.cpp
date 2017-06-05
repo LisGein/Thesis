@@ -20,7 +20,7 @@ void DatasetColumnsView::addFeature(int feature)
 		features_.push_back(feature);
 }
 
-void DatasetColumnsView::removeFeature(int feature)
+void DatasetColumnsView::removeFeature(size_t feature)
 {
 	if (features_.size() > feature)
 	{
@@ -46,7 +46,7 @@ const Dataset &DatasetColumnsView::originDataset() const
 	return originDataset_;
 }
 
-int DatasetColumnsView::originColumns(int filteredId) const
+int DatasetColumnsView::originColumns(size_t filteredId) const
 {
 	if (features_.size() > filteredId)
 		return features_[filteredId];

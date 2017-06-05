@@ -92,6 +92,10 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps})
 
 
+IF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+ENDIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+
 
 #This is the command to connect libraries to a target:
 target_link_libraries(${GUI_APP_NAME}

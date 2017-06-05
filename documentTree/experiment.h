@@ -24,7 +24,7 @@ public:
 	const DatasetColumnsView& filtredDataset() const;
 	const DatasetColumnsView& responses() const;
 
-	virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void openRegression(boost::property_tree::ptree &) override;
 	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
 
 

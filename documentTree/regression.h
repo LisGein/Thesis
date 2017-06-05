@@ -21,7 +21,7 @@ public:
 	void addNewChild() override;
 	virtual TypeObject type() const override;
 
-	virtual void openRegression(boost::property_tree::ptree &inventoryTree) override;
+	virtual void openRegression(boost::property_tree::ptree &) override;
 	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) override;
 
 private:

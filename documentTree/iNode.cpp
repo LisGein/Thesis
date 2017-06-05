@@ -55,12 +55,11 @@ void Root::addNewChild()
 	return;
 }
 
-void Root::openRegression(boost::property_tree::ptree &inventoryTree)
+void Root::openRegression(boost::property_tree::ptree &/*inventoryTree*/)
 {
-
 }
 
-void Root::saveRegression(boost::property_tree::ptree &inventoryTree)
+void Root::saveRegression(boost::property_tree::ptree &/*inventoryTree*/)
 {
 
 }
