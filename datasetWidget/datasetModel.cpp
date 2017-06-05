@@ -2,6 +2,8 @@
 
 #include "documentTree/dataset.h"
 
+#include <QInputDialog>
+
 
 DatasetModel::DatasetModel(Dataset& dataset, QObject* parent)
 	: QAbstractTableModel(parent)
@@ -79,8 +81,58 @@ const QPair<int, int> &DatasetModel::lastEditable() const
 	return lastEditable_;
 }
 
-void DatasetModel::edited(QPair<int, int> cell)
+void DatasetModel::addColumn(const QString &text)
 {
-	lastEditable_ = cell;
+	beginResetModel();
+	dataset_.addColumn(text.toStdString());
+	endResetModel();
 }
 
+void DatasetModel::addRow()
+{
+	beginResetModel();
+	dataset_.addRow();
+	endResetModel();
+}
+
+void DatasetModel::deleteColumn(int i)
+{
+	beginResetModel();
+	try
+	{
+		dataset_.deleteColumn(i);
+	}
+	catch(std::string& str)
+	{
+		std::cout << str << std::endl;
+	}
+	endResetModel();
+}
+
+void DatasetModel::deleteRow(int i)
+{
+	beginResetModel();
+	try
+	{
+		dataset_.deleteRow(i);
+	}
+	catch(std::string& str)
+	{
+		std::cout << str << std::endl;
+	}
+	endResetModel();
+}
+
+void DatasetModel::renameColumn(int i, const QString &text)
+{
+	beginResetModel();
+	try
+	{
+		dataset_.renameColumn(i, text.toStdString());
+	}
+	catch(std::string& str)
+	{
+		std::cout << str << std::endl;
+	}
+	endResetModel();
+}

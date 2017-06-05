@@ -18,22 +18,28 @@ public:
 
 signals:
 	void insertedTable(std::string params);
-	void addColumn();
-	void addRow();
 	void deleteColumn(int i);
 	void renameColumn(int i);
 
 private slots:
 	void pasteTable();
+	void addColumn();
 	void deleteColumnUnderCursor();
+	void deleteRowUnderCursor();
 	void renameColumnUnderCursor();
-	void addedColumn();
-	void addedRow();
 
 	void headerContextMenu(const QPoint &point);
 
 private:
+	void generateMenu(QMenu &menu);
+
 	QShortcut* insertShortcut_;
 	QPoint clickedCursor_;
 	DatasetModel* model_;
+
+	QAction *columnAdd_;
+	QAction *rowAdd_;
+	QAction *deleteCol_;
+	QAction *deleteRow_;
+	QAction *renameCol_;
 };

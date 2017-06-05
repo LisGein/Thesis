@@ -35,14 +35,15 @@ public:
 
 	const QPair<int, int> &lastEditable() const;
 
-	Dataset& dataset_;
+	void deleteColumn(int i);
+	void deleteRow(int i);
+	void renameColumn(int i, const QString &text);
+	void addColumn(const QString &text);
 
-private slots:
-	void edited(QPair<int, int> cell);
-
-signals:
-	void edit(QPair<int, int> cell);
+public slots:
+	void addRow();
 
 private:
+	Dataset& dataset_;
 	QPair<int, int> lastEditable_;
 };

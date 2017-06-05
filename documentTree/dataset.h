@@ -34,6 +34,9 @@ public:
 	const arma::vec getColumnVector(int id) const;
 	void addColumn(const std::string &columnName);
 	void addRow();
+	void renameColumn(size_t column, const std::string& str);
+	void deleteColumn(size_t column);
+	void deleteRow(size_t row);
 
 
 private:

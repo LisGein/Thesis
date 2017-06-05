@@ -167,3 +167,25 @@ void Dataset::addRow()
 	data_.resize(data_.n_rows + 1, data_.n_cols);
 }
 
+void Dataset::renameColumn(size_t column, const std::string &str)
+{
+	if (names_.size() <= column)
+		throw std::string("Application fatal error: The array of column names is less than the value that is renamed");
+
+	names_.at(column) = str;
+}
+
+void Dataset::deleteColumn(size_t column)
+{
+	if (names_.size() <= column)
+		throw std::string("Application fatal error: The array of column names is less than the value that is deleted");
+
+	data_.shed_col(column);
+	names_.erase(names_.begin() + column);
+}
+
+void Dataset::deleteRow(size_t row)
+{
+	data_.shed_row(row);
+}
+

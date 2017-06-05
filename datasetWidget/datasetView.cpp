@@ -16,13 +16,23 @@ DatasetView::DatasetView(QWidget* parent)
 	, insertShortcut_(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_V), this))
 	, clickedCursor_(-1, -1)
 	, model_(nullptr)
+	, columnAdd_( new QAction(tr("Add column")))
+	, rowAdd_( new QAction(tr("Add row")))
+	, deleteCol_( new QAction(tr("Delete this column")))
+	, deleteRow_( new QAction(tr("Delete this row")))
+	, renameCol_( new QAction(tr("Rename this column")))
 {
 	QObject::connect(insertShortcut_, SIGNAL(activated()), this, SLOT(pasteTable()));
-	QObject::connect(this, SIGNAL(addColumn()), this, SLOT(addedColumn()));
-	QObject::connect(this, SIGNAL(addRow()), this, SLOT(addedRow()));
+
 	setEditTriggers(QAbstractItemView::AllEditTriggers);
 	horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(headerContextMenu(const QPoint&)));
+
+	QObject::connect(columnAdd_, SIGNAL(triggered(bool)), this, SLOT(addColumn()));
+	QObject::connect(rowAdd_, SIGNAL(triggered(bool)), model_, SLOT(addRow()));
+	QObject::connect(deleteCol_, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
+	QObject::connect(deleteRow_, SIGNAL(triggered(bool)), this, SLOT(deleteRowUnderCursor()));
+	QObject::connect(renameCol_, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
 }
 
 DatasetView::~DatasetView()
@@ -32,24 +42,9 @@ DatasetView::~DatasetView()
 
 void DatasetView::contextMenuEvent(QContextMenuEvent* event)
 {
+	clickedCursor_ = event->globalPos();
 	QMenu menu(this);
-	clickedCursor_ = event->pos();
-
-	QAction *columnAdd = new QAction(tr("Add column"));
-	connect(columnAdd, SIGNAL(triggered(bool)), this, SIGNAL(addColumn()));
-	menu.addAction(columnAdd);
-
-	QAction *rowAdd = new QAction(tr("Add row"));
-	connect(rowAdd, SIGNAL(triggered(bool)), this, SIGNAL(addRow()));
-	menu.addAction(rowAdd);
-
-	QAction *del = new QAction(tr("Delete this column"));
-	connect(del, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
-	menu.addAction(del);
-
-	QAction *rename = new QAction(tr("Rename this column"));
-	connect(rename, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
-	menu.addAction(rename);
+	generateMenu(menu);
 
 	menu.exec(event->globalPos());
 }
@@ -57,17 +52,17 @@ void DatasetView::contextMenuEvent(QContextMenuEvent* event)
 void DatasetView::keyPressEvent(QKeyEvent *event)
 {
 	if (model_  && event->type() == QEvent::KeyPress && event->key() == Qt::Key_Return)
-	{
+	{/*
 		const QPair<int, int> lastEditable = model_->lastEditable();
 		if (lastEditable.first + 1 == model_->rowCount(QModelIndex()) && lastEditable.second +1 == model_->columnCount(QModelIndex()))
-			emit addRow();
+			emit addRow();*/
 	}
 
 }
 
 void DatasetView::setModel(DatasetModel *model)
 {
-	model_ =model;
+	model_ = model;
 	QTableView::setModel(model);
 }
 
@@ -79,55 +74,58 @@ void DatasetView::pasteTable()
 	emit insertedTable(clipboard.toStdString());
 }
 
-void DatasetView::deleteColumnUnderCursor()
-{
-	emit deleteColumn(columnAt(clickedCursor_.x()));
-}
-
-void DatasetView::renameColumnUnderCursor()
-{
-	emit renameColumn(columnAt(clickedCursor_.x()));
-}
-
-void DatasetView::addedColumn()
+void DatasetView::addColumn()
 {
 	QString text = QInputDialog::getText(this, tr("Column name"), tr("Input column name:"));
 	if (text.size())
 	{
-		model_->beginReset();
-		model_->dataset_.addColumn(text.toStdString());
-		model_->endReset();
+		model_->addColumn(text);
 	}
 }
 
-void DatasetView::addedRow()
+void DatasetView::deleteColumnUnderCursor()
 {
-	model_->beginReset();
-	model_->dataset_.addRow();
-	model_->endReset();
+	QPoint point = viewport()->mapFromGlobal(clickedCursor_);
+	model_->deleteColumn(columnAt(point.x()));
+}
+
+void DatasetView::deleteRowUnderCursor()
+{
+	QPoint point = viewport()->mapFromGlobal(clickedCursor_);
+	model_->deleteRow(rowAt(point.y()));
+}
+
+void DatasetView::renameColumnUnderCursor()
+{
+	QString text = QInputDialog::getText(this, tr("Column name"), tr("Input column name:"));
+
+	QPoint point = viewport()->mapFromGlobal(clickedCursor_);
+	model_->renameColumn(columnAt(point.x()), text);
 }
 
 void DatasetView::headerContextMenu(const QPoint& point)
 {
-	QMenu menu(this);
 	clickedCursor_ = viewport()->mapToGlobal(point);
 
-	QAction *columnAdd = new QAction(tr("Add column"));
-	connect(columnAdd, SIGNAL(triggered(bool)), this, SIGNAL(addColumn()));
-	menu.addAction(columnAdd);
-
-	QAction *rowAdd = new QAction(tr("Add row"));
-	connect(rowAdd, SIGNAL(triggered(bool)), this, SIGNAL(addRow()));
-	menu.addAction(rowAdd);
-
-	QAction *del = new QAction(tr("Delete this column"));
-	connect(del, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
-	menu.addAction(del);
-
-	QAction *rename = new QAction(tr("Rename this column"));
-	connect(rename, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
-	menu.addAction(rename);
+	QMenu menu(this);
+	generateMenu(menu);
 
 	menu.exec(viewport()->mapToGlobal(point));
 }
+
+void DatasetView::generateMenu(QMenu &menu)
+{
+	menu.addAction(columnAdd_);
+	menu.addAction(rowAdd_);
+
+	QPoint point = viewport()->mapFromGlobal(clickedCursor_);
+	if (columnAt(point.x()) != -1 && rowAt(point.y()) != -1)
+	{
+		menu.addAction(deleteCol_);
+		menu.addAction(deleteRow_);
+		menu.addAction(renameCol_);
+	}
+}
+
+
 
