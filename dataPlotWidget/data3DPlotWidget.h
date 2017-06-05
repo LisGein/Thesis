@@ -11,12 +11,9 @@
 
 class LinearRegressionModel;
 namespace QtDataVisualization {
-class Q3DScatter;
 class Q3DSurface;
 class QSurfaceDataProxy;
 class QSurface3DSeries;
-class QScatterDataProxy;
-class QScatter3DSeries;
 }
 class QComboBox;
 
@@ -30,23 +27,13 @@ public:
 
 
 private:
-	virtual void updateChart(const arma::mat& data, const arma::vec& resp) override;
-
-	void updateDataChart(const arma::mat& data, const arma::vec& resp, const arma::vec &xColumn, const arma::vec &zColumn);
-	void updateRegressionChart(const arma::mat& data, const arma::vec &xColumn, const arma::vec &zColumn);
-
-
+	virtual void updateChart(const arma::mat& data, const arma::vec&) override;
 	void setGradient();
 
-	QtDataVisualization::Q3DScatter *pointsGraph_;
+
 	QtDataVisualization::Q3DSurface *surfaceGraph_;
-
-	QtDataVisualization::QScatterDataProxy *pointsProxy_;
 	QtDataVisualization::QSurfaceDataProxy *surfaceProxy_;
-
-	QtDataVisualization::QScatter3DSeries *pointsSeries_;
 	QtDataVisualization::QSurface3DSeries *surfaceSeries_;
-
 
 	QMap<int, QString> axisByName_;
 };
