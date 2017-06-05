@@ -104,6 +104,16 @@ int TreeModel::columnCount(const QModelIndex& parent) const
 	return 1;
 }
 
+void TreeModel::beginReset()
+{
+	beginResetModel();
+}
+
+void TreeModel::endReset()
+{
+	endResetModel();
+}
+
 int TreeModel::typeObject(const QModelIndex& index)
 {
 	if (!index.isValid() || !index.internalPointer())

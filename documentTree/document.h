@@ -26,10 +26,11 @@ public:
 
 	// INode interface
 public:
-	int childCount() const override;
-	INode* child(int id) override;
-	const INode* parentItem() const override;
-	void addNewChild() override;
+	virtual int childCount() const override;
+	virtual INode* child(int id) override;
+	virtual const INode* parentItem() const override;
+	virtual void addNewChild() override;
+	virtual void removeAllChilds() override;
 	virtual TypeObject type() const override;
 
 private:

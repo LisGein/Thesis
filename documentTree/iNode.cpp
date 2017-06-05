@@ -55,6 +55,11 @@ void Root::addNewChild()
 	return;
 }
 
+void Root::removeAllChilds()
+{
+	return;
+}
+
 void Root::openRegression(boost::property_tree::ptree &/*inventoryTree*/)
 {
 }

@@ -1,7 +1,7 @@
 #include "common/common.h"
 #include "regression.h"
-
 #include "experiment.h"
+#include "featureWidget/featureGraphicsScene.h"
 
 
 int Regression::childCount() const
@@ -46,17 +46,44 @@ void Regression::addNewChild()
 	return;
 }
 
+void Regression::removeAllChilds()
+{
+	return;
+}
+
 INode::TypeObject Regression::type() const
 {
 	return TypeObject::Regression;
 }
 
-void Regression::openRegression(boost::property_tree::ptree &/*inventoryTree*/)
+void Regression::openRegression(boost::property_tree::ptree &regressions)
 {
 // TODO:openRegression
+	namespace pt = boost::property_tree;
+	for(auto &it:regressions)
+	{
+		pt::ptree feature = it.second;
+
+		int cellFirst = -1;
+		int cellSecond = -1;
+		int i = 0;
+		for (pt::ptree::value_type &cell : feature)
+		{
+			if (i ==0)
+				cellFirst = cell.second.get_value<int>();
+			else
+				cellSecond = cell.second.get_value<int>();
+
+			++i;
+		}
+
+		featureModel_.addFeature(FeatureModel::Feature(cellFirst, cellSecond));
+	}
+	featureModel_.updateData();
+	featureModel_.getScene()->updateChecked();
 }
 
-void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)
+void Regression::saveRegression(boost::property_tree::ptree &regressionTree)
 {
 	namespace pt = boost::property_tree;
 
@@ -74,7 +101,7 @@ void Regression::saveRegression(boost::property_tree::ptree &inventoryTree)
 		cellSecond.put_value(it.second);
 		feature.push_back(std::make_pair("", cellSecond));
 
-		inventoryTree.push_back(std::make_pair("", feature));
+		regressionTree.push_back(std::make_pair("", feature));
 	}
 
 }

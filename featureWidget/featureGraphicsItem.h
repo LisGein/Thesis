@@ -10,7 +10,7 @@ class FeatureGraphicsItem: public QGraphicsItem
 public:
 	FeatureGraphicsItem(const FeatureModel& featureModel,
 						const QRect& rect,
-						const QPair<int, int>& parents,
+						const QPair<int, int>& parentsFeature,
 						QGraphicsItem *parent = 0);
 
 	virtual ~FeatureGraphicsItem();
@@ -23,7 +23,7 @@ public:
 	bool isDisabled() const;
 	void setDisabled();
 
-	const QPair<int, int> parents() const;
+	const QPair<int, int> parentsFeature() const;
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget* parent = 0);
 

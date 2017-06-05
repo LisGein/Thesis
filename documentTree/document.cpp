@@ -46,13 +46,22 @@ void Document::loadFromTsv(const std::string& tsv)
 
 void Document::openRegression(boost::property_tree::ptree &inventoryTree)
 {
+	removeAllChilds();
+
 	datasetModel_->beginReset();
 	dataset_->openRegression(inventoryTree.get_child("dataset"));
 	datasetModel_->endReset();
 
-	for (const auto& experiment : experiments_)
+	namespace pt = boost::property_tree;
+	pt::ptree experiments = inventoryTree.get_child("experiments");
+	for(auto &it:experiments)
 	{
-		experiment->update();
+		addNewChild();
+		auto experiment = experiments_.end() - 1;
+		if (experiment == experiments_.end())
+			throw "Application fatal error: don't exist child experiment";
+
+		(*experiment)->openRegression(it.second);
 	}
 }
 
@@ -63,14 +72,17 @@ void Document::saveRegression(boost::property_tree::ptree &inventoryTree)
 	inventoryTree.add_child("dataset", dataset);
 
 	int index = 0;
+
+	boost::property_tree::ptree experiments;
 	for (auto &it: experiments_)
 	{
 		boost::property_tree::ptree experiment;
 		it->saveRegression(experiment);
 		std::string name = "experiment" + boost::lexical_cast<std::string>(index);
-		inventoryTree.add_child(name, experiment);
+		experiments.add_child(name, experiment);
 		++index;
 	}
+	inventoryTree.add_child("experiments", experiments);
 }
 
 
@@ -93,6 +105,11 @@ const INode* Document::parentItem() const
 void Document::addNewChild()
 {
 	experiments_.emplace_back(std::make_unique<Experiment>(*this));
+}
+
+void Document::removeAllChilds()
+{
+	experiments_.clear();
 }
 
 INode::TypeObject Document::type() const

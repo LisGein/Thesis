@@ -14,6 +14,8 @@ public:
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
+	void updateChecked();
+
 public slots:
 	void updateTable(int nRawFeatures);
 
@@ -26,7 +28,7 @@ private:
 	void createHeadertem(int x, int y, int id);
 
 private:
-	QVector< QGraphicsItem* > buttons_;
+	QVector<QGraphicsItem *> buttons_;
 	int buttonSize_;
 	FeatureModel& featureModel_;
 };

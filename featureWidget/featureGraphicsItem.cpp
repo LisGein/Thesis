@@ -25,6 +25,7 @@ void FeatureGraphicsItem::setChecked(bool is)
 {
 	isChecked_ = is;
 }
+
 QRectF FeatureGraphicsItem::boundingRect() const
 {
 	return rect_;
@@ -45,7 +46,7 @@ void FeatureGraphicsItem::setDisabled()
 	isDisabled_ = true;
 }
 
-const QPair<int, int> FeatureGraphicsItem::parents() const
+const QPair<int, int> FeatureGraphicsItem::parentsFeature() const
 {
 	return parents_;
 }

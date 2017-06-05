@@ -129,8 +129,6 @@ const FeatureModel::Feature FeatureModel::nameToFeature(const std::string &srt) 
 
 void FeatureModel::update()
 {
-	featureSet_.clear();
-	nameToFeature_.clear();
 	updateData();
 	featuresScene_->updateTable(dataset_.features().size() + 1);
 }

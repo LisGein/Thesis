@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "featureGraphicsScene.h"
 #include "featureGraphicsItem.h"
 #include "featureHeaderGraphicsItem.h"
@@ -32,12 +33,12 @@ void FeatureGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		{
 			if (item->isChecked())
 			{
-				emit deletedFromFormula(item->parents());
+				emit deletedFromFormula(item->parentsFeature());
 				item->setChecked(false);
 			}
 			else
 			{
-				emit addedToFormula(item->parents());
+				emit addedToFormula(item->parentsFeature());
 				item->setChecked(true);
 			}
 			update();
@@ -46,9 +47,25 @@ void FeatureGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	}
 }
 
+void FeatureGraphicsScene::updateChecked()
+{
+	auto& featureSet = featureModel_.featureSet();
+
+	for (auto &it: buttons_)
+	{
+		FeatureGraphicsItem* item = dynamic_cast<FeatureGraphicsItem*>(it);
+		if (item)
+		{
+			FeatureModel::Feature feature = from_qt(item->parentsFeature());
+			item->setChecked(featureSet.find(feature) != featureSet.end());
+		}
+	}
+
+}
+
 void FeatureGraphicsScene::createHeadertem(int x, int y, int id)
 {
-	auto *item = new FeatureHeaderGraphicsItem(featureModel_, QRect(x, y, buttonSize_ - 1, buttonSize_ - 1), id);
+	FeatureHeaderGraphicsItem *item = new FeatureHeaderGraphicsItem(featureModel_, QRect(x, y, buttonSize_ - 1, buttonSize_ - 1), id);
 	buttons_.push_back(item);
 	addItem(item);
 

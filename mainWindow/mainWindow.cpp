@@ -118,8 +118,11 @@ void MainWindow::openRegression()
 		boost::property_tree::ptree inventoryTree;
 		boost::property_tree::read_json(buffer, inventoryTree);
 
+		documentModel_->beginReset();
 		document_->openRegression(inventoryTree);
 		datasetWidget_->openRegression(inventoryTree);
+		documentModel_->endReset();
+		ui_->documentView->expandAll();
 
 		file.close();
 	}

@@ -40,12 +40,37 @@ const DatasetColumnsView &Experiment::responses() const
 	return response_;
 }
 
-void Experiment::openRegression(boost::property_tree::ptree &/*inventoryTree*/)
+void Experiment::openRegression(boost::property_tree::ptree &inventoryTree)
 {
-	// TODO:openRegression
+	removeAllChilds();
+
+	namespace pt = boost::property_tree;
+	pt::ptree filtredArray = inventoryTree.get_child("filtredArray");
+	filtredDataset_.clear();
+
+	for(auto &it:filtredArray)
+	{
+		std::string respCol = it.first;
+
+		setResponse(atoi(respCol.c_str()));
+		pt::ptree feature = it.second;
+		for(auto &iter:feature)
+			filtredDataset_.addFeature(iter.second.get<int>("", 0));
+	}
+
+	pt::ptree regressions = inventoryTree.get_child("regressions");
+	for(auto &it:regressions)
+	{
+		addNewChild();
+		auto regression = regressions_.end() - 1;
+		if (regression == regressions_.end())
+			throw "Application fatal error: don't exist child regression";
+
+		(*regression)->openRegression(it.second);
+	}
 }
 
-void Experiment::saveRegression(boost::property_tree::ptree &inventoryTree)
+void Experiment::saveRegression(boost::property_tree::ptree &experimentTree)
 {
 	namespace pt = boost::property_tree;
 
@@ -62,17 +87,19 @@ void Experiment::saveRegression(boost::property_tree::ptree &inventoryTree)
 	}
 
 	experiment.push_back(std::make_pair(boost::lexical_cast<std::string>(getResponseColumn()), feature));
-	inventoryTree.add_child("filtredArray", experiment);
+	experimentTree.add_child("filtredArray", experiment);
 
+	boost::property_tree::ptree regressions;
 	int index = 0;
 	for (auto &it: regressions_)
 	{
 		boost::property_tree::ptree regression;
 		std::string name = "regression" + boost::lexical_cast<std::string>(index);
 		it->saveRegression(regression);
-		inventoryTree.add_child(name, regression);
+		regressions.add_child(name, regression);
 		++index;
 	}
+	experimentTree.add_child("regressions", regressions);
 
 }
 
@@ -118,6 +145,11 @@ const INode* Experiment::parentItem() const
 void Experiment::addNewChild()
 {
 	regressions_.emplace_back(std::make_unique<Regression>(*this));
+}
+
+void Experiment::removeAllChilds()
+{
+	regressions_.clear();
 }
 
 INode::TypeObject Experiment::type() const

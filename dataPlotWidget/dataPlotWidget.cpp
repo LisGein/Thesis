@@ -82,14 +82,14 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 		arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
 		double predict = linearRegression_->predict(res);
-        regressionSeries->append(x, predict);
+		regressionSeries->append(x, predict);
 		x += stepX;
 	}
 
 	QChart *chart = new QChart();
 	chart->legend()->hide();
-    chart->addSeries(pointsSeries);
-    chart->addSeries(regressionSeries);
+	chart->addSeries(pointsSeries);
+	chart->addSeries(regressionSeries);
 	chart->createDefaultAxes();
 	chart->setTitle("Simple line chart example");
 

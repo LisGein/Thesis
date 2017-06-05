@@ -21,9 +21,10 @@ public:
 	virtual ~INode() = default;
 
 	virtual int childCount() const = 0;
-	virtual INode* child(int id) = 0;
 	virtual const INode* parentItem() const = 0;
+	virtual INode* child(int id) = 0;
 	virtual void addNewChild() = 0;
+	virtual void removeAllChilds() = 0;
 
 	virtual void openRegression(boost::property_tree::ptree &inventoryTree) = 0;
 	virtual void saveRegression(boost::property_tree::ptree &inventoryTree) = 0;
@@ -43,13 +44,15 @@ class Root : public INode
 {
 public:
 	Root(INode& firstLevel);
+	virtual ~Root() = default;
 
 	// INode interface
 public:
-	int childCount() const override;
-	INode* child(int) override;
-	const INode* parentItem() const override;
-	void addNewChild() override;
+	virtual int childCount() const override;
+	virtual INode* child(int) override;
+	virtual const INode* parentItem() const override;
+	virtual void addNewChild() override;
+	virtual void removeAllChilds() override;
 
 	virtual void openRegression(boost::property_tree::ptree &);
 	virtual void saveRegression(boost::property_tree::ptree &);
