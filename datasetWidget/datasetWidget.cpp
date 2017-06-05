@@ -7,6 +7,7 @@
 #include <QMenuBar>
 #include <QBoxLayout>
 #include <QFileDialog>
+#include <QTextEdit>
 
 #include <cstring>
 
@@ -18,7 +19,7 @@ extern "C"{
 DatasetWidget::DatasetWidget()
 	: menu_(new QMenuBar(this))
 	, datasetView_(new DatasetView(this))
-	, featureParams_(new QTableView(this))
+	, descriptionDocument_(new QTextEdit(this))
 {
 	setLayout(new QVBoxLayout());
 
@@ -32,12 +33,27 @@ DatasetWidget::DatasetWidget()
 
 	layout()->addWidget(menu_);
 	layout()->addWidget(datasetView_);
-	layout()->addWidget(featureParams_);
+	layout()->addWidget(descriptionDocument_);
+
+	QString str = tr("Description of the document") + "\n";
+	descriptionDocument_->setText(str);
 }
 
 DatasetWidget::~DatasetWidget()
 {
 
+}
+
+void DatasetWidget::openRegression(boost::property_tree::ptree &inventoryTree)
+{
+	descriptionDocument_->clear();
+	std::string text = inventoryTree.get<std::string>("description", "");
+	descriptionDocument_->setText(QString::fromStdString(text));
+}
+
+void DatasetWidget::saveRegression(boost::property_tree::ptree &inventoryTree)
+{
+	inventoryTree.put("description", descriptionDocument_->toPlainText().toStdString());
 }
 
 void DatasetWidget::setDatasetModel(DatasetModel* model)

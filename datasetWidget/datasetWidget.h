@@ -3,11 +3,13 @@
 #include <QWidget>
 #include <QMenu>
 
+#include <boost/property_tree/ptree.hpp>
+
 
 class DatasetModel;
 class QMenuBar;
 class DatasetView;
-class QTableView;
+class QTextEdit;
 
 class DatasetWidget : public QWidget
 {
@@ -15,6 +17,9 @@ class DatasetWidget : public QWidget
 public:
 	DatasetWidget();
 	~DatasetWidget();
+	virtual void openRegression(boost::property_tree::ptree &inventoryTree);
+	virtual void saveRegression(boost::property_tree::ptree &inventoryTree);
+
 	void setDatasetModel(DatasetModel* model);
 
 signals:
@@ -27,5 +32,5 @@ private slots:
 private:
 	QMenuBar *menu_;
 	DatasetView *datasetView_;
-	QTableView *featureParams_;
+	QTextEdit *descriptionDocument_;
 };

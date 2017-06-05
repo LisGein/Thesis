@@ -119,6 +119,7 @@ void MainWindow::openRegression()
 		boost::property_tree::read_json(buffer, inventoryTree);
 
 		document_->openRegression(inventoryTree);
+		datasetWidget_->openRegression(inventoryTree);
 
 		file.close();
 	}
@@ -134,6 +135,7 @@ void MainWindow::saveRegression()
 
 		boost::property_tree::ptree inventoryTree;
 		document_->saveRegression(inventoryTree);
+		datasetWidget_->saveRegression(inventoryTree);
 
 		std::stringstream output_stream;
 		boost::property_tree::write_json(output_stream, inventoryTree);
