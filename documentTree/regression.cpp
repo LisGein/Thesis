@@ -79,6 +79,7 @@ void Regression::openRegression(boost::property_tree::ptree &regressions)
 
 		featureModel_.addFeature(FeatureModel::Feature(cellFirst, cellSecond));
 	}
+	linearRegressionModel_.update();
 	featureModel_.updateData();
 	featureModel_.getScene()->updateChecked();
 }
