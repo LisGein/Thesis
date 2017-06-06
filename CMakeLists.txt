@@ -91,13 +91,15 @@ set(QON_TS_FILES
 	)
 find_package(Qt5LinguistTools REQUIRED)
 
-qt5_create_translation(QON_QM_FILES ${CPP_FILES} ${QON_TS_FILES} OPTIONS -no-recursive)
+#qt5_create_translation(QON_QM_FILES ${CPP_FILES} ${QON_TS_FILES} OPTIONS -no-recursive)
+qt5_add_translation(QON_QM_FILES ${QON_TS_FILES})
 
 add_custom_target(translations DEPENDS ${QON_QM_FILES})
+add_custom_target(tm_files DEPENDS ${QON_QM_FILES})
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 # Add executables files:
-add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps})
+add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps} ${QON_QM_FILES} )
 
 
 IF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
