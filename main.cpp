@@ -1,4 +1,6 @@
 #include <QApplication>
+#include <QTranslator>
+#include <QDebug>
 #include "mainWindow/mainWindow.h"
 
 
@@ -9,6 +11,11 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("LisGein");
 	QCoreApplication::setOrganizationDomain("lisgein.com");
 	QCoreApplication::setApplicationName("Regression thesis");
+
+	QTranslator myTranslator;
+	bool q = myTranslator.load("/home/lisgein/Diploma/Thesis/build-debug-kde2/Diploma_ru.qm");
+	qDebug() << q << " load";
+	app.installTranslator(&myTranslator);
 
 	MainWindow mainWindow;
 	mainWindow.show();

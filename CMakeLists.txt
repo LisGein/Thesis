@@ -9,13 +9,12 @@ set(GUI_APP_NAME ${PROJECT_NAME})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-
 include(cmakemodules/script_findlibs.cmake REQUIRED)
 
+include_directories(treeWidget)
+include_directories(experimentWidget)
 
-INCLUDE_DIRECTORIES(treeWidget)
-INCLUDE_DIRECTORIES(experimentWidget)
+
 set(CPP_FILES
 	common/qt.cpp
 	main.cpp
@@ -86,6 +85,15 @@ set(FILES_TO_UIC
 
 qt5_wrap_cpp(moc_cpps ${FILES_TO_MOC})
 qt5_wrap_ui(uic_cpps ${FILES_TO_UIC})
+
+set(QON_TS_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/languages/${PROJECT_NAME}_ru.ts
+	)
+find_package(Qt5LinguistTools REQUIRED)
+
+qt5_create_translation(QON_QM_FILES ${CPP_FILES} ${QON_TS_FILES} OPTIONS -no-recursive)
+
+add_custom_target(translations DEPENDS ${QON_QM_FILES})
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 # Add executables files:

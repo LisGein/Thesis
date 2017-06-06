@@ -107,7 +107,7 @@ void MainWindow::updateTable(std::string str)
 
 void MainWindow::openRegression()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Json (*.json)"));
+	QString fileName = QFileDialog::getOpenFileName(this, QObject::tr("Open File"),"", "Json (*.json)");
 	if ( fileName.size() )
 	{
 		std::ifstream file(fileName.toStdString());
@@ -130,7 +130,7 @@ void MainWindow::openRegression()
 
 void MainWindow::saveRegression()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), "", tr("Json (*.json)"));
+	QString fileName = QFileDialog::getSaveFileName(this, QObject::tr("Save"), "", "Json (*.json)");
 	if (fileName.size())
 	{
 		if (!fileName.contains(".json"))

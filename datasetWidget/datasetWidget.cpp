@@ -35,7 +35,7 @@ DatasetWidget::DatasetWidget()
 	layout()->addWidget(datasetView_);
 	layout()->addWidget(descriptionDocument_);
 
-	QString str = tr("Description of the document") + "\n";
+	QString str = QObject::tr("Description of the document") + "\n";
 	descriptionDocument_->setText(str);
 }
 
@@ -65,7 +65,7 @@ void DatasetWidget::setDatasetModel(DatasetModel* model)
 
 void DatasetWidget::loadFromXls()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Files (*.xls *.xlsx)"));
+	QString fileName = QFileDialog::getOpenFileName(this, QObject::tr("Open File"),"", "Files (*.xls *.xlsx)");
 
 	xlsxioreader xlsxioread;
 	if ((xlsxioread = xlsxioread_open(fileName.toStdString().c_str())) == NULL)
@@ -100,7 +100,7 @@ void DatasetWidget::loadFromXls()
 
 void DatasetWidget::loadFromTsv()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Files (*.tsv)"));
+	QString fileName = QFileDialog::getOpenFileName(this, QObject::tr("Open File"),"","Files (*.tsv)");
 	std::ifstream file(fileName.toStdString());
 	if ( file )
 	{

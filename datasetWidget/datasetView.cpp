@@ -16,11 +16,11 @@ DatasetView::DatasetView(QWidget* parent)
 	, insertShortcut_(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_V), this))
 	, clickedCursor_(-1, -1)
 	, model_(nullptr)
-	, columnAdd_( new QAction(tr("Add column")))
-	, rowAdd_( new QAction(tr("Add row")))
-	, deleteCol_( new QAction(tr("Delete this column")))
-	, deleteRow_( new QAction(tr("Delete this row")))
-	, renameCol_( new QAction(tr("Rename this column")))
+	, columnAdd_( new QAction(QObject::tr("Add column")))
+	, rowAdd_( new QAction(QObject::tr("Add row")))
+	, deleteCol_( new QAction(QObject::tr("Delete this column")))
+	, deleteRow_( new QAction(QObject::tr("Delete this row")))
+	, renameCol_( new QAction(QObject::tr("Rename this column")))
 {
 	QObject::connect(insertShortcut_, SIGNAL(activated()), this, SLOT(pasteTable()));
 
@@ -76,7 +76,7 @@ void DatasetView::pasteTable()
 
 void DatasetView::addColumn()
 {
-	QString text = QInputDialog::getText(this, tr("Column name"), tr("Input column name:"));
+	QString text = QInputDialog::getText(this, QObject::tr("Column name"), QObject::tr("Input column name:"));
 	if (text.size())
 	{
 		model_->addColumn(text);
@@ -97,7 +97,7 @@ void DatasetView::deleteRowUnderCursor()
 
 void DatasetView::renameColumnUnderCursor()
 {
-	QString text = QInputDialog::getText(this, tr("Column name"), tr("Input column name:"));
+	QString text = QInputDialog::getText(this, QObject::tr("Column name"), QObject::tr("Input column name:"));
 
 	QPoint point = viewport()->mapFromGlobal(clickedCursor_);
 	model_->renameColumn(columnAt(point.x()), text);
