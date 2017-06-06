@@ -20,6 +20,16 @@
 
 using namespace QtDataVisualization;
 
+QValue3DAxis *axis(QObject *parent, const QString &name)
+{
+	QValue3DAxis *axis = new QValue3DAxis(parent);
+	axis->setTitle(name);
+	axis->setTitleVisible(true);
+
+	axis->setLabelAutoRotation(30.0f);
+	return axis;
+}
+
 Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 	: AbstractDataPlot(parent)
 	, surfaceGraph_(new Q3DSurface())
@@ -39,13 +49,14 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 	surfaceSeries_->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
 	surfaceSeries_->setFlatShadingEnabled(false);
 
-	surfaceGraph_->setAxisX(new QValue3DAxis);
-	surfaceGraph_->setAxisY(new QValue3DAxis);
-	surfaceGraph_->setAxisZ(new QValue3DAxis);
 
-	surfaceGraph_->axisX()->setTitle("X");
-	surfaceGraph_->axisY()->setTitle("Y");
-	surfaceGraph_->axisZ()->setTitle("Z");
+
+
+	surfaceGraph_->setAxisX(axis(surfaceGraph_, "X"));
+	surfaceGraph_->setAxisY(axis(surfaceGraph_, "Y"));
+	surfaceGraph_->setAxisZ(axis(surfaceGraph_, "Z"));
+
+
 	surfaceGraph_->axisX()->setRange(-1.1, 1.1);
 	surfaceGraph_->axisZ()->setRange(-1.1, 1.1);
 	surfaceGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
@@ -75,6 +86,10 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &/*res
 	int zName = axisZCombo_->box->currentData().toInt();
 	arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(zName, 0));
 
+
+	surfaceGraph_->setAxisX(axis(surfaceGraph_, axisXCombo_->box->currentText()));
+	surfaceGraph_->setAxisY(axis(surfaceGraph_, QObject::tr("Predict")));
+	surfaceGraph_->setAxisZ(axis(surfaceGraph_, axisZCombo_->box->currentText()));
 
 	if (surfaceGraph_->seriesList().empty())
 		surfaceGraph_->addSeries(surfaceSeries_);
@@ -141,6 +156,8 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &/*res
 	surfaceProxy_->resetArray(surfaceArray);
 
 	setGradient();
+	QValue3DAxis *xAxis = new QValue3DAxis(surfaceGraph_);
+	xAxis->setTitle("X");
 }
 
 void Data3DPlotWidget::setGradient()
