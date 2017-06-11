@@ -13,27 +13,20 @@ DatasetColumnsView::~DatasetColumnsView()
 
 }
 
+
+void DatasetColumnsView::setFeatures(const std::set<int> &features)
+{
+	features_ = features;
+}
+
 void DatasetColumnsView::addFeature(int feature)
 {
-	auto result = std::find(features_.begin(), features_.end(), feature);
-	if (result == features_.end())
-		features_.push_back(feature);
+	features_.insert(feature);
 }
 
-void DatasetColumnsView::removeFeature(size_t feature)
+void DatasetColumnsView::removeFeature(int feature)
 {
-	if (features_.size() > feature)
-	{
-		auto it = features_.begin() + feature;
-		features_.erase(it);
-	}
-}
-
-void DatasetColumnsView::setFeatures(const std::list<int> &features)
-{
-	features_.clear();//FIXME list to vector
-	for (auto it: features)
-		addFeature(it);
+	features_.erase(feature);
 }
 
 void DatasetColumnsView::clear()
@@ -48,27 +41,20 @@ const Dataset &DatasetColumnsView::originDataset() const
 
 int DatasetColumnsView::originColumns(size_t filteredId) const
 {
-	if (features_.size() > filteredId)
-		return features_[filteredId];
+	if (filteredId >= features_.size())
+		throw std::runtime_error("unexpected filtered column");
 
-	return -1;
+	return *std::next(features_.begin(), filteredId);
 }
 
 std::vector<std::string> DatasetColumnsView::getFeatureNames() const
 {
-	std::set<int> featuresIds;
-	for (size_t i = 0; i < features_.size(); ++i)
-		featuresIds.insert(features_[i]);
+	std::vector<std::string> names;
 
-	std::vector<std::string> features;
+	for (int feature : features_)
+		names.push_back(originDataset_.getNames()[feature]);
 
-
-	std::vector<std::string> res = originDataset_.getNames();
-	for (size_t i = 0; i < res.size(); ++i)
-		if (featuresIds.find(i) != featuresIds.end())
-			features.push_back(res[i]);
-
-	return features;
+	return names;
 }
 
 const arma::vec DatasetColumnsView::getColumnVector(int id) const
@@ -77,10 +63,10 @@ const arma::vec DatasetColumnsView::getColumnVector(int id) const
 	if (originId != - 1)
 		return originDataset_.getColumnVector(originId);
 
-	return arma::zeros(1,1);
+	throw std::runtime_error("unexpected filtered column");
 }
 
-const std::vector<int> &DatasetColumnsView::features() const
+const std::set<int> &DatasetColumnsView::features() const
 {
 	return features_;
 }

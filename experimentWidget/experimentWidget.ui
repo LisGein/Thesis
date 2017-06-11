@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>758</width>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,48 +15,55 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QWidget" name="">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Response</string>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Features</string>
          </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QListView" name="featureFilter"/>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="response"/>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Response</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="response"/>
+         </item>
+        </layout>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Feature</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="ExperimentTable" name="feature"/>
-     </item>
-     <item>
+     </widget>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
       <widget class="DatasetAnalysisTable" name="analisys"/>
-     </item>
-    </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ExperimentTable</class>
-   <extends>QTableWidget</extends>
-   <header>experimentTable.h</header>
-  </customwidget>
-  <customwidget>
    <class>DatasetAnalysisTable</class>
    <extends>QTableWidget</extends>
-   <header location="global">datasetAnalysisTable.h</header>
+   <header>datasetAnalysisTable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

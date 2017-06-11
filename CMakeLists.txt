@@ -48,8 +48,8 @@ set(CPP_FILES
 	dataPlotWidget/abstractDataPlot.cpp
 
 	experimentWidget/experimentWidget.cpp
-	experimentWidget/experimentTable.cpp
 	experimentWidget/datasetAnalysisTable.cpp
+	experimentWidget/featureFilterModel.cpp
 	)
 
 set(FILES_TO_MOC
@@ -63,16 +63,15 @@ set(FILES_TO_MOC
 	datasetWidget/datasetWidget.h
 	datasetWidget/datasetModel.h
 
+
 	dataPlotWidget/dataPlotWidget.h
 	dataPlotWidget/abstractDataPlot.h
 	dataPlotWidget/data3DPlotWidget.h
-
 
 	treeWidget/treeView.h
 	treeWidget/treeModel.h
 
 	experimentWidget/experimentWidget.h
-	experimentWidget/experimentTable.h
 	experimentWidget/datasetAnalysisTable.h
 	)
 
@@ -80,6 +79,7 @@ set(FILES_TO_UIC
 	dataPlotWidget/dataPlotWidget.ui
 	mainWindow/mainWindow.ui
 	experimentWidget/experimentWidget.ui
+	datasetWidget/datasetWidget.ui
 	)
 
 

@@ -1,4 +1,5 @@
 #include "iNode.h"
+#include <QObject>
 
 
 INode::INode(const std::string& name, const std::string& childCategoryName)
@@ -30,7 +31,7 @@ const std::string& INode::childCategoryName() const
 
 
 Root::Root(INode& firstLevel)
-	: INode ("", "Document")
+	: INode ("", QObject::tr("Document").toStdString())
 	, firstLevel_(firstLevel)
 {
 }

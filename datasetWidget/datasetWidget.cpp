@@ -8,35 +8,22 @@
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QTextEdit>
-
 #include <cstring>
 
 extern "C"{
 #include "xlsxio_read.h"
 }
 
-
 DatasetWidget::DatasetWidget()
-	: menu_(new QMenuBar(this))
-	, datasetView_(new DatasetView(this))
-	, descriptionDocument_(new QTextEdit(this))
+	: ui_(std::make_unique<Ui::DatasetWidget>())
 {
-	setLayout(new QVBoxLayout());
+	ui_->setupUi(this);
 
-	QAction *excel = new QAction(QObject::tr("Load from Excel"), menu_);
-	menu_->addAction(excel);
-	QObject::connect(excel, SIGNAL(triggered(bool)), this, SLOT(loadFromXls()));
-
-	QAction *tsv = new QAction(QObject::tr("Load from Tsv"), menu_);
-	menu_->addAction(tsv);
-	QObject::connect(tsv, SIGNAL(triggered(bool)), this, SLOT(loadFromTsv()));
-
-	layout()->addWidget(menu_);
-	layout()->addWidget(datasetView_);
-	layout()->addWidget(descriptionDocument_);
+	QObject::connect(ui_->excelButton, SIGNAL(released()), this, SLOT(loadFromXls()));
+	QObject::connect(ui_->tsvButton, SIGNAL(released()), this, SLOT(loadFromTsv()));
 
 	QString str = QObject::tr("Description of the document") + "\n";
-	descriptionDocument_->setText(str);
+	ui_->descriptionDocument->setText(str);
 }
 
 DatasetWidget::~DatasetWidget()
@@ -46,21 +33,21 @@ DatasetWidget::~DatasetWidget()
 
 void DatasetWidget::openRegression(boost::property_tree::ptree &inventoryTree)
 {
-	descriptionDocument_->clear();
+	ui_->descriptionDocument->clear();
 	std::string text = inventoryTree.get<std::string>("description", "");
-	descriptionDocument_->setText(QString::fromStdString(text));
+	ui_->descriptionDocument->setText(QString::fromStdString(text));
 }
 
 void DatasetWidget::saveRegression(boost::property_tree::ptree &inventoryTree)
 {
-	inventoryTree.put("description", descriptionDocument_->toPlainText().toStdString());
+	inventoryTree.put("description", ui_->descriptionDocument->toPlainText().toStdString());
 }
 
 void DatasetWidget::setDatasetModel(DatasetModel* model)
 {
-	datasetView_->setModel(model);
+	ui_->datasetView->setModel(model);
 
-	QObject::connect(datasetView_, SIGNAL(insertedTable(std::string)), this, SIGNAL(updatedTable(std::string)));
+	QObject::connect(ui_->datasetView, SIGNAL(insertedTable(std::string)), this, SIGNAL(updatedTable(std::string)));
 }
 
 void DatasetWidget::loadFromXls()

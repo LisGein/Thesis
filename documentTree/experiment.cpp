@@ -1,12 +1,12 @@
 #include "common/common.h"
 #include "experiment.h"
-
 #include "document.h"
 #include "regression.h"
+#include <QObject>
 
 
 Experiment::Experiment(const Document& document)
-	: INode("Experiment", "Regression")
+	: INode(QObject::tr("Experiment").toStdString(), QObject::tr("Regression").toStdString())
 	, document_(document)
 	, filtredDataset_(document.getDataset())
 	, response_(document.getDataset())
@@ -62,11 +62,11 @@ void Experiment::openRegression(boost::property_tree::ptree &inventoryTree)
 	for(auto &it:regressions)
 	{
 		addNewChild();
-		auto regression = regressions_.end() - 1;
-		if (regression == regressions_.end())
+		if (regressions_.empty())
 			throw "Application fatal error: don't exist child regression";
 
-		(*regression)->openRegression(it.second);
+		auto &regression = regressions_.back();
+		regression->openRegression(it.second);
 	}
 }
 
@@ -74,7 +74,7 @@ void Experiment::saveRegression(boost::property_tree::ptree &experimentTree)
 {
 	namespace pt = boost::property_tree;
 
-	std::vector<int> filtredFeatures = filtredDataset_.features();
+	auto filtredFeatures = filtredDataset_.features();
 
 	pt::ptree experiment;
 
@@ -103,23 +103,21 @@ void Experiment::saveRegression(boost::property_tree::ptree &experimentTree)
 
 }
 
-const std::vector<int> Experiment::getEnabledFeatures() const
-{
-	auto features = filtredDataset_.features();
-	auto responses = response_.features();
-	features.insert(features.end(), responses.begin(), responses.end());
-	return features;
-}
-
-void Experiment::setEnabledFeatures(const std::list<int>& enabled)
-{
-	filtredDataset_.setFeatures(enabled);
-}
 
 void Experiment::setResponse(int response)
 {
 	response_.clear();
 	response_.addFeature(response);
+}
+
+void Experiment::addFeature(int feature)
+{
+	filtredDataset_.addFeature(feature);
+}
+
+void Experiment::removeFeature(int feature)
+{
+	filtredDataset_.removeFeature(feature);
 }
 
 void Experiment::update()

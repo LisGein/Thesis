@@ -37,7 +37,7 @@ void TreeView::contextMenuEvent(QContextMenuEvent* event)
 	if (!node || node->childCategoryName().empty())
 		return;
 
-	QAction *act = new QAction(to_qt("New " + node->childCategoryName()));
+	QAction *act = new QAction(QObject::tr("New ") + to_qt(node->childCategoryName()));
 	QObject::connect(act, SIGNAL(triggered(bool)), this, SLOT(onAddNewChild()));
 
 	QMenu menu(this);

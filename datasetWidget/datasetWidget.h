@@ -7,9 +7,11 @@
 
 
 class DatasetModel;
-class QMenuBar;
-class DatasetView;
-class QTextEdit;
+
+namespace Ui
+{
+class DatasetWidget;
+}
 
 class DatasetWidget : public QWidget
 {
@@ -30,7 +32,5 @@ private slots:
 	void loadFromTsv();
 
 private:
-	QMenuBar *menu_;
-	DatasetView *datasetView_;
-	QTextEdit *descriptionDocument_;
+	std::unique_ptr<Ui::DatasetWidget> ui_;
 };

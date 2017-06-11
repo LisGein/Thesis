@@ -5,7 +5,7 @@
 
 
 Document::Document()
-	: INode("Document", "Experiment")
+	: INode(QObject::tr("Document").toStdString(), QObject::tr("Experiment").toStdString())
 	, dataset_(std::make_unique<Dataset>())
 	, datasetModel_(std::make_unique<DatasetModel>(*dataset_))
 {

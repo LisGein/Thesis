@@ -69,8 +69,8 @@ void MainWindow::changeCurrentWidget(INode* node)
 {
 	INode::TypeObject typeObj(static_cast<INode::TypeObject>(node->type()));
 
-	if (ui_->stackedWidget->currentIndex() == 1)
-		experimentWidget_->updateFiltredDataset();
+//	if (ui_->stackedWidget->currentIndex() == 1)
+//		experimentWidget_->updateFiltredDataset();
 
 	switch (typeObj)
 	{

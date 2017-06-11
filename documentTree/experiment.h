@@ -28,16 +28,16 @@ public:
 	virtual void saveRegression(boost::property_tree::ptree &experimentTree) override;
 
 
-	const std::vector<int> getEnabledFeatures() const;
-	void setEnabledFeatures(const std::list<int> &enabled);
-
 	/// \brief set column ID of response
-	/// \param response ID in scope of filtered dataset
+	/// \param response ID in scope of origin dataset
 	void setResponse(int response);
 
 	/// \brief get response column
-	/// \return ID in scope of filtered dataset
+	/// \return ID in scope of origin dataset
 	int getResponseColumn() const { return response_.originColumns(0); }
+
+	void addFeature (int feature);
+	void removeFeature (int feature);
 
 	void update();
 

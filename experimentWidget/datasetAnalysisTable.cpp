@@ -10,12 +10,13 @@ DatasetAnalysisTable::DatasetAnalysisTable(QWidget *parent)
 {
 	setRowCount(6);
 	QStringList verticalHeader;
-	verticalHeader.append("Average value");
-	verticalHeader.append("Median");
-	verticalHeader.append("Standard deviation");
-	verticalHeader.append("Variance");
-	verticalHeader.append("Minimum");
-	verticalHeader.append("Maximum");
+	verticalHeader.append(QObject::tr("Average value"));
+	verticalHeader.append(QObject::tr("Median"));
+	verticalHeader.append(QObject::tr("Standard deviation"));
+	verticalHeader.append(QObject::tr("Variance"));
+	verticalHeader.append(QObject::tr("Minimum"));
+	verticalHeader.append(QObject::tr("Maximum"));
+	//verticalHeader.append(QObject::tr("Criterion of informativity"));
 	setVerticalHeaderLabels(verticalHeader);
 }
 

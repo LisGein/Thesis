@@ -6,6 +6,7 @@
 class Experiment;
 class ExperimentTable;
 class DatasetAnalysisTable;
+class FeatureFilterModel;
 
 namespace Ui
 {
@@ -22,10 +23,10 @@ public:
 	void setExperiment(Experiment* experiment);
 
 public slots:
-	void updateFiltredDataset();
 	void updateResponse(const QString &name);
 
 private:
 	std::unique_ptr<Ui::ExperimentWidget> ui_;
+	std::unique_ptr<FeatureFilterModel> featureFilterModel_;
 	Experiment* experiment_;
 };
