@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.2)
 project(Diploma)
 
 
@@ -108,6 +108,14 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 
 
 #This is the command to connect libraries to a target:
+
+set(OLD_GCC_LIBS "")
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.1)
+	set(OLD_GCC_LIBS "m stdc++")
+else()
+	add_definitions(-DHAS_MAKE_UNIQUE)
+endif()
+
 target_link_libraries(${GUI_APP_NAME}
 	xls
 	expat
@@ -120,6 +128,7 @@ target_link_libraries(${GUI_APP_NAME}
 	${Mlpack_LIBRARIES}
 	${Armadillo_LIBRARIES}
 	${Boost_LIBRARIES}
+	${OLD_GCC_LIBS}
 	)
 
 

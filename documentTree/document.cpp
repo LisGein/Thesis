@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "document.h"
 #include "dataset.h"
 #include "datasetWidget/datasetModel.h"

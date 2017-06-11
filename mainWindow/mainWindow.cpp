@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "mainWindow.h"
 #include "ui_mainWindow.h"
 
@@ -68,9 +69,6 @@ MainWindow::~MainWindow()
 void MainWindow::changeCurrentWidget(INode* node)
 {
 	INode::TypeObject typeObj(static_cast<INode::TypeObject>(node->type()));
-
-//	if (ui_->stackedWidget->currentIndex() == 1)
-//		experimentWidget_->updateFiltredDataset();
 
 	switch (typeObj)
 	{

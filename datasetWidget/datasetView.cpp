@@ -27,12 +27,6 @@ DatasetView::DatasetView(QWidget* parent)
 	setEditTriggers(QAbstractItemView::AllEditTriggers);
 	horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(headerContextMenu(const QPoint&)));
-
-	QObject::connect(columnAdd_, SIGNAL(triggered(bool)), this, SLOT(addColumn()));
-	QObject::connect(rowAdd_, SIGNAL(triggered(bool)), model_, SLOT(addRow()));
-	QObject::connect(deleteCol_, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
-	QObject::connect(deleteRow_, SIGNAL(triggered(bool)), this, SLOT(deleteRowUnderCursor()));
-	QObject::connect(renameCol_, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
 }
 
 DatasetView::~DatasetView()
@@ -63,6 +57,11 @@ void DatasetView::keyPressEvent(QKeyEvent *event)
 void DatasetView::setModel(DatasetModel *model)
 {
 	model_ = model;
+	QObject::connect(columnAdd_, SIGNAL(triggered(bool)), this, SLOT(addColumn()));
+	QObject::connect(rowAdd_, SIGNAL(triggered(bool)), model_, SLOT(addRow()));
+	QObject::connect(deleteCol_, SIGNAL(triggered(bool)), this, SLOT(deleteColumnUnderCursor()));
+	QObject::connect(deleteRow_, SIGNAL(triggered(bool)), this, SLOT(deleteRowUnderCursor()));
+	QObject::connect(renameCol_, SIGNAL(triggered(bool)), this, SLOT(renameColumnUnderCursor()));
 	QTableView::setModel(model);
 }
 
