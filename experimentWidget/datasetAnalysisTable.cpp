@@ -2,7 +2,7 @@
 
 #include <documentTree/dataset.h>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 
 DatasetAnalysisTable::DatasetAnalysisTable(QWidget *parent)

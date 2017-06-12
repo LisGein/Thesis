@@ -2,7 +2,7 @@
 #include "linearRegressionModel.h"
 #include "featureModel.h"
 
-#include <mlpack/methods/linear_regression/linear_regression.hpp>
+#include "linearRegression/linearRegression.h"
 
 
 LinearRegressionModel::LinearRegressionModel(const FeatureModel& featureModel)

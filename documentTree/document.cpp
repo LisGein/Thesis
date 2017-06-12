@@ -4,6 +4,8 @@
 #include "datasetWidget/datasetModel.h"
 #include "experiment.h"
 
+#include <boost/lexical_cast.hpp>
+
 
 Document::Document()
 	: INode(QObject::tr("Document").toStdString(), QObject::tr("Experiment").toStdString())

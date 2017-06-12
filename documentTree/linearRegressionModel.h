@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 
 namespace mlpack

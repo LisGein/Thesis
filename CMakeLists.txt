@@ -50,6 +50,8 @@ set(CPP_FILES
 	experimentWidget/experimentWidget.cpp
 	experimentWidget/datasetAnalysisTable.cpp
 	experimentWidget/featureFilterModel.cpp
+
+	linearRegression/linearRegression.cpp
 	)
 
 set(FILES_TO_MOC

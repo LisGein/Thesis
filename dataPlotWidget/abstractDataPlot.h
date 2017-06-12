@@ -5,7 +5,7 @@
 #include <memory>
 #include <set>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 
 class LinearRegressionModel;

@@ -4,7 +4,7 @@
 
 #include "abstractDataPlot.h"
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 #include <QMap>
 

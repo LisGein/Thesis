@@ -1,6 +1,6 @@
 #pragma once
 #include <QAbstractTableModel>
-#include <mlpack/methods/linear_regression/linear_regression.hpp>
+#include "linearRegression/linearRegression.h"
 
 
 using namespace mlpack::regression;

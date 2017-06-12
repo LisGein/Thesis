@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "datasetColumnsView.h"
 #include "dataset.h"
 

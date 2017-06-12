@@ -4,6 +4,8 @@
 #include "regression.h"
 #include <QObject>
 
+#include <boost/lexical_cast.hpp>
+
 
 Experiment::Experiment(const Document& document)
 	: INode(QObject::tr("Experiment").toStdString(), QObject::tr("Regression").toStdString())

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 
 class Dataset;

@@ -2,8 +2,9 @@
 
 #include <vector>
 #include <string>
+#include <set>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 #include <boost/property_tree/ptree.hpp>
 

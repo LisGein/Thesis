@@ -4,8 +4,9 @@
 #include <string>
 #include <memory>
 #include <set>
+#include <map>
 
-#include "mlpack/core.hpp"
+#include <armadillo>
 
 
 class Experiment;
