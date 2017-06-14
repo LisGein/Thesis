@@ -93,6 +93,8 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 		arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
 		double predict = linearRegression_->predict(res);
+
+
 		regressionSeries->append(x, predict);
 		x += stepX;
 	}
@@ -102,7 +104,12 @@ void DataPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 	chart->addSeries(pointsSeries);
 	chart->addSeries(regressionSeries);
 	chart->createDefaultAxes();
-	chart->setTitle("Simple line chart example");
+
+	chart->axisX()->setTitleText( chartSettings_->ui->boxX->currentText());
+	chart->axisX()->setTitleVisible(true);
+
+	chart->axisY()->setTitleText( QString::fromStdString(linearRegression_->getFeatureModel().getResponseName()));
+	chart->axisY()->setTitleVisible(true);
 
 	chartView_->setRenderHint(QPainter::Antialiasing);
 	chartView_->setChart(chart);

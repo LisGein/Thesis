@@ -31,4 +31,5 @@ private:
 
 	const FeatureModel *model_;
 	std::map<int, std::pair<double, double> > axisIds_;
+	bool isHideY_;
 };

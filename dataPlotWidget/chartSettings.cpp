@@ -13,6 +13,7 @@ ChartSettings::ChartSettings(QWidget *parent)
 	: QWidget(parent)
 	, ui(std::make_unique<Ui::ChartSettings>())
 	, model_(nullptr)
+	, isHideY_(false)
 {
 	ui->setupUi(this);
 	QObject::connect(ui->boxX, SIGNAL(currentIndexChanged(int)), this, SLOT(updateOtherAxisNames()));
@@ -27,6 +28,7 @@ ChartSettings::~ChartSettings()
 
 void ChartSettings::hideYBox()
 {
+	isHideY_ = true;
 	ui->labelY->hide();
 	ui->boxY->hide();
 }
@@ -55,6 +57,7 @@ void ChartSettings::setAxisNames(const std::map<int, std::pair<double, double> >
 void ChartSettings::setModel(const FeatureModel *model)
 {
 	model_ = model;
+	axisIds_.clear();
 	updateAxis();
 }
 
@@ -81,7 +84,8 @@ void ChartSettings::updateAxis()
 		}
 		++i;
 	}
-	ui->boxY->setCurrentIndex(1);
+	if(!isHideY_)
+		ui->boxY->setCurrentIndex(1);
 
 }
 
@@ -127,7 +131,7 @@ void ChartSettings::updateOtherAxisNames()
 		int i =0;
 		for (const auto& feature : axisIds_)
 		{
-			if (feature.first != idX && feature.first != idY)
+			if (feature.first != idX && (feature.first != idY || isHideY_))
 			{
 				QString name = to_qt(model_->idTofeatureName(feature.first));
 				ui->otherAxis->addItem(name, QVariant(feature.first));

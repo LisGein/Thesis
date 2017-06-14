@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName(QObject::tr("Regression thesis"));
 
 	QTranslator myTranslator;
-	myTranslator.load("/home/lisgein/Diploma/Thesis/build-debug-kde2/Diploma_ru.qm");
+	myTranslator.load("./Diploma_ru.qm");
 	app.installTranslator(&myTranslator);
 
 	MainWindow mainWindow;

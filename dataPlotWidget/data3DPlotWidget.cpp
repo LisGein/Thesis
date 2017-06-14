@@ -156,10 +156,6 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 	auto xBounds = bounds(data, xColumn);
 	auto zBounds = bounds(data, zColumn);
 
-	double min = (xBounds.first < zBounds.first) ? xBounds.first : zBounds.first;
-	double max = (xBounds.second < zBounds.second) ? zBounds.second : xBounds.second;
-	surfaceGraph_->axisX()->setRange(min - 0.1, max + 0.1);
-	surfaceGraph_->axisZ()->setRange(min - 0.1, max + 0.1);
 
 	float stepX = (xBounds.second - xBounds.first) / GRID_SIZE;
 	float stepZ = (zBounds.second - zBounds.first) / GRID_SIZE;
@@ -187,6 +183,8 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 			ids.second = key.first;
 	}
 
+	double min = (xBounds.first < zBounds.first) ? xBounds.first : zBounds.first;
+	double max = (xBounds.second < zBounds.second) ? zBounds.second : xBounds.second;
 
 
 	while (x < xBounds.second)
@@ -225,7 +223,11 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 		x += stepX;
 	}
+
+	surfaceGraph_->axisX()->setRange(min - 0.1, max + 0.1);
+	surfaceGraph_->axisZ()->setRange(min - 0.1, max + 0.1);
 	surfaceGraph_->axisY()->setRange(min - 0.1, max + 0.1);
+
 	surfaceProxy_->resetArray(surfaceArray);
 
 	setGradient();
