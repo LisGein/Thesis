@@ -18,7 +18,6 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
-#include <QSplitter>
 
 #include <QtDataVisualization/Q3DScatter>
 #include <QtDataVisualization/QScatter3DSeries>
@@ -61,7 +60,7 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 	container->setMaximumSize(screenSize);
 	container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	container->setFocusPolicy(Qt::StrongFocus);
-	splitter_->addWidget(container);
+	layout()->addWidget(container);
 
 	{
 		pointsSeries_->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
@@ -186,6 +185,8 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 	double min = (xBounds.first < zBounds.first) ? xBounds.first : zBounds.first;
 	double max = (xBounds.second < zBounds.second) ? zBounds.second : xBounds.second;
 
+	surfaceGraph_->axisX()->setRange(xBounds.first - 0.1, xBounds.second + 0.1);
+	surfaceGraph_->axisZ()->setRange(zBounds.first - 0.1, zBounds.second + 0.1);
 
 	while (x < xBounds.second)
 	{
@@ -222,11 +223,11 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 		surfaceArray->append(newRow);
 
 		x += stepX;
-	}
+	}/*
 
 	surfaceGraph_->axisX()->setRange(min - 0.1, max + 0.1);
 	surfaceGraph_->axisZ()->setRange(min - 0.1, max + 0.1);
-	surfaceGraph_->axisY()->setRange(min - 0.1, max + 0.1);
+	surfaceGraph_->axisY()->setRange(min - 0.1, max + 0.1);*/
 
 	surfaceProxy_->resetArray(surfaceArray);
 

@@ -15,7 +15,6 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QDebug>
-#include <QSplitter>
 
 #include <algorithm>
 
@@ -24,7 +23,7 @@ DataPlotWidget::DataPlotWidget(QWidget* parent)
 	: AbstractDataPlot(parent)
 	, chartView_(std::make_unique<QtCharts::QChartView>())
 {
-	splitter_->addWidget(chartView_.get());
+	layout()->addWidget(chartView_.get());
 	chartSettings_->hideYBox();
 }
 

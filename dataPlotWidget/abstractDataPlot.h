@@ -11,7 +11,6 @@
 class LinearRegressionModel;
 class QComboBox;
 class QLabel;
-class QSplitter;
 class ChartSettings;
 
 namespace DataPlot {
@@ -55,7 +54,6 @@ protected:
 	std::unique_ptr<DataPlot::ComboBox> axisXCombo_;
 	std::unique_ptr<DataPlot::ComboBox> axisZCombo_;
 	std::unique_ptr<DataPlot::ComboBox> ZCombo_;
-	QSplitter *splitter_;
 
 	static const int GRID_SIZE;
 };

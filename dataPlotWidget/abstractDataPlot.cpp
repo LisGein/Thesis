@@ -7,7 +7,6 @@
 
 #include <QComboBox>
 #include <QLabel>
-#include <QSplitter>
 #include <QHBoxLayout>
 
 #include "ui_chartSettings.h"
@@ -22,13 +21,10 @@ AbstractDataPlot::AbstractDataPlot(QWidget* parent)
 	, chartSettings_(std::make_unique<ChartSettings>())
 	, axisXCombo_(std::make_unique<ComboBox>(QObject::tr("Axis x:")))
 	, axisZCombo_(std::make_unique<ComboBox>(QObject::tr("Axis y:")))
-	, splitter_(new QSplitter(this))
 {
 	chartSettings_->adjustSize();
-	splitter_->addWidget(chartSettings_.get());
-	QHBoxLayout* plotLay = new QHBoxLayout(this);
-	layout()->addWidget(splitter_);
-	setLayout(plotLay);
+	setLayout(new QHBoxLayout(this));
+	layout()->addWidget(chartSettings_.get());
 
 	connect(chartSettings_->ui->boxX, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
 	connect(chartSettings_->ui->boxY, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
