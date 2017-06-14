@@ -156,8 +156,10 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 	auto xBounds = bounds(data, xColumn);
 	auto zBounds = bounds(data, zColumn);
 
-	surfaceGraph_->axisX()->setRange(xBounds.first - 0.1, xBounds.second + 0.1);
-	surfaceGraph_->axisZ()->setRange(zBounds.first - 0.1, zBounds.second + 0.1);
+	double min = (xBounds.first < zBounds.first) ? xBounds.first : zBounds.first;
+	double max = (xBounds.second < zBounds.second) ? zBounds.second : xBounds.second;
+	surfaceGraph_->axisX()->setRange(min - 0.1, max + 0.1);
+	surfaceGraph_->axisZ()->setRange(min - 0.1, max + 0.1);
 
 	float stepX = (xBounds.second - xBounds.first) / GRID_SIZE;
 	float stepZ = (zBounds.second - zBounds.first) / GRID_SIZE;
@@ -211,6 +213,8 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 			arma::vec res = linearRegression_->getFeatureModel().getFinalFeaturesValue(rawFeatures);
 			double predict = linearRegression_->predict(res);
+			min = (min < predict) ? min : predict;
+			max = (max > predict) ? max : predict;
 
 			QVector3D v(x, predict, z);
 			(*newRow).append(QSurfaceDataItem(v));
@@ -221,6 +225,7 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 
 		x += stepX;
 	}
+	surfaceGraph_->axisY()->setRange(min - 0.1, max + 0.1);
 	surfaceProxy_->resetArray(surfaceArray);
 
 	setGradient();
