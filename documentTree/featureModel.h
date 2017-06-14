@@ -26,7 +26,7 @@ public:
 	const std::vector<std::string> getRawFeatures() const;
 	const std::vector<std::string> getFeatureNames() const;
 
-	const std::set<int> getRawIds() const;
+	const std::map<int, std::pair<double, double> > getRawIds() const;
 	void getFinalColumnIdsByRow();
 
 

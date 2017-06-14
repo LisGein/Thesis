@@ -4,6 +4,8 @@
 #include "datasetColumnsView.h"
 #include "experiment.h"
 
+#include <armadillo>
+
 
 FeatureModel::FeatureModel(const Experiment& experiment)
 	: featuresScene_(std::make_unique<FeatureGraphicsScene>(*this))
@@ -47,15 +49,21 @@ const std::vector<std::string> FeatureModel::getFeatureNames() const
 	return names;
 }
 
-const std::set<int> FeatureModel::getRawIds() const
+const std::map<int, std::pair<double, double>> FeatureModel::getRawIds() const
 {
-	std::set<int> raws;
+	std::map<int, std::pair<double, double>> raws;
 	for (const auto& feature : featureSet_)
 	{
 		if (feature.first != 0 )
-			raws.insert(feature.first);
+		{
+			arma::vec vector = dataset_.getColumnVector(feature.first - 1);
+			raws.emplace(feature.first, std::make_pair<double, double>(min(vector), max(vector)));
+		}
 		if (feature.second != 0)
-			raws.insert(feature.second);
+		{
+			arma::vec vector = dataset_.getColumnVector(feature.second - 1);
+			raws.emplace(feature.second, std::make_pair<double, double>(min(vector), max(vector)));
+		}
 	}
 
 	return raws;

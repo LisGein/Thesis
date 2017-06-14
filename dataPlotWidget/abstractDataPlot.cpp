@@ -1,12 +1,16 @@
 #include "common/common.h"
 #include "abstractDataPlot.h"
+#include "chartSettings.h"
 
 #include "../documentTree/featureModel.h"
 #include "../documentTree/linearRegressionModel.h"
 
 #include <QComboBox>
 #include <QLabel>
+#include <QSplitter>
 #include <QHBoxLayout>
+
+#include "ui_chartSettings.h"
 
 
 const int AbstractDataPlot::GRID_SIZE = 20;
@@ -15,30 +19,21 @@ using namespace DataPlot;
 AbstractDataPlot::AbstractDataPlot(QWidget* parent)
 	: QWidget(parent)
 	, linearRegression_(nullptr)
+	, chartSettings_(std::make_unique<ChartSettings>())
 	, axisXCombo_(std::make_unique<ComboBox>(QObject::tr("Axis x:")))
 	, axisZCombo_(std::make_unique<ComboBox>(QObject::tr("Axis y:")))
+	, splitter_(new QSplitter(this))
 {
-
-	QWidget* axisWidget = new QWidget(this);
-	QGridLayout* axisLay = new QGridLayout(axisWidget);
-
-
-
-	axisLay->addWidget(axisXCombo_->label, 0, 0);
-	axisLay->addWidget(axisXCombo_->box, 0, 1);
-
-	axisLay->addWidget(axisZCombo_->label, 1, 0);
-	axisLay->addWidget(axisZCombo_->box, 1, 1);
-
-	axisWidget->setLayout(axisLay);
-
-
+	chartSettings_->adjustSize();
+	splitter_->addWidget(chartSettings_.get());
 	QHBoxLayout* plotLay = new QHBoxLayout(this);
-	plotLay->addWidget(axisWidget);
+	layout()->addWidget(splitter_);
 	setLayout(plotLay);
 
-	connect(axisXCombo_->box, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
-	connect(axisZCombo_->box, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
+	connect(chartSettings_->ui->boxX, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
+	connect(chartSettings_->ui->boxY, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
+	connect(chartSettings_->ui->otherAxis, SIGNAL(currentIndexChanged(int)), this, SLOT(updateRegression()));
+	connect(chartSettings_->ui->doubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(updateRegression()));
 
 }
 
@@ -50,28 +45,20 @@ AbstractDataPlot::~AbstractDataPlot()
 void AbstractDataPlot::setRegression(LinearRegressionModel* linearRegression)
 {
 	linearRegression_ = linearRegression;
+	chartSettings_->setModel(&(linearRegression_->getFeatureModel()));
 	updateRegression();
 }
 
-void AbstractDataPlot::setAxisNames(const std::set<int> &axisIds)
+void AbstractDataPlot::setAxisNames(const std::map<int, std::pair<double, double>> &axisIds)
 {
 	axisIds_ = axisIds;
-	axisXCombo_->box->clear();
-	axisZCombo_->box->clear();
-
-	const FeatureModel& model = linearRegression_->getFeatureModel();
-	for (const auto& feature : axisIds_)
-	{
-		QString name = to_qt(model.idTofeatureName(feature));
-		axisXCombo_->box->addItem(name, QVariant(feature));
-		axisZCombo_->box->addItem(name, QVariant(feature));
-	}
-	axisZCombo_->box->setCurrentIndex(1);
+	chartSettings_->clearAxis();
+	chartSettings_->setAxisNames(axisIds);
 }
 
 void AbstractDataPlot::updateRegression()
 {
-	if (linearRegression_ && axisXCombo_->box->currentIndex() != -1)
+	if (linearRegression_ && chartSettings_->ui->boxX->currentIndex() != -1)
 	{
 		auto data = linearRegression_->getFeatureModel().data();
 		auto resp = linearRegression_->getFeatureModel().responses();

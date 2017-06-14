@@ -11,6 +11,8 @@
 class LinearRegressionModel;
 class QComboBox;
 class QLabel;
+class QSplitter;
+class ChartSettings;
 
 namespace DataPlot {
 
@@ -35,7 +37,7 @@ public:
 	virtual ~AbstractDataPlot();
 
 	virtual void setRegression(LinearRegressionModel* linearRegression);
-	virtual void setAxisNames(const std::set<int> &axisIds);
+	virtual void setAxisNames(const std::map<int, std::pair<double, double> > &axisIds);
 
 public slots:
 	void updateRegression();
@@ -47,10 +49,13 @@ protected:
 
 
 	LinearRegressionModel* linearRegression_;
-	std::set<int> axisIds_;
+	std::map<int, std::pair<double, double> > axisIds_;
 
+	std::unique_ptr<ChartSettings> chartSettings_;
 	std::unique_ptr<DataPlot::ComboBox> axisXCombo_;
 	std::unique_ptr<DataPlot::ComboBox> axisZCombo_;
+	std::unique_ptr<DataPlot::ComboBox> ZCombo_;
+	QSplitter *splitter_;
 
 	static const int GRID_SIZE;
 };

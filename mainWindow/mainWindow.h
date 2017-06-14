@@ -16,7 +16,8 @@ class ViewController;
 class ExperimentWidget;
 class INode;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
 	Q_OBJECT
 
 public:

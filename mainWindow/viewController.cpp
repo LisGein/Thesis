@@ -40,7 +40,7 @@ ViewController::ViewController(QWidget* parent)
 	split->setOrientation(Qt::Vertical);
 	split->addWidget(w);
 	split->addWidget(plotController_);
-	split->setChildrenCollapsible(false);
+	split->setChildrenCollapsible(true);
 
 	layout()->addWidget(split);
 

@@ -46,6 +46,7 @@ set(CPP_FILES
 	dataPlotWidget/dataPlotWidget.cpp
 	dataPlotWidget/data3DPlotWidget.cpp
 	dataPlotWidget/abstractDataPlot.cpp
+	dataPlotWidget/chartSettings.cpp
 
 	experimentWidget/experimentWidget.cpp
 	experimentWidget/datasetAnalysisTable.cpp
@@ -69,6 +70,7 @@ set(FILES_TO_MOC
 	dataPlotWidget/dataPlotWidget.h
 	dataPlotWidget/abstractDataPlot.h
 	dataPlotWidget/data3DPlotWidget.h
+	dataPlotWidget/chartSettings.h
 
 	treeWidget/treeView.h
 	treeWidget/treeModel.h
@@ -78,10 +80,10 @@ set(FILES_TO_MOC
 	)
 
 set(FILES_TO_UIC
-	dataPlotWidget/dataPlotWidget.ui
 	mainWindow/mainWindow.ui
 	experimentWidget/experimentWidget.ui
 	datasetWidget/datasetWidget.ui
+	dataPlotWidget/chartSettings.ui
 	)
 
 

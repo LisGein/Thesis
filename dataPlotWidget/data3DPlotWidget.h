@@ -14,6 +14,10 @@ namespace QtDataVisualization {
 class Q3DSurface;
 class QSurfaceDataProxy;
 class QSurface3DSeries;
+
+class Q3DScatter;
+class QScatterDataProxy;
+class QScatter3DSeries;
 }
 class QComboBox;
 
@@ -27,13 +31,17 @@ public:
 
 
 private:
-	virtual void updateChart(const arma::mat& data, const arma::vec&) override;
+	virtual void updateChart(const arma::mat& data, const arma::vec&resp) override;
 	void setGradient();
 
 
 	QtDataVisualization::Q3DSurface *surfaceGraph_;
 	QtDataVisualization::QSurfaceDataProxy *surfaceProxy_;
 	QtDataVisualization::QSurface3DSeries *surfaceSeries_;
+
+	QtDataVisualization::Q3DScatter *pointsGraph_;
+	QtDataVisualization::QScatterDataProxy *pointsProxy_;
+	QtDataVisualization::QScatter3DSeries *pointsSeries_;
 
 	QMap<int, QString> axisByName_;
 };

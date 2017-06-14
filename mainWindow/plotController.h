@@ -16,7 +16,7 @@ public:
 	virtual ~PlotController();
 
 	void setRegression(Regression* regression);
-	void setAxisNames(const std::set<int> &names);
+	void setAxisNames(const std::map<int, std::pair<double, double> > &names);
 
 private slots:
 	void changeGraphic();

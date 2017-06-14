@@ -1,6 +1,8 @@
 #include "common/common.h"
 
 #include "data3DPlotWidget.h"
+#include "chartSettings.h"
+#include "ui_chartSettings.h"
 
 #include "../documentTree/featureModel.h"
 #include "../documentTree/linearRegressionModel.h"
@@ -16,6 +18,11 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QSplitter>
+
+#include <QtDataVisualization/Q3DScatter>
+#include <QtDataVisualization/QScatter3DSeries>
+#include <QtDataVisualization/QScatterDataProxy>
 
 
 using namespace QtDataVisualization;
@@ -35,16 +42,40 @@ Data3DPlotWidget::Data3DPlotWidget(QWidget* parent)
 	, surfaceGraph_(new Q3DSurface())
 	, surfaceProxy_(new QSurfaceDataProxy(this))
 	, surfaceSeries_(new QSurface3DSeries(surfaceProxy_))
+	, pointsGraph_(new Q3DScatter())
+	, pointsProxy_(new QScatterDataProxy(this))
+	, pointsSeries_(new QScatter3DSeries(pointsProxy_))
 {
 	QSize screenSize = surfaceGraph_->screen()->size();
+
+
+	//	QWidget *containerR = QWidget::createWindowContainer(pointsGraph_);
+	//	containerR->setMinimumSize(QSize(screenSize.width() / 4, screenSize.height() / 2));
+	//	containerR->setMaximumSize(screenSize);
+	//	containerR->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	//	containerR->setFocusPolicy(Qt::StrongFocus);
+	//	splitter_->addWidget(containerR);
 
 	QWidget *container = QWidget::createWindowContainer(surfaceGraph_);
 	container->setMinimumSize(QSize(screenSize.width() / 4, screenSize.height() / 2));
 	container->setMaximumSize(screenSize);
 	container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	container->setFocusPolicy(Qt::StrongFocus);
-	layout()->addWidget(container);
+	splitter_->addWidget(container);
 
+	{
+		pointsSeries_->setItemLabelFormat(QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
+		pointsSeries_->setMeshSmooth(true);
+
+
+		pointsGraph_->axisX()->setTitle("X");
+		pointsGraph_->axisY()->setTitle("Y");
+		pointsGraph_->axisZ()->setTitle("Z");
+		pointsGraph_->axisX()->setAutoAdjustRange(true);
+		pointsGraph_->axisY()->setAutoAdjustRange(true);
+		pointsGraph_->axisZ()->setAutoAdjustRange(true);
+		pointsGraph_->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetRightHigh);
+	}
 
 	surfaceSeries_->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
 	surfaceSeries_->setFlatShadingEnabled(false);
@@ -73,23 +104,49 @@ void Data3DPlotWidget::clear()
 	QList<QSurface3DSeries *> series = surfaceGraph_->seriesList();
 	for (auto &it :series)
 		surfaceGraph_->removeSeries(it);
+
+	QList<QScatter3DSeries *> pointsSeries = pointsGraph_->seriesList();
+	for (auto &it :pointsSeries)
+		pointsGraph_->removeSeries(it);
 }
 
-void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &/*resp*/)
+void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &resp)
 {
-	if (axisZCombo_->box->currentIndex() == -1)
+	if (chartSettings_->ui->boxY->currentIndex() == -1)
 		return;
 
-	int xName = axisXCombo_->box->currentData().toInt();
+	int xName = chartSettings_->ui->boxX->currentData().toInt();
 	arma::vec xColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(xName, 0));
 
-	int zName = axisZCombo_->box->currentData().toInt();
+	int zName = chartSettings_->ui->boxY->currentData().toInt();
 	arma::vec zColumn = linearRegression_->getFeatureModel().columnAt(FeatureModel::Feature(zName, 0));
 
 
-	surfaceGraph_->setAxisX(axis(surfaceGraph_, axisXCombo_->box->currentText()));
-	surfaceGraph_->setAxisY(axis(surfaceGraph_, QObject::tr("Predict")));
-	surfaceGraph_->setAxisZ(axis(surfaceGraph_, axisZCombo_->box->currentText()));
+	{
+		if (pointsGraph_->seriesList().empty())
+			pointsGraph_->addSeries(pointsSeries_);
+
+		QScatterDataArray *pointsArray = new QScatterDataArray;
+		pointsArray->resize(data.n_rows);
+		QScatterDataItem *ptrToDataArray = &pointsArray->first();
+
+		for (size_t i = 0; i < data.n_rows; ++i)
+		{
+
+			QVector3D v(xColumn.at(i), resp.at(i), zColumn.at(i));//y axis looks top
+			ptrToDataArray->setPosition(v);
+			ptrToDataArray++;
+		}
+
+		pointsProxy_->resetArray(pointsArray);
+	}
+
+
+
+
+	surfaceGraph_->setAxisX(axis(surfaceGraph_, chartSettings_->ui->boxX->currentText()));
+	surfaceGraph_->setAxisY(axis(surfaceGraph_, QString::fromStdString(linearRegression_->getFeatureModel().getResponseName())));
+	surfaceGraph_->setAxisZ(axis(surfaceGraph_, chartSettings_->ui->boxY->currentText()));
 
 	if (surfaceGraph_->seriesList().empty())
 		surfaceGraph_->addSeries(surfaceSeries_);
@@ -110,14 +167,25 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &/*res
 	std::map<int, double> raw;
 	std::pair<int, int> ids(0, 1);
 
+
+	int id = chartSettings_->ui->otherAxis->currentData().toInt();
 	for (const auto& key : axisIds_)
 	{
-		raw.emplace(key, 0.0);
-		if (key == axisXCombo_->box->currentData().toInt())
-			ids.first = key;
-		if (key == axisZCombo_->box->currentData().toInt())
-			ids.second = key;
+		if (key.first == id)
+		{
+			double n = chartSettings_->ui->doubleSpinBox->value();
+			raw.emplace(key.first, n);
+		}
+		else
+			raw.emplace(key.first, 0.0);
+
+		if (key.first == chartSettings_->ui->boxX->currentData().toInt())
+			ids.first = key.first;
+		if (key.first == chartSettings_->ui->boxY->currentData().toInt())
+			ids.second = key.first;
 	}
+
+
 
 	while (x < xBounds.second)
 	{
@@ -156,8 +224,6 @@ void Data3DPlotWidget::updateChart(const arma::mat &data, const arma::vec &/*res
 	surfaceProxy_->resetArray(surfaceArray);
 
 	setGradient();
-	QValue3DAxis *xAxis = new QValue3DAxis(surfaceGraph_);
-	xAxis->setTitle("X");
 }
 
 void Data3DPlotWidget::setGradient()
