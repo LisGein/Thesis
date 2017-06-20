@@ -101,7 +101,9 @@ qt5_add_translation(QON_QM_FILES ${QON_TS_FILES})
 add_custom_target(translations DEPENDS ${QON_QM_FILES})
 add_custom_target(tm_files DEPENDS ${QON_QM_FILES})
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+if(UNIX)
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+endif()
 # Add executables files:
 add_executable(${GUI_APP_NAME} ${CPP_FILES} ${moc_cpps} ${uic_cpps} ${QON_QM_FILES} )
 
@@ -120,6 +122,8 @@ else()
 	add_definitions(-DHAS_MAKE_UNIQUE)
 endif()
 
+add_definitions(-DBUILD_XLSXIO_STATIC)
+
 target_link_libraries(${GUI_APP_NAME}
 	xls
 	expat
@@ -129,9 +133,13 @@ target_link_libraries(${GUI_APP_NAME}
 	Qt5::Widgets
 	Qt5::Charts
 	Qt5::DataVisualization
-	${Mlpack_LIBRARIES}
-	${Armadillo_LIBRARIES}
-	${Boost_LIBRARIES}
+	#${Mlpack_LIBRARIES}
+	${ARMADILLO_LIBRARY}
+	${LAPACK_LIBRARY}
+	${BLAS_LIBRARY}
+	${LIBF2_LIBRARY}
+	${Boost_SYSTEM_LIBRARY_DEBUG}
+	${Boost_REGEX_LIBRARY_DEBUG}
 	${OLD_GCC_LIBS}
 	)
 
