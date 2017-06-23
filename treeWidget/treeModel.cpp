@@ -83,6 +83,8 @@ QModelIndex TreeModel::parent(const QModelIndex& index) const
 		return QModelIndex();
 
 	const INode* parent = node->parentItem();
+	if (!parent)
+		return QModelIndex();
 
 	return createIndex(findMyRowId(parent), 0, const_cast<INode *>(parent));
 }

@@ -44,3 +44,13 @@ unique_ptr<T> make_unique(U1&& arg1, U2&& arg2, U3&& arg3, U4&& arg4)
 }
 
 #endif
+
+namespace boost
+{
+#ifdef BOOST_NO_EXCEPTIONS
+	inline void throw_exception(std::exception const & e) {
+		throw 11; // or whatever
+	};
+#endif
+}// 
+

@@ -1,3 +1,10 @@
-find_library(EXPAT "libexpat.so" REQUIRED)
-add_library(expat SHARED IMPORTED )
-set_property(TARGET expat PROPERTY IMPORTED_LOCATION ${EXPAT})
+
+if (WIN32)
+	find_library(EXPAT "expat-dll.lib" PATH "C:\\\\expat" REQUIRED)
+	add_library(expat STATIC IMPORTED )
+	set_property(TARGET expat PROPERTY IMPORTED_LOCATION ${EXPAT})
+else()
+	find_library(EXPAT "libexpat.so" REQUIRED)
+	add_library(expat SHARED IMPORTED )
+	set_property(TARGET expat PROPERTY IMPORTED_LOCATION ${EXPAT})
+endif()

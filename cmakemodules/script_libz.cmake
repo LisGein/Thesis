@@ -1,3 +1,10 @@
-find_library(Z_LIB "libz.so" REQUIRED)
-add_library(zlib SHARED IMPORTED )
-set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${Z_LIB})
+if (WIN32)
+	find_library(Z_LIB "zlibd.lib" PATH "$ENV{ProgramFiles}\\zlib\\lib" REQUIRED)
+	add_library(zlib STATIC IMPORTED )
+	set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${Z_LIB})
+else()
+	find_library(Z_LIB "libz.so" REQUIRED)
+	add_library(zlib SHARED IMPORTED )
+	set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${Z_LIB})
+
+endif()
