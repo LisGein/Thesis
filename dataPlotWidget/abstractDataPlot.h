@@ -5,8 +5,8 @@
 #include <memory>
 #include <set>
 
+#include <iostream>
 #include <armadillo>
-
 
 class LinearRegressionModel;
 class QComboBox;

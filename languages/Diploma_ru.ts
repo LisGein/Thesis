@@ -24,7 +24,7 @@
         <translation>Медиана</translation>
     </message>
     <message>
-		<location filename="../experimentWidget/datasetAnalysisTable.cpp" line="15"/>
+        <location filename="../experimentWidget/datasetAnalysisTable.cpp" line="15"/>
         <source>Standard deviation</source>
         <translation>Стандартное отклонение</translation>
     </message>
@@ -151,7 +151,7 @@
 </context>
 <context>
     <name>DatasetWidget</name>
-        <message>
+    <message>
         <location filename="../datasetWidget/datasetWidget.ui" line="14"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
@@ -161,7 +161,7 @@
         <source>Load from Excel</source>
         <translation>Загрузить таблицу из Excel</translation>
     </message>
-        <message>
+    <message>
         <location filename="../datasetWidget/datasetWidget.ui" line="29"/>
         <source>Load from Tsv</source>
         <translation>Загрузить таблицу из Tsv</translation>
@@ -172,7 +172,7 @@
     <message>
         <location filename="../mainWindow/mainWindow.ui" line="14"/>
         <source>Main Window</source>
-        <translation>Главное окно</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainWindow/mainWindow.ui" line="44"/>
@@ -218,5 +218,5 @@
         <source>Axis y:</source>
         <translation>Ось y:</translation>
     </message>
-    </context>
+</context>
 </TS>

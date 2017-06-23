@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
 	QCoreApplication::setOrganizationName("LisGein");
 	QCoreApplication::setOrganizationDomain("lisgein.com");
-	QCoreApplication::setApplicationName(QObject::tr("Regression thesis"));
+	QCoreApplication::setApplicationName(QObject::tr("Granallado"));
 
 	QTranslator myTranslator;
 	myTranslator.load("./Diploma_ru.qm");
